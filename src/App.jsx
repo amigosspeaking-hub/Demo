@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { lessonLibrary } from './data/lessons.js';
 import { buildListeningItems } from './data/listening.js';
 import { grammarGuides } from './data/grammar.js';
 import { lessonStories } from './data/stories.js';
 import { lessonSentenceBanks } from './data/sentences.js';
+import { courseBookMaterials } from './data/courseMaterials.js';
 import {
   ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
-  CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Image as ImageIcon, Lightbulb,
+  CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Image as ImageIcon, Lightbulb, Pause,
   LockKeyhole, Menu, MessageCircle, MoreHorizontal, Play, Search, Settings2,
   Sparkles, Target, Trophy, Volume2, X, Zap, Heart, Mic, RotateCcw, Timer, Shuffle
 } from 'lucide-react';
@@ -304,6 +305,7 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onS
       <small className="speech-source-note">صوت إسباني مولّد من جهازك، مش تسجيل الكتاب</small>
       {grammarGuide && <div className="lesson-grammar-detail"><span><BookOpen size={14}/> {grammarGuide.title}</span><p>{grammarGuide.explanation}</p>{grammarGuide.examples.slice(0, 1).map(([es, ar]) => <div key={es}><b lang="es" dir="ltr">{es}</b><small>{ar}</small></div>)}</div>}
       <div className="lesson-example"><span>💬 مثال الدرس</span><b lang="es">{config.example}</b><small>{config.translation}</small></div>
+      <BookLessonMaterials lessonId={lessonId}/>
       <button className="save-in-lesson" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'اتحفظت في قاموسك' : 'احفظ الكلمة'}</button>
     </> : <>
       <div className="lesson-step-label">اختبار سريع · آخر خطوة</div><div className="quiz-finish-icon">🎯</div><h2 id="lesson-title">تمام! نراجع اللي اتعلمناه</h2>
@@ -368,6 +370,77 @@ function LessonsPage({ stage, onOpenLesson }) {
     <div className="course-lesson-list">{lessons.map((lesson, index) => <article className="course-lesson-card" key={lesson.id}><span className="course-lesson-number">{String(index + 1).padStart(2, '0')}</span><div className="course-lesson-copy"><span className="level-pill">{stage}</span><h3 dir="ltr" lang="es">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><p>{lesson.objective}</p><small>{lesson.words.length} كلمات · شرح ومثال واختبار قصير</small></div><button className="primary-button" onClick={() => onOpenLesson(stage.startsWith('A2') ? 'A2' : 'A1', lesson.id)}>افتح المحاضرة <ArrowLeft size={15}/></button></article>)}</div>
   </div>;
 }
+function BookAudioPlayer({ track }) {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [rate, setRate] = useState(1);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return undefined;
+    audio.pause(); audio.currentTime = 0; audio.playbackRate = 1;
+    setPlaying(false); setCurrentTime(0); setDuration(0); setRate(1); setError('');
+    return () => audio.pause();
+  }, [track?.src]);
+  async function toggle() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    setError('');
+    if (audio.paused) {
+      try { await audio.play(); } catch { setError('No se pudo reproducir este audio.'); }
+    } else audio.pause();
+  }
+  function stop() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause(); audio.currentTime = 0; setCurrentTime(0);
+  }
+  function changeRate(value) {
+    setRate(value);
+    if (audioRef.current) audioRef.current.playbackRate = value;
+  }
+  const timeLabel = value => `${Math.floor((value || 0) / 60)}:${String(Math.floor((value || 0) % 60)).padStart(2, '0')}`;
+  if (!track) return null;
+  return <div className="book-audio-player" lang="es" dir="ltr" aria-label="Reproductor de audio en español">
+    <audio ref={audioRef} src={track.src} preload="metadata" onPlay={() => { setPlaying(true); setError(''); }} onPause={() => setPlaying(false)} onLoadedMetadata={event => setDuration(event.currentTarget.duration || 0)} onDurationChange={event => setDuration(event.currentTarget.duration || 0)} onTimeUpdate={event => setCurrentTime(event.currentTarget.currentTime || 0)} onEnded={event => { setPlaying(false); setCurrentTime(event.currentTarget.currentTime || duration); }} onError={() => setError('No se pudo cargar el audio.')} />
+    <div className="book-audio-top"><b>{track.title}</b><span>{track.variant === 'alternativa' ? 'Versión alternativa' : `Pista ${track.id}`}</span></div>
+    <div className="book-audio-controls"><button className="book-audio-main" onClick={toggle} aria-label={playing ? 'Pausar audio' : 'Reproducir audio'}>{playing ? <Pause size={16}/> : <Play size={16}/>}<span>{playing ? 'Pausar' : 'Reproducir'}</span></button><button onClick={stop} aria-label="Detener audio" disabled={!playing && currentTime === 0}><X size={15}/><span>Detener</span></button><div className="book-audio-rates" aria-label="Velocidad de reproducción">{[0.5, 0.75, 1, 1.25].map(value => <button key={value} className={rate === value ? 'selected' : ''} onClick={() => changeRate(value)} aria-pressed={rate === value}>{value}×</button>)}</div></div>
+    <div className="book-audio-seek"><span>{timeLabel(currentTime)}</span><input type="range" min="0" max={duration || 0} step="0.1" value={Math.min(currentTime, duration || 0)} onChange={event => { if (audioRef.current) { audioRef.current.currentTime = Number(event.target.value); setCurrentTime(Number(event.target.value)); } }} aria-label="Buscar en el audio" disabled={!duration}/><span>{timeLabel(duration)}</span></div>
+    {error && <small className="book-audio-error" role="status">{error}</small>}
+  </div>;
+}
+function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
+  const material = courseBookMaterials[lessonId];
+  const [pageIndex, setPageIndex] = useState(0);
+  const [trackIndex, setTrackIndex] = useState(0);
+  useEffect(() => { setPageIndex(0); setTrackIndex(0); }, [lessonId]);
+  if (!material) return null;
+  const page = material.pages[pageIndex] || material.pages[0];
+  const track = material.tracks[trackIndex] || material.tracks[0];
+  function selectTrack(event) {
+    const index = Number(event.target.value);
+    setTrackIndex(index);
+    const targetPage = material.tracks[index]?.page;
+    const match = material.pages.findIndex(item => item.page === targetPage);
+    if (match >= 0) setPageIndex(match);
+  }
+  return <section className={`book-material-card ${mode === 'listening' ? 'book-listening-card' : ''}`} aria-label="مواد الدرس من الكتاب">
+    <div className="book-material-heading"><span className="book-material-icon"><BookOpen size={17}/></span><div><span className="book-material-kicker">{mode === 'listening' ? 'استماع من الكتاب' : 'مادة المحاضرة'}</span><h3 lang="es" dir="ltr">{material.title}</h3><small>{material.book} · {material.unit}</small></div></div>
+    <div className="book-material-selectors"><label><span>المقطع الصوتي</span><select value={trackIndex} onChange={selectTrack}>{material.tracks.map((item, index) => <option key={`${item.id}-${item.variant}`} value={index} dir="auto">{item.title} · {item.id}{item.variant === 'alternativa' ? ' (alternativa)' : ''}</option>)}</select></label><label><span>صفحة الكتاب</span><select value={pageIndex} onChange={event => setPageIndex(Number(event.target.value))}>{material.pages.map((item, index) => <option key={item.page} value={index}>صفحة {item.page}</option>)}</select></label></div>
+    {page && <figure className="book-page-preview"><img src={page.src} alt={`صفحة ${page.page} من كتاب ${material.book}`} loading="lazy"/><figcaption>صفحة {page.page} · {material.book}</figcaption></figure>}
+    {track && <BookAudioPlayer key={track.src} track={track}/>}
+  </section>;
+}
+function BookListeningLibrary({ stage }) {
+  const lessons = currentLessons(stage).filter(lesson => courseBookMaterials[lesson.id]);
+  const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
+  useEffect(() => { setLessonId(lessons[0]?.id || ''); }, [stage]);
+  if (!lessons.length) return null;
+  const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
+  return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>استمع للمادة المرتبطة بمحاضرتك</h2><p>اختر محاضرة من {stage}؛ التسجيل والصفحات يتغيران معها.</p></div><label className="course-select"><span>المحاضرة</span><select value={lesson.id} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading.replace(/^A[12](?:\.\d)? · /, '')}</option>)}</select></label></div><BookLessonMaterials key={lesson.id} lessonId={lesson.id} mode="listening"/></section>;
+}
 function GrammarPage({ stage }) {
   const lessons = currentLessons(stage);
   return <div className="grammar-page"><section className="course-page-intro grammar-intro"><span className="eyebrow"><BookOpen size={15}/> شرح مدرس بالمصري</span><h2>جرامر {stage}</h2><p>شرح القاعدة الموجودة في كل محاضرة مع أمثلة وتدريب سريع.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
@@ -382,16 +455,44 @@ function ListeningPage({ stage }) {
   const [query, setQuery] = useState('');
   const [showArabic, setShowArabic] = useState(true);
   const [rate, setRate] = useState(1);
+  const [playerState, setPlayerState] = useState('idle');
+  const [playerProgress, setPlayerProgress] = useState(0);
+  const [playerError, setPlayerError] = useState('');
+  const utteranceRef = useRef(null);
   const selected = items.find(item => item.id === selectedId) || items[0];
   const visible = items.filter(item => `${item.title} ${item.spanish} ${item.arabic}`.toLowerCase().includes(query.trim().toLowerCase()));
   useEffect(() => { if (!items.some(item => item.id === selectedId)) setSelectedId(items[0]?.id || ''); }, [stage]);
-  function speak(text = selected?.spanish) { if (!text || !('speechSynthesis' in window)) return; const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-ES'; utterance.rate = rate; const voices = window.speechSynthesis.getVoices(); utterance.voice = voices.find(voice => voice.lang?.toLowerCase() === 'es-es') || voices.find(voice => voice.lang?.toLowerCase().startsWith('es')) || null; window.speechSynthesis.cancel(); window.speechSynthesis.speak(utterance); }
+  useEffect(() => { setPlayerState('idle'); setPlayerProgress(0); setPlayerError(''); window.speechSynthesis?.cancel(); }, [selectedId]);
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+  function speak() {
+    if (!selected?.spanish) return;
+    if (!('speechSynthesis' in window)) { setPlayerState('error'); setPlayerError('La síntesis de voz no está disponible en este navegador.'); return; }
+    const speech = window.speechSynthesis;
+    speech.cancel();
+    const utterance = new SpeechSynthesisUtterance(selected.spanish);
+    utterance.lang = 'es-ES'; utterance.rate = rate; utteranceRef.current = utterance;
+    const voices = speech.getVoices();
+    utterance.voice = voices.find(voice => voice.lang?.toLowerCase() === 'es-es') || voices.find(voice => voice.lang?.toLowerCase().startsWith('es')) || null;
+    utterance.onstart = () => { setPlayerState('playing'); setPlayerProgress(0); setPlayerError(''); };
+    utterance.onboundary = event => { if (selected.spanish.length) setPlayerProgress(Math.min(99, Math.round(event.charIndex / selected.spanish.length * 100))); };
+    utterance.onend = () => { setPlayerState('idle'); setPlayerProgress(100); utteranceRef.current = null; };
+    utterance.onerror = event => { if (event.error !== 'canceled' && event.error !== 'interrupted') { setPlayerError('No se pudo reproducir la voz. Inténtalo otra vez.'); setPlayerState('error'); } else setPlayerState('idle'); utteranceRef.current = null; };
+    speech.speak(utterance);
+  }
+  function togglePlayback() {
+    if (!('speechSynthesis' in window)) return;
+    if (playerState === 'playing') { window.speechSynthesis.pause(); setPlayerState('paused'); }
+    else if (playerState === 'paused') { window.speechSynthesis.resume(); setPlayerState('playing'); }
+  }
+  function stopPlayback() {
+    window.speechSynthesis?.cancel(); utteranceRef.current = null; setPlayerState('idle'); setPlayerProgress(0); setPlayerError('');
+  }
   return <div className="listening-page"><section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage}</span><h2>اسمع الجملة، والترجمة جنبها</h2><p>اختر محاضرة من مستواك. كل سطر إسباني من الشمال لليمين ومعناه العربي مقابله.</p></div><div className="listening-summary"><b>{items.length}</b><span>عبارة تدريب</span></div></section>
     <div className="listening-layout"><aside className="listening-library"><div className="listening-library-head"><div><h3>عبارات المحاضرات</h3><span>{visible.length} عبارة</span></div><AudioLines size={19}/></div><label className="listening-search"><Search size={16}/><input value={query} onChange={event => setQuery(event.target.value)} placeholder="ابحث في العبارات" aria-label="بحث في العبارات"/></label><div className="listening-items">{visible.map(item => <button key={item.id} className={`listening-item ${selected?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} aria-pressed={selected?.id === item.id}><span className="listening-item-icon"><Headphones size={15}/></span><span className="listening-item-copy"><b>{item.title}</b><small lang="es" dir="ltr">{item.spanish}</small></span><span className="listening-item-level">{stage}</span></button>)}{!visible.length && <p className="listening-empty">مفيش عبارة مطابقة.</p>}</div></aside>
-      <section className="listening-player"><div className="listening-player-head"><div><span className="listening-kicker">جملة من {stage}</span><h3>{selected?.title || 'اختار محاضرة'}</h3></div><button className="listening-play" onClick={() => speak()}><Volume2 size={17}/> اسمع الإسباني</button></div>
+      <section className="listening-player"><div className="listening-player-head"><div><span className="listening-kicker">جملة من {stage}</span><h3>{selected?.title || 'اختار محاضرة'}</h3></div></div>
         <div className={`listening-transcript bilingual-transcript ${showArabic ? '' : 'arabic-hidden'}`} data-testid="bilingual-transcript"><div className="transcript-spanish" lang="es" dir="ltr">{selected?.spanish}</div>{showArabic && <div className="transcript-arabic" lang="ar" dir="rtl">{selected?.arabic}</div>}</div>
-        <div className="listening-controls"><button className="translation-toggle" onClick={() => setShowArabic(value => !value)}>{showArabic ? 'إخفاء الترجمة العربية' : 'إظهار الترجمة العربية'}</button><div className="speech-rates" aria-label="سرعة النطق">{[0.5, 0.75, 1, 1.25].map(value => <button key={value} className={rate === value ? 'selected' : ''} onClick={() => setRate(value)}>{value.toFixed(value === 1 ? 1 : 2).replace(/0$/, '')}×</button>)}</div></div>
-        <p className="listening-source-note"><Volume2 size={14}/> النطق الإسباني مُولّد من الجهاز. شغّل الصوت واختار السرعة المناسبة.</p></section></div></div>;
+        <div className="listening-controls"><button className="translation-toggle" onClick={() => setShowArabic(value => !value)}>{showArabic ? 'إخفاء الترجمة العربية' : 'إظهار الترجمة العربية'}</button><div className="speech-rates" aria-label="Velocidad de reproducción">{[0.5, 0.75, 1, 1.25].map(value => <button key={value} className={rate === value ? 'selected' : ''} onClick={() => { setRate(value); if (playerState === 'playing' || playerState === 'paused') { stopPlayback(); } }} aria-pressed={rate === value}>{value.toFixed(value === 1 ? 1 : 2).replace(/0$/, '')}×</button>)}</div></div><div className="generated-audio-player" lang="es" dir="ltr" aria-label="Reproductor de audio en español"><div className="generated-player-buttons"><button onClick={speak} disabled={!selected?.spanish}><Play size={16}/>{playerState === 'playing' || playerState === 'paused' ? 'Reiniciar' : 'Reproducir'}</button><button onClick={togglePlayback} disabled={playerState !== 'playing' && playerState !== 'paused'}><span>{playerState === 'paused' ? '▶' : 'Ⅱ'}</span>{playerState === 'paused' ? 'Continuar' : 'Pausar'}</button><button onClick={stopPlayback} disabled={playerState === 'idle' && playerProgress !== 100}><X size={15}/>Detener</button></div><div className="generated-player-track" role="progressbar" aria-label="Progreso del audio" aria-valuemin="0" aria-valuemax="100" aria-valuenow={playerProgress}><i style={{ width: `${playerProgress}%` }}/></div><span className="generated-player-state">{playerError || (playerState === 'playing' ? 'Reproduciendo' : playerState === 'paused' ? 'En pausa' : playerProgress === 100 ? 'Reproducción finalizada' : 'Listo')}</span></div>
+        <p className="listening-source-note"><Volume2 size={14}/> النطق الإسباني مُولّد من الجهاز. شغّل الصوت واختار السرعة المناسبة.</p></section></div><BookListeningLibrary stage={stage}/></div>;
 }
 function SpeakingPage({ stage }) {
   const lessons = currentLessons(stage);
@@ -416,7 +517,7 @@ function SpeakingPage({ stage }) {
     recognition.onresult = event => { const spoken = event.results[0][0].transcript; setTranscript(spoken); setStatus(cleanSpeech(spoken) === cleanSpeech(lesson.example) ? 'الجملة كلها مطابقة — ممتاز!' : 'الكلمات الخضرا مطابقة؛ راجع الحمراء وحاول تاني.'); };
     recognition.start();
   }
-  return <div className="speaking-page"><section className="course-page-intro speaking-intro"><span className="eyebrow"><Mic size={15}/> تحدث من الميكروفون</span><h2>اسمع، انطق، وراجع كلامك</h2><p>اختار محاضرة وانطق الجملة بالإسباني من المايك؛ مفيش خانة كتابة.</p><label className="course-select"><span>المحاضرة</span><select value={lessonId} onChange={event => { setLessonId(event.target.value); setTranscript(''); }}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
+  return <div className="speaking-page"><section className="course-page-intro speaking-intro"><span className="eyebrow"><Mic size={15}/> تحدث من الميكروفون</span><h2>اسمع، انطق، وراجع كلامك</h2><p>اختار محاضرة وانطق الجملة بالإسباني باستخدام المايك.</p><label className="course-select"><span>المحاضرة</span><select value={lessonId} onChange={event => { setLessonId(event.target.value); setTranscript(''); }}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
     {lesson && <section className="speaking-card"><div className="speaking-lesson-label">تحدّث من {lesson.heading}</div><div className="speaking-prompt" lang="es" dir="ltr">{lesson.example}</div><p className="speaking-translation" dir="rtl">{lesson.translation}</p><button className={`mic-start ${isListening ? 'recording' : ''}`} onClick={startRecognition} disabled={isListening || !supported}><Mic size={21}/>{isListening ? 'بيسجّل…' : 'ابدأ التحدث'}</button><div className="speech-feedback" role="status"><span className={transcript ? 'feedback-ready' : ''}>{status}</span>{transcript && <div className="speech-recognized"><small>مقارنة كلمة بكلمة:</small><div className="speech-word-check" lang="es" dir="ltr">{expectedWords.map((word, index) => <span key={`${word}-${index}`} className={heardWords[index] === word ? 'word-right' : 'word-wrong'}>{heardWords[index] || '—'}</span>)}{heardWords.slice(expectedWords.length).map((word, index) => <span key={`extra-${word}-${index}`} className="word-wrong">{word}</span>)}</div><b lang="es" dir="ltr">اللي اتقال: {transcript}</b></div>}</div><button className="speech-repeat" onClick={() => speakSpanish(lesson.example)}><Volume2 size={16}/> اسمع النموذج الإسباني</button></section>}
     <section className="speaking-story"><span className="eyebrow"><BookOpen size={14}/> حكاية قصيرة · {stage}</span><h3>{lesson?.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><div className="story-bilingual"><p lang="es" dir="ltr">{story.es}</p><p dir="rtl">{story.ar}</p></div><button className="speech-repeat" onClick={() => speakSpanish(story.es)}><Volume2 size={16}/> اسمع الحكاية</button></section></div>;
 }

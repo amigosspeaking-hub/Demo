@@ -609,3 +609,53 @@ button:disabled{cursor:not-allowed}
 .story-bilingual,.grammar-example-row,.live-match-grid{direction:ltr}
 .grammar-example-row>span[lang="ar"]{direction:rtl;text-align:right}
 .live-match-choice.arabic{direction:rtl;text-align:right}
+
+/* Book scans and original course audio stay inside the learner's selected lesson. */
+.book-material-card,.book-listening-library{min-width:0;border:1px solid #e7ebe4;border-radius:15px;background:#fbfcf9;padding:15px;margin-top:14px;}
+.book-material-heading{display:flex;align-items:center;gap:10px;min-width:0;}
+.book-material-icon{width:34px;height:34px;border-radius:10px;background:#eaf3e9;color:#4d805d;display:grid;place-items:center;flex:none;}
+.book-material-heading>div{min-width:0;}
+.book-material-kicker{display:block;font-size:10px;color:#8b9b8d;font-weight:600;}
+.book-material-heading h3{font:700 15px 'DM Sans','IBM Plex Sans Arabic',sans-serif;color:#365d43;direction:ltr;text-align:left;unicode-bidi:isolate;overflow-wrap:anywhere;margin:3px 0;}
+.book-material-heading small{display:block;color:#8e9990;font-size:9px;}
+.book-material-selectors{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0;}
+.book-material-selectors label{min-width:0;display:grid;gap:5px;color:#748276;font-size:9px;font-weight:600;}
+.book-material-selectors select{min-width:0;width:100%;height:36px;padding:0 9px;border:1px solid #e6ebe4;border-radius:9px;background:#fff;color:#415748;font-size:10px;}
+.book-page-preview{margin:0;padding:9px;border:1px solid #ecefe9;border-radius:12px;background:#fff;}
+.book-page-preview img{display:block;width:100%;max-height:440px;object-fit:contain;object-position:top center;border-radius:6px;background:#f5f5f1;}
+.book-page-preview figcaption{text-align:center;color:#95a096;font-size:9px;padding-top:7px;}
+.book-audio-player{margin-top:10px;padding:11px 12px;border:1px solid #e6ece4;border-radius:11px;background:#fff;color:#48604e;}
+.book-audio-player audio{display:none;}
+.book-audio-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;}
+.book-audio-top b{min-width:0;color:#355943;font:600 12px 'DM Sans',sans-serif;direction:ltr;text-align:left;unicode-bidi:isolate;overflow-wrap:anywhere;}
+.book-audio-top>span{flex:none;color:#849388;font-size:9px;}
+.book-audio-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.book-audio-controls>button{height:34px;padding:0 9px;border:1px solid #e6ece5;border-radius:8px;background:#fbfcfa;color:#5d7562;display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:10px;}
+.book-audio-controls>button:disabled{opacity:.45;cursor:not-allowed;}
+.book-audio-controls>button.book-audio-main{background:#3d7057;border-color:#3d7057;color:#fff;font-weight:700;}
+.book-audio-rates{display:flex;align-items:center;gap:3px;margin-inline-start:auto;padding:3px;border:1px solid #e8ece6;border-radius:8px;background:#f7f9f5;}
+.book-audio-rates button{min-width:38px;padding:5px 6px;border:0;border-radius:6px;background:transparent;color:#748275;font:600 10px 'DM Sans',sans-serif;}
+.book-audio-rates button.selected{background:#e5f0e6;color:#3c704c;}
+.book-audio-seek{display:flex;align-items:center;gap:8px;margin-top:9px;color:#849187;font:10px 'DM Sans',sans-serif;}
+.book-audio-seek input{min-width:0;flex:1;accent-color:#4c805c;direction:ltr;}
+.book-audio-error{display:block;color:#b86057;font-size:10px;margin-top:6px;}
+.book-listening-library{margin-top:0;padding:17px;background:#fff;}
+.book-listening-library-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px;}
+.book-listening-library-head>div{min-width:0;}
+.book-listening-library-head h2{margin:5px 0;font-size:16px;color:#354f3b;}
+.book-listening-library-head p{margin:0;color:#8d9a90;font-size:10px;}
+.book-listening-library-head .course-select{flex:none;min-width:180px;}
+.book-listening-card{margin-top:10px;background:#fbfcfa;}
+.book-listening-card .book-page-preview img{max-height:520px;}
+@media(max-width:650px){
+  .book-material-card,.book-listening-library{padding:12px;border-radius:12px;}
+  .book-material-selectors{grid-template-columns:1fr;gap:7px;}
+  .book-material-heading h3{font-size:14px;}
+  .book-page-preview img{max-height:370px;}
+  .book-listening-library-head{align-items:stretch;flex-direction:column;gap:9px;}
+  .book-listening-library-head .course-select{min-width:0;width:100%;}
+  .book-audio-controls{gap:5px;}
+  .book-audio-controls>button{height:32px;padding:0 7px;font-size:9px;}
+  .book-audio-rates{margin-inline-start:0;}
+  .book-listening-card .book-page-preview img{max-height:410px;}
+}

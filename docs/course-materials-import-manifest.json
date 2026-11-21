@@ -1,0 +1,2514 @@
+{
+  "source": "Google Drive course archives; assets selected by book unit page ranges and audio track IDs in each archive index.",
+  "units": {
+    "A1.1": 4,
+    "A1.2": 3,
+    "A1.3": 3,
+    "A2.1": 4
+  },
+  "asset_count": 248,
+  "page_count": 186,
+  "audio_count": 62,
+  "source_bytes": 126086634,
+  "output_bytes": 101584927,
+  "files": [
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "page",
+      "source_member": "pages/p010.jpg",
+      "output": "public/materials/books/A1.1/pages/p010.webp",
+      "source_bytes": 199119,
+      "output_bytes": 85806,
+      "sha256": "c24d456c20f3c0fcc0fcf006f36f37cf1ddb8ae301d7a4cfad0356aec335b9a5"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "page",
+      "source_member": "pages/p011.jpg",
+      "output": "public/materials/books/A1.1/pages/p011.webp",
+      "source_bytes": 254456,
+      "output_bytes": 129878,
+      "sha256": "bffc5b4ed130df1cf8bad95e48f6d6b41d603de7c39e20486950df2eb558c9ce"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "page",
+      "source_member": "pages/p012.jpg",
+      "output": "public/materials/books/A1.1/pages/p012.webp",
+      "source_bytes": 193302,
+      "output_bytes": 95800,
+      "sha256": "01dd89b525bf09fe573e3dc62e40e8cbbf2be335ebad7092352f06501a998d3a"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "page",
+      "source_member": "pages/p013.jpg",
+      "output": "public/materials/books/A1.1/pages/p013.webp",
+      "source_bytes": 345516,
+      "output_bytes": 185948,
+      "sha256": "47ddc6ef6d49c78707419ccceff0e689c5363b5ee28033c389deefd96402ffd0"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_01.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_01.mp3",
+      "source_bytes": 652034,
+      "output_bytes": 652034,
+      "sha256": "70725be4acc25731e2a73c8e944de274f0b2a108d98a4b65b2ab41dd50a5f107"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_02.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_02.mp3",
+      "source_bytes": 296052,
+      "output_bytes": 296052,
+      "sha256": "6f01f668fb4f0bf890811c8ad79c03aa55a61f2f477885cced9ba0596643e927"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_03.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_03.mp3",
+      "source_bytes": 1621049,
+      "output_bytes": 1621049,
+      "sha256": "65a313b6304b5d4a74c606cb460bb64e2da3bb0c713cf93e1c3d771376812a8e"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-0",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_03_alt.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_03_alt.mp3",
+      "source_bytes": 1251867,
+      "output_bytes": 1251867,
+      "sha256": "fc956f4f1c14ed2c402c4731978ba11dff61d85f8d887fb27dde93f18f9fbef3"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p014.jpg",
+      "output": "public/materials/books/A1.1/pages/p014.webp",
+      "source_bytes": 374274,
+      "output_bytes": 202088,
+      "sha256": "69e70359e7e6491d23f10bbd695c4a3c753976c9ca01ba3b7c012920f630258f"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p015.jpg",
+      "output": "public/materials/books/A1.1/pages/p015.webp",
+      "source_bytes": 327424,
+      "output_bytes": 178620,
+      "sha256": "d06259bea20481dcb7cc7f7d443d42d5536a6f63d7a2ba872ddca9532b4a8c95"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p016.jpg",
+      "output": "public/materials/books/A1.1/pages/p016.webp",
+      "source_bytes": 397091,
+      "output_bytes": 212942,
+      "sha256": "7858279dd0f5829447b5ba1d2cf5cfc71505b8c106837a2534863b49bf4d5880"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p017.jpg",
+      "output": "public/materials/books/A1.1/pages/p017.webp",
+      "source_bytes": 301003,
+      "output_bytes": 159500,
+      "sha256": "406e3e479bf652482477b30425ff1665a9abdd4e8bd89dd2889a15b9f9eeffb2"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p018.jpg",
+      "output": "public/materials/books/A1.1/pages/p018.webp",
+      "source_bytes": 297036,
+      "output_bytes": 135394,
+      "sha256": "fcce0c7139eefad469e5fc217662f6703a255c91f8a0374fb678e9070f86bfa0"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p019.jpg",
+      "output": "public/materials/books/A1.1/pages/p019.webp",
+      "source_bytes": 214060,
+      "output_bytes": 111450,
+      "sha256": "433ddc38e06979891a37227b38ff82e44e5fc9c45fc86d380e65813596c41037"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p020.jpg",
+      "output": "public/materials/books/A1.1/pages/p020.webp",
+      "source_bytes": 216343,
+      "output_bytes": 93680,
+      "sha256": "e408392b5d12e392a991ab3f9e62a203a01eadf7916d53415d82562eedb37174"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p021.jpg",
+      "output": "public/materials/books/A1.1/pages/p021.webp",
+      "source_bytes": 226434,
+      "output_bytes": 114212,
+      "sha256": "ca142bdfebadecf194ba55ddbcbdcb16f5569ca04e93c9006098c4002f0fc076"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p022.jpg",
+      "output": "public/materials/books/A1.1/pages/p022.webp",
+      "source_bytes": 249071,
+      "output_bytes": 141356,
+      "sha256": "91e7b78359e5b8610008fdbe911ab44166d6f71ebf90b7f1261b16df78254d2e"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p023.jpg",
+      "output": "public/materials/books/A1.1/pages/p023.webp",
+      "source_bytes": 257840,
+      "output_bytes": 141400,
+      "sha256": "ecca5f43210276adfdfb1a5adeb3b16a795cc73a52eb269a9e2b00ad6ae7763e"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p024.jpg",
+      "output": "public/materials/books/A1.1/pages/p024.webp",
+      "source_bytes": 288007,
+      "output_bytes": 156744,
+      "sha256": "f48ac6c8f05a4630e048a1602f737e1d5b0f42fc6c7ef01491d011015db9e07d"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p025.jpg",
+      "output": "public/materials/books/A1.1/pages/p025.webp",
+      "source_bytes": 315103,
+      "output_bytes": 172868,
+      "sha256": "6fb4042bc1f428e412945d824662508d00068c3a18ffd558455eaf4a0a76551a"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p026.jpg",
+      "output": "public/materials/books/A1.1/pages/p026.webp",
+      "source_bytes": 288097,
+      "output_bytes": 146604,
+      "sha256": "417da10ebf2b79ca29632985a5ed3773ea7e5f1fa43acdd1b862673b6f310a4d"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "page",
+      "source_member": "pages/p027.jpg",
+      "output": "public/materials/books/A1.1/pages/p027.webp",
+      "source_bytes": 191139,
+      "output_bytes": 87420,
+      "sha256": "6a2747165e199835909ed9a5c829fed0e102ba26ed521d56f7df0999c2821750"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_04.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_04.mp3",
+      "source_bytes": 826784,
+      "output_bytes": 826784,
+      "sha256": "2d7569b428954b2cb51dd76f0966c189b7d7e8dbc53e4a542bcc62245f9aebba"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_05.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_05.mp3",
+      "source_bytes": 843221,
+      "output_bytes": 843221,
+      "sha256": "1aa3b1ad8eabef1b6206a55ca76442b7ac14825af870d60c120bc155a7ca72e2"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_06.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_06.mp3",
+      "source_bytes": 746383,
+      "output_bytes": 746383,
+      "sha256": "ea575109d183de9c36f9a19b5b754a6ce5094ae611c3c4f89ad9b9214e8425c7"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_07.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_07.mp3",
+      "source_bytes": 1109630,
+      "output_bytes": 1109630,
+      "sha256": "cfb67beae3e7ae256fac7f88b6ad55ec81a230538d5cd2a9657a1d0c28b13a80"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-1",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_08.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_08.mp3",
+      "source_bytes": 845017,
+      "output_bytes": 845017,
+      "sha256": "997d743524dd35b0f302b5467e4f877b3fa054a762e7d15f787468018afcb6a6"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p028.jpg",
+      "output": "public/materials/books/A1.1/pages/p028.webp",
+      "source_bytes": 356166,
+      "output_bytes": 188970,
+      "sha256": "25d539af09fd3dd5bb97f37e7170371b548714bd2c862854906d98a7869e3b4b"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p029.jpg",
+      "output": "public/materials/books/A1.1/pages/p029.webp",
+      "source_bytes": 333953,
+      "output_bytes": 183866,
+      "sha256": "5a6fdb06dada2d7d208ec104b8b7695c493fc3f0231e93eac1d5886ab9cd07fd"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p030.jpg",
+      "output": "public/materials/books/A1.1/pages/p030.webp",
+      "source_bytes": 293562,
+      "output_bytes": 160946,
+      "sha256": "c742d764aa7e4eb797e167e15e3f70d6d342a6dd4c711d79c6259bf7a68f7d07"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p031.jpg",
+      "output": "public/materials/books/A1.1/pages/p031.webp",
+      "source_bytes": 288668,
+      "output_bytes": 150286,
+      "sha256": "b69125588a86261c5b62c3eced8d1215924f631e3f44fce40d41443f65cdfa9c"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p032.jpg",
+      "output": "public/materials/books/A1.1/pages/p032.webp",
+      "source_bytes": 284607,
+      "output_bytes": 149064,
+      "sha256": "ef0d2a57d9d9ec5d3710e3cc95e6782c5360e184f5b31742c345625e910899e3"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p033.jpg",
+      "output": "public/materials/books/A1.1/pages/p033.webp",
+      "source_bytes": 284705,
+      "output_bytes": 154106,
+      "sha256": "c1b63c615a0be0a8b8924dddb6cfea7f87709845ddb023b3f005ffacfc2504d2"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p034.jpg",
+      "output": "public/materials/books/A1.1/pages/p034.webp",
+      "source_bytes": 216821,
+      "output_bytes": 113044,
+      "sha256": "40287236d1b862097bfe671e8e6d068664ae356239f05479a50071e7870774cd"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p035.jpg",
+      "output": "public/materials/books/A1.1/pages/p035.webp",
+      "source_bytes": 228200,
+      "output_bytes": 123704,
+      "sha256": "2213ceb0f3eb96997e6ca0b0e38e382c0b8ce491a80a3d133c02757a3e775526"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p036.jpg",
+      "output": "public/materials/books/A1.1/pages/p036.webp",
+      "source_bytes": 214081,
+      "output_bytes": 107104,
+      "sha256": "724c8bc243c256218a11731ddb5111a1d3a561eb68037f2bee72efadb13e7415"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p037.jpg",
+      "output": "public/materials/books/A1.1/pages/p037.webp",
+      "source_bytes": 259893,
+      "output_bytes": 150498,
+      "sha256": "033970b224abc140f2c1e53b626d7da753c177158cd8dd26f5d10ca77e296422"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p038.jpg",
+      "output": "public/materials/books/A1.1/pages/p038.webp",
+      "source_bytes": 348968,
+      "output_bytes": 198048,
+      "sha256": "e0d59e989595cf7c2273f2325d7da3de8fd30015993d87968b61e446afb9dd61"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p039.jpg",
+      "output": "public/materials/books/A1.1/pages/p039.webp",
+      "source_bytes": 246208,
+      "output_bytes": 122614,
+      "sha256": "1fbfb761aa9f08e1fd640f95dff2e5a5a6f30cd37d5ceb5552e25bac893730c3"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p040.jpg",
+      "output": "public/materials/books/A1.1/pages/p040.webp",
+      "source_bytes": 216395,
+      "output_bytes": 111586,
+      "sha256": "63c7d6a3bf6b3162cf4d187913e2a82d50c54f09f06579cb81e90520fdfde9e7"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "page",
+      "source_member": "pages/p041.jpg",
+      "output": "public/materials/books/A1.1/pages/p041.webp",
+      "source_bytes": 226727,
+      "output_bytes": 105028,
+      "sha256": "c54b08de8199311242a785fba4d22c25ef8add3e533dfe5289476f05f445df25"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_09.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_09.mp3",
+      "source_bytes": 1300812,
+      "output_bytes": 1300812,
+      "sha256": "7f87c18f2f7c8ce2dd793b55e65c0ea5eabdfd2e29b3b8cfd8035d1dcd1ad7b1"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_09_alt.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_09_alt.mp3",
+      "source_bytes": 867873,
+      "output_bytes": 867873,
+      "sha256": "bfddb593bc18261a69d1fe2f5ea8102cf2af1ad0c25a26ea3a3da208000d4f9e"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-2",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_10.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_10.mp3",
+      "source_bytes": 562890,
+      "output_bytes": 562890,
+      "sha256": "fee834ee8935d67632888a3f904c73e1a6a2c69fc90a7f2774eb4d20dfd88841"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p042.jpg",
+      "output": "public/materials/books/A1.1/pages/p042.webp",
+      "source_bytes": 377069,
+      "output_bytes": 206370,
+      "sha256": "d58d9fcc4e9f61b9cefa9ae5f8363c43fa92546c9e090c238cd92d5b188fa61b"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p043.jpg",
+      "output": "public/materials/books/A1.1/pages/p043.webp",
+      "source_bytes": 274370,
+      "output_bytes": 144636,
+      "sha256": "312a399ca2334c554aa0a5b5a21139821cbfb6ad53434f979e0e7826c2989f1f"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p044.jpg",
+      "output": "public/materials/books/A1.1/pages/p044.webp",
+      "source_bytes": 355350,
+      "output_bytes": 226538,
+      "sha256": "2c719c658ea1e946faf5d064d644f44ff24f9853dfc518ff74910496769769f6"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p045.jpg",
+      "output": "public/materials/books/A1.1/pages/p045.webp",
+      "source_bytes": 243028,
+      "output_bytes": 121132,
+      "sha256": "055f53f633fad2e4919c2b9b75e875a3b7b358113bd180b8143c4ac905cf3e73"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p046.jpg",
+      "output": "public/materials/books/A1.1/pages/p046.webp",
+      "source_bytes": 351339,
+      "output_bytes": 205012,
+      "sha256": "e7607caa59227acef5499e0740f656922f3c9d3b14fcd9694a2c1471b33146b5"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p047.jpg",
+      "output": "public/materials/books/A1.1/pages/p047.webp",
+      "source_bytes": 262540,
+      "output_bytes": 136728,
+      "sha256": "b756ddb9184508791d55ee24c8eee1d3888e1ba1c3cb440489d606fa00a212a1"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p048.jpg",
+      "output": "public/materials/books/A1.1/pages/p048.webp",
+      "source_bytes": 377493,
+      "output_bytes": 225138,
+      "sha256": "d8591657ecec1a60fac1f703dff53bf487c0e93637fdf0219d93704b3eaede58"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p049.jpg",
+      "output": "public/materials/books/A1.1/pages/p049.webp",
+      "source_bytes": 294669,
+      "output_bytes": 161362,
+      "sha256": "fdcf51c014007257c1e8473a4751825b3fc0514e12c4fc468172b4c620b8e39e"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p050.jpg",
+      "output": "public/materials/books/A1.1/pages/p050.webp",
+      "source_bytes": 245133,
+      "output_bytes": 133014,
+      "sha256": "7cccc9d631fba362392893133629674918c9be2ab7de66435f71809b116049c1"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p051.jpg",
+      "output": "public/materials/books/A1.1/pages/p051.webp",
+      "source_bytes": 294287,
+      "output_bytes": 170126,
+      "sha256": "56869e9fe0b6459dbe7f7c6b29b279df33f7826cc6ec08cd81c87ad0077d29c9"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p052.jpg",
+      "output": "public/materials/books/A1.1/pages/p052.webp",
+      "source_bytes": 321464,
+      "output_bytes": 181040,
+      "sha256": "65abfb63a360c92fbd069f528888f1c20bbf636393e09899170d53a56eb0d55a"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p053.jpg",
+      "output": "public/materials/books/A1.1/pages/p053.webp",
+      "source_bytes": 363917,
+      "output_bytes": 219900,
+      "sha256": "21037de949d28eaa1a6d30bcda7cd5d230757fb872ddb8c8983046f21371b658"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p054.jpg",
+      "output": "public/materials/books/A1.1/pages/p054.webp",
+      "source_bytes": 243955,
+      "output_bytes": 122352,
+      "sha256": "69815a9a693cc09a5d01b7030c25f593c7a77bbe3c7e11764412b6cbbe7d1c67"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "page",
+      "source_member": "pages/p055.jpg",
+      "output": "public/materials/books/A1.1/pages/p055.webp",
+      "source_bytes": 301668,
+      "output_bytes": 161604,
+      "sha256": "7c1d4351871f6acd6aeaabd7aa428c6e02f7dc9f67032a9925907e3d887dcbcd"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_11.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_11.mp3",
+      "source_bytes": 2201514,
+      "output_bytes": 2201514,
+      "sha256": "9283b06f9b448758daa6f4dcaf8d2cc3a9029ab1ae3201f799b875e1d57226ce"
+    },
+    {
+      "stage": "A1.1",
+      "lesson": "A1-3",
+      "kind": "audio",
+      "source_member": "audio/auint_plus_1_12.mp3",
+      "output": "public/materials/books/A1.1/audio/auint_plus_1_12.mp3",
+      "source_bytes": 1959059,
+      "output_bytes": 1959059,
+      "sha256": "04805040f5dd702d15eacbcd72b10d9988ed8734870811f23e73787108a3f915"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p056.jpg",
+      "output": "public/materials/books/A1.2/pages/p056.webp",
+      "source_bytes": 383574,
+      "output_bytes": 210994,
+      "sha256": "0ae47553042c74c3bec7fc475b9e03ce33cf03750c92aaadd6cce77c2bcebe89"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p057.jpg",
+      "output": "public/materials/books/A1.2/pages/p057.webp",
+      "source_bytes": 338554,
+      "output_bytes": 191002,
+      "sha256": "cf8b536296c920f2e072019c21da98604d391c1f9836d6cfddba4c2f3c150f7d"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p058.jpg",
+      "output": "public/materials/books/A1.2/pages/p058.webp",
+      "source_bytes": 320734,
+      "output_bytes": 172480,
+      "sha256": "f8031bd4572ac55b46871c5125f8e4abc93bb5cc37280b08387f80fdb470cdf5"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p059.jpg",
+      "output": "public/materials/books/A1.2/pages/p059.webp",
+      "source_bytes": 297997,
+      "output_bytes": 156284,
+      "sha256": "e12793e267085f4d341d1b3a83a166eb1ff764a7b84629abce8da35c3c15cadb"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p060.jpg",
+      "output": "public/materials/books/A1.2/pages/p060.webp",
+      "source_bytes": 287541,
+      "output_bytes": 156592,
+      "sha256": "fed3989079b704facb3f5f44a2e4f1a22b1724899d06562664acd95bb7f2b242"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p061.jpg",
+      "output": "public/materials/books/A1.2/pages/p061.webp",
+      "source_bytes": 246194,
+      "output_bytes": 129728,
+      "sha256": "dd40eabd7ea38b573a193b3711fc76a4f9cd436e20f994420164cb0effce15f0"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p062.jpg",
+      "output": "public/materials/books/A1.2/pages/p062.webp",
+      "source_bytes": 303083,
+      "output_bytes": 166536,
+      "sha256": "26eb03688d9feb9cc15d0ab88873db648f995709dcd89fe690b5be8d70c48c78"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p063.jpg",
+      "output": "public/materials/books/A1.2/pages/p063.webp",
+      "source_bytes": 284768,
+      "output_bytes": 144688,
+      "sha256": "4580aabb5bd57f5d7fe105e738db30991f1a767ef6d274e6c45cc9d6af894660"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p064.jpg",
+      "output": "public/materials/books/A1.2/pages/p064.webp",
+      "source_bytes": 250275,
+      "output_bytes": 138206,
+      "sha256": "84608569ed6ade557cd4f77eecbb011f6716e8ee1fd3b37c4e19a3acc19986f7"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p065.jpg",
+      "output": "public/materials/books/A1.2/pages/p065.webp",
+      "source_bytes": 301059,
+      "output_bytes": 163820,
+      "sha256": "c5a1e89d7af2fc466abfa5c3782df401065d400a5eba84e70f998726ff7dd9e5"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p066.jpg",
+      "output": "public/materials/books/A1.2/pages/p066.webp",
+      "source_bytes": 263245,
+      "output_bytes": 141506,
+      "sha256": "1180fe808508e5f2d7739d0e01042cdbdede23301c1c8b28f183cf83accb5317"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p067.jpg",
+      "output": "public/materials/books/A1.2/pages/p067.webp",
+      "source_bytes": 298478,
+      "output_bytes": 166404,
+      "sha256": "961677a6ceb36c234344c9bd76120b108e80a508e1fc24af2cb73245f99a1528"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p068.jpg",
+      "output": "public/materials/books/A1.2/pages/p068.webp",
+      "source_bytes": 344346,
+      "output_bytes": 188828,
+      "sha256": "e2fe410d3b32af8b5932803409f65039120ccb924865f63433f58706ab025b0a"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p069.jpg",
+      "output": "public/materials/books/A1.2/pages/p069.webp",
+      "source_bytes": 260571,
+      "output_bytes": 131554,
+      "sha256": "d974bf6a8072bf6268d6c17e7fa6985a5f80d52740709535c86f1b25d893957c"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_13.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_13.mp3",
+      "source_bytes": 868526,
+      "output_bytes": 868526,
+      "sha256": "5dae6233c6247e0f6cb7364b47a644ae07bd914186212f42b7d4669aac13719f"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_13_alt.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_13_alt.mp3",
+      "source_bytes": 753391,
+      "output_bytes": 753391,
+      "sha256": "c7cf4071af51b633ff41beba069e8471d81270cef7490432c2aadb2a24debed8"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_14.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_14.mp3",
+      "source_bytes": 593966,
+      "output_bytes": 593966,
+      "sha256": "2b88953edaa1c069080e8e599e4bb8be6b3f78d5c6d0f9f1908d073827e27643"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_15.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_15.mp3",
+      "source_bytes": 1201357,
+      "output_bytes": 1201357,
+      "sha256": "e3bff9caa3a1341a7af9136fb735653e056ffbb9b11b7d32870c0e7c98cfbf48"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-4",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_15_alt.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_15_alt.mp3",
+      "source_bytes": 1418866,
+      "output_bytes": 1418866,
+      "sha256": "b4dbe197fc6417bda57d51812ef354fe1efb5bd35ad47f884b3baa228d0014a4"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p070.jpg",
+      "output": "public/materials/books/A1.2/pages/p070.webp",
+      "source_bytes": 296555,
+      "output_bytes": 149554,
+      "sha256": "907da2d8cf5a91d18e2b0e4d899c9823dd48b0ffcab8b86fcbf3386b38d94a19"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p071.jpg",
+      "output": "public/materials/books/A1.2/pages/p071.webp",
+      "source_bytes": 336361,
+      "output_bytes": 185452,
+      "sha256": "d7497f5b9d76efa6b75fd7664e35faa039b710889c76ac37686033a217314974"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p072.jpg",
+      "output": "public/materials/books/A1.2/pages/p072.webp",
+      "source_bytes": 277609,
+      "output_bytes": 141936,
+      "sha256": "de4987dd6ffe5d1f1a3d818592264cfcd74f6f1d5c1547730cd2936f6bd29787"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p073.jpg",
+      "output": "public/materials/books/A1.2/pages/p073.webp",
+      "source_bytes": 301975,
+      "output_bytes": 161924,
+      "sha256": "15f5f7dccabae18d6d94a5ec0816c3790d26e038b578905484a7ac8fea37f78a"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p074.jpg",
+      "output": "public/materials/books/A1.2/pages/p074.webp",
+      "source_bytes": 305810,
+      "output_bytes": 163768,
+      "sha256": "ddb384d1ab2929cd8ebaf3a66ff23bc651568f5b3e0addc0c47210c684f6f20e"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p075.jpg",
+      "output": "public/materials/books/A1.2/pages/p075.webp",
+      "source_bytes": 278749,
+      "output_bytes": 148864,
+      "sha256": "904598ea18e7925dd13ddfa855a958ddc8e8b61f3c06860579544be22e48f928"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p076.jpg",
+      "output": "public/materials/books/A1.2/pages/p076.webp",
+      "source_bytes": 294152,
+      "output_bytes": 152676,
+      "sha256": "a249c7c3ab8717ec03699a006cab2ac1d7fe6983e1f8598b7ecedf864bbe95fb"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p077.jpg",
+      "output": "public/materials/books/A1.2/pages/p077.webp",
+      "source_bytes": 300328,
+      "output_bytes": 157032,
+      "sha256": "6e9a4bbcea545afae356308c372f080e0bc9fc2a9447c47935655af5c26e3319"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p078.jpg",
+      "output": "public/materials/books/A1.2/pages/p078.webp",
+      "source_bytes": 201402,
+      "output_bytes": 109390,
+      "sha256": "4ec9425226bb74f30615b0ec89ecc797794b440dbc76f44e46c1264b684915aa"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p079.jpg",
+      "output": "public/materials/books/A1.2/pages/p079.webp",
+      "source_bytes": 308937,
+      "output_bytes": 173540,
+      "sha256": "852d41037281040ec952501a9c7f151c0387e4b6d084cba420d93686fd9be0b1"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p080.jpg",
+      "output": "public/materials/books/A1.2/pages/p080.webp",
+      "source_bytes": 280451,
+      "output_bytes": 150444,
+      "sha256": "9d89ab5e5ca3446f3b30a101f48a556c4e76129027c87549fc375552b916f9b2"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p081.jpg",
+      "output": "public/materials/books/A1.2/pages/p081.webp",
+      "source_bytes": 304481,
+      "output_bytes": 161204,
+      "sha256": "295ba171f8d76aed4e1e18d21935441952bf53723186f6be2e1fa942be02b664"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p082.jpg",
+      "output": "public/materials/books/A1.2/pages/p082.webp",
+      "source_bytes": 211056,
+      "output_bytes": 107944,
+      "sha256": "456b2533f5122df626e5c8e64e4f1ffe44f21d4c73037d39f54bd5b5a5bb65e6"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p083.jpg",
+      "output": "public/materials/books/A1.2/pages/p083.webp",
+      "source_bytes": 251062,
+      "output_bytes": 123204,
+      "sha256": "3e27afa09fa99a9d01ab7879860af13391f8d057ffb090069f954766359ed158"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_16.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_16.mp3",
+      "source_bytes": 617282,
+      "output_bytes": 617282,
+      "sha256": "0959b97310e0fd3de5c3497e3cd82359df2453e038886807503952a3f98d649d"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_16_alt.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_16_alt.mp3",
+      "source_bytes": 863686,
+      "output_bytes": 863686,
+      "sha256": "f891fed7622992029492a92b3e166b4fe90a1a243520f938ac74d8e1a3d4c215"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-5",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_17.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_17.mp3",
+      "source_bytes": 799161,
+      "output_bytes": 799161,
+      "sha256": "35792308a892c925960c9baa6be19c811216cbbf200aa0b4feee5397ed839ae8"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p084.jpg",
+      "output": "public/materials/books/A1.2/pages/p084.webp",
+      "source_bytes": 338728,
+      "output_bytes": 179538,
+      "sha256": "bb6beb0c300d4a1eaed24f14ce9836fd20cd204e5b2177a9a27ad99b1042b879"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p085.jpg",
+      "output": "public/materials/books/A1.2/pages/p085.webp",
+      "source_bytes": 257179,
+      "output_bytes": 132366,
+      "sha256": "96e5077a8b6f222ffee2cc81e0838d60f405ce93e11fb57a15148171d2b83595"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p086.jpg",
+      "output": "public/materials/books/A1.2/pages/p086.webp",
+      "source_bytes": 318264,
+      "output_bytes": 178516,
+      "sha256": "8b75e26d5e622c194fc12866e2e7e0b90ebf596636e12e4b14eef3d361d90c7d"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p087.jpg",
+      "output": "public/materials/books/A1.2/pages/p087.webp",
+      "source_bytes": 211103,
+      "output_bytes": 108286,
+      "sha256": "6ace72ac5e1994a1556eeb11ef64cde88b15f43612bf083d0b5a6b9641f7e1be"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p088.jpg",
+      "output": "public/materials/books/A1.2/pages/p088.webp",
+      "source_bytes": 309582,
+      "output_bytes": 171270,
+      "sha256": "88bdccc9a51231f670bc2d14c2f18ecc3584d86e6e93ab9bf4f66eaf8a673ffd"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p089.jpg",
+      "output": "public/materials/books/A1.2/pages/p089.webp",
+      "source_bytes": 262774,
+      "output_bytes": 140692,
+      "sha256": "b1736e43367b570003925dc54fac46b2de5b4076efe2cbc2ebde86fe7cfc512b"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p090.jpg",
+      "output": "public/materials/books/A1.2/pages/p090.webp",
+      "source_bytes": 297496,
+      "output_bytes": 167760,
+      "sha256": "720c5515af59019b25c2e68e170246830082eec07d87b0b30462eabb0c72de6d"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p091.jpg",
+      "output": "public/materials/books/A1.2/pages/p091.webp",
+      "source_bytes": 251097,
+      "output_bytes": 129380,
+      "sha256": "0bdf6e4e74cb430673727ca68d046b9303fb9bb5830fc8fce00e3a540b44dbe4"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p092.jpg",
+      "output": "public/materials/books/A1.2/pages/p092.webp",
+      "source_bytes": 218093,
+      "output_bytes": 122814,
+      "sha256": "ca0e33d550cc4e93248712d34f0a29db1c118416a53d35c85a13ab99badaf15b"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p093.jpg",
+      "output": "public/materials/books/A1.2/pages/p093.webp",
+      "source_bytes": 269345,
+      "output_bytes": 145442,
+      "sha256": "2fca748f20687ab9612d5dcba0a31750a54c87ec315a47c3d2ae7876a83e5970"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p094.jpg",
+      "output": "public/materials/books/A1.2/pages/p094.webp",
+      "source_bytes": 299768,
+      "output_bytes": 163632,
+      "sha256": "168cab52f166b7a8852bfb41cd944076763ae1029f5f7917ad44a8b4d97826df"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p095.jpg",
+      "output": "public/materials/books/A1.2/pages/p095.webp",
+      "source_bytes": 289072,
+      "output_bytes": 144500,
+      "sha256": "45c6bd9ae4240105ad402c4e4e215bd572edc8834586444d8731c4f1651618cc"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p096.jpg",
+      "output": "public/materials/books/A1.2/pages/p096.webp",
+      "source_bytes": 243128,
+      "output_bytes": 123638,
+      "sha256": "14bf0aadeb55da0667f42b81d666fcdd95ceb94e3c58632f646fb17bbc8b2251"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "page",
+      "source_member": "A1.2_TABS_V1/pages/p097.jpg",
+      "output": "public/materials/books/A1.2/pages/p097.webp",
+      "source_bytes": 224657,
+      "output_bytes": 105768,
+      "sha256": "30ba401482926fb603fbf0152c08314023cee1a8517a9e678eba35138eb054f0"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_18.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_18.mp3",
+      "source_bytes": 810897,
+      "output_bytes": 810897,
+      "sha256": "db5fc6ea9ca13e643b32c7a85e344fa44716486995203303a6d2591b9fd0fe0d"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_19.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_19.mp3",
+      "source_bytes": 983403,
+      "output_bytes": 983403,
+      "sha256": "253ef98bb964e75e5eb0379cac0588ca7058042081a0711350092722bc82c8c9"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_20.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_20.mp3",
+      "source_bytes": 861900,
+      "output_bytes": 861900,
+      "sha256": "e03eb17a59925d33c1f746742b021eee136ea37d153d343c76140418be6b0b89"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_21.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_21.mp3",
+      "source_bytes": 572282,
+      "output_bytes": 572282,
+      "sha256": "74bd0386b0a020751cdef3b388921fe41d8f666a3a0b46ab551fce39ccfc71eb"
+    },
+    {
+      "stage": "A1.2",
+      "lesson": "A1-6",
+      "kind": "audio",
+      "source_member": "A1.2_TABS_V1/audio/auint_plus_1_21_alt.mp3",
+      "output": "public/materials/books/A1.2/audio/auint_plus_1_21_alt.mp3",
+      "source_bytes": 700886,
+      "output_bytes": 700886,
+      "sha256": "1b8bbb674237ff0ff28b8f8b6e509187a48a1680a9cacaa815b7c5dc8b45eb45"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p098.jpg",
+      "output": "public/materials/books/A1.3/pages/p098.webp",
+      "source_bytes": 380574,
+      "output_bytes": 194572,
+      "sha256": "48fa560fbd91dc554b49ca2ffb9017065d1e4bdaedc019f39ef0adcbac953b8c"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p099.jpg",
+      "output": "public/materials/books/A1.3/pages/p099.webp",
+      "source_bytes": 382421,
+      "output_bytes": 213690,
+      "sha256": "462809f4787365abd27a89f330af783d7dbb6639f9dd7aab8d1e18bf1d4c94cd"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p100.jpg",
+      "output": "public/materials/books/A1.3/pages/p100.webp",
+      "source_bytes": 278586,
+      "output_bytes": 142938,
+      "sha256": "22cb5f0b3951eb11363cb5ecf01f4d528b54020454c61a5fb8c86a9f6755844e"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p101.jpg",
+      "output": "public/materials/books/A1.3/pages/p101.webp",
+      "source_bytes": 229209,
+      "output_bytes": 119554,
+      "sha256": "3fcfc6181ac6ddb496d901d8ff4af912ba826a6288ab6f9564abd7cef66f8c6e"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p102.jpg",
+      "output": "public/materials/books/A1.3/pages/p102.webp",
+      "source_bytes": 274743,
+      "output_bytes": 145220,
+      "sha256": "8bcd9534270ab5d130c4bb5aeaef24b6d4ea7bb3dd0f2ae7e9ccd6136ea575f4"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p103.jpg",
+      "output": "public/materials/books/A1.3/pages/p103.webp",
+      "source_bytes": 271961,
+      "output_bytes": 142928,
+      "sha256": "15f612602492f8d8589668e09cc41b7da06966d91823e24a16ad52541e3ed3c3"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p104.jpg",
+      "output": "public/materials/books/A1.3/pages/p104.webp",
+      "source_bytes": 255069,
+      "output_bytes": 133466,
+      "sha256": "88461ff87fb070f65312bf1c970eed1f11fd03601a46f271b748403562ec77a8"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p105.jpg",
+      "output": "public/materials/books/A1.3/pages/p105.webp",
+      "source_bytes": 341079,
+      "output_bytes": 183258,
+      "sha256": "76ddae8a4e7d13621dabf26cf029a0e5749d9a8906bf4fd38ee84ba75459a14a"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p106.jpg",
+      "output": "public/materials/books/A1.3/pages/p106.webp",
+      "source_bytes": 240882,
+      "output_bytes": 128810,
+      "sha256": "58cc0fefb8b3cbd964088e2bd0b5e9aef8299f1ec421e44ec00baa21e5a0f4a8"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p107.jpg",
+      "output": "public/materials/books/A1.3/pages/p107.webp",
+      "source_bytes": 301695,
+      "output_bytes": 163622,
+      "sha256": "2b33312764535ad9e4cd1b9280d209eff28b86ef1abda1978cfb01c30087b703"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p108.jpg",
+      "output": "public/materials/books/A1.3/pages/p108.webp",
+      "source_bytes": 222311,
+      "output_bytes": 112708,
+      "sha256": "5c5662c5b537481a5f34c46a549f16c423ef9014786b440acb93bbb6fb617476"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p109.jpg",
+      "output": "public/materials/books/A1.3/pages/p109.webp",
+      "source_bytes": 276149,
+      "output_bytes": 143754,
+      "sha256": "a47b0e31c8bd5c7720f8f1c3c831137568279fa2c9fb355bae1b2457d491ac48"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p110.jpg",
+      "output": "public/materials/books/A1.3/pages/p110.webp",
+      "source_bytes": 286837,
+      "output_bytes": 152484,
+      "sha256": "caa2ece90ad561776c225885b2dc599353307652f40a68adf4330844f2bc9b10"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p111.jpg",
+      "output": "public/materials/books/A1.3/pages/p111.webp",
+      "source_bytes": 229059,
+      "output_bytes": 106534,
+      "sha256": "369e0e23299cae8737b9890e96985c37362ee447efa635e093413b792aa5d1b2"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_22.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_22.mp3",
+      "source_bytes": 1432199,
+      "output_bytes": 1432199,
+      "sha256": "8bcc4947e20cb0b52cdd5daa324f7bd8ab55a0c6ebe3f4c83621be0b7b940ef2"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_22_alt.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_22_alt.mp3",
+      "source_bytes": 1482625,
+      "output_bytes": 1482625,
+      "sha256": "c8d14ac9016bcf4d8e31f65c0f5532c33f6cb3dd08b6491935ba80095056d47f"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_23.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_23.mp3",
+      "source_bytes": 356658,
+      "output_bytes": 356658,
+      "sha256": "9aad9489b5a3d0c4dbcf3355311703d1a371326b5f1c199936c37dfff5e24432"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_24.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_24.mp3",
+      "source_bytes": 1194779,
+      "output_bytes": 1194779,
+      "sha256": "30c2fe06d174d8be2f101fa921d252a15717e77a3201fbc35b36244e11baba81"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_25.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_25.mp3",
+      "source_bytes": 1301871,
+      "output_bytes": 1301871,
+      "sha256": "7f0950032539318805ec64ca16a737acd2ca6a6ef37fe3c4824e6867d3bd2096"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_25_alt.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_25_alt.mp3",
+      "source_bytes": 1833997,
+      "output_bytes": 1833997,
+      "sha256": "df142ee759e6545f2f443ecd6257b856f421ce8710ca6b5b58142784e51792ec"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-7",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_26.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_26.mp3",
+      "source_bytes": 2183840,
+      "output_bytes": 2183840,
+      "sha256": "89bd6baadf1839e7fed3c133a7853964175bb7778d18d99053bae503c391dce2"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p112.jpg",
+      "output": "public/materials/books/A1.3/pages/p112.webp",
+      "source_bytes": 485814,
+      "output_bytes": 288222,
+      "sha256": "59b9593b68ca75f4bcd0ebaf1fe0e1394fd0dddeaba337c4dddf58d145573705"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p113.jpg",
+      "output": "public/materials/books/A1.3/pages/p113.webp",
+      "source_bytes": 439252,
+      "output_bytes": 268280,
+      "sha256": "6e1dfebd3300d7601a2dc79616cdb78b4766594f935dc652338cdb36b35e4bf4"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p114.jpg",
+      "output": "public/materials/books/A1.3/pages/p114.webp",
+      "source_bytes": 419720,
+      "output_bytes": 251752,
+      "sha256": "f3d907db4015b1d0687c705705eadfab17f4e7382f2da74ab94a661186c8760d"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p115.jpg",
+      "output": "public/materials/books/A1.3/pages/p115.webp",
+      "source_bytes": 354558,
+      "output_bytes": 199994,
+      "sha256": "86d20ab946e466a3f9c26904387647aaf666d9f9c6b80afa7f698bbe76419deb"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p116.jpg",
+      "output": "public/materials/books/A1.3/pages/p116.webp",
+      "source_bytes": 409527,
+      "output_bytes": 249258,
+      "sha256": "67850b4cc9f45a220ff08de30efdef2f2e1dff8193797dde1b78638a9f85f6b1"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p117.jpg",
+      "output": "public/materials/books/A1.3/pages/p117.webp",
+      "source_bytes": 283893,
+      "output_bytes": 160864,
+      "sha256": "2cabeebe4435609d6d8ab0b08e77c51f3a559cbc4ee9b796f8671533e1f55d06"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p118.jpg",
+      "output": "public/materials/books/A1.3/pages/p118.webp",
+      "source_bytes": 292360,
+      "output_bytes": 152016,
+      "sha256": "63991688b31e5e78f2073f2c1a367e2259d8b37adce10f884acca186df54f095"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p119.jpg",
+      "output": "public/materials/books/A1.3/pages/p119.webp",
+      "source_bytes": 246479,
+      "output_bytes": 126632,
+      "sha256": "149ae48033bf87df29c5cf2b2f05c4a43b58987bbf96f7b7f1cf8581ece31ef0"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p120.jpg",
+      "output": "public/materials/books/A1.3/pages/p120.webp",
+      "source_bytes": 257793,
+      "output_bytes": 126258,
+      "sha256": "ae4a3f64cc201b7e2f12bd534cd0e44f8a2de769b5b77661b3d7ff77eecadd3d"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p121.jpg",
+      "output": "public/materials/books/A1.3/pages/p121.webp",
+      "source_bytes": 275496,
+      "output_bytes": 151642,
+      "sha256": "af5bb0533f7b282aebedb8a74a1c29f8b2573f319603bf8f0b1c53f59d0d813f"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p122.jpg",
+      "output": "public/materials/books/A1.3/pages/p122.webp",
+      "source_bytes": 393117,
+      "output_bytes": 223270,
+      "sha256": "0a146a9b9c644b636b8b1149eccc1dc6fd00917ebdbed7d6a4d6cc9582a23f16"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p123.jpg",
+      "output": "public/materials/books/A1.3/pages/p123.webp",
+      "source_bytes": 328649,
+      "output_bytes": 180902,
+      "sha256": "eed9bd7519c1be72b112df92f2f4fd9171e5a70db1dc8144e8749c27787847b9"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p124.jpg",
+      "output": "public/materials/books/A1.3/pages/p124.webp",
+      "source_bytes": 340096,
+      "output_bytes": 184218,
+      "sha256": "fc28fe0de81aee73b8865dcee5a06d1a97d855305c70830f9d52ee5ad8e01054"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p125.jpg",
+      "output": "public/materials/books/A1.3/pages/p125.webp",
+      "source_bytes": 306984,
+      "output_bytes": 166828,
+      "sha256": "4515dbf4ec4310a895f262b397a73889468dca68de6b55a0d128f414915ff82c"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_27.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_27.mp3",
+      "source_bytes": 1058785,
+      "output_bytes": 1058785,
+      "sha256": "8842f91426f24a284e84a203013ca183aef3496d16476cc0b0d556acfbba8997"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_27_alt.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_27_alt.mp3",
+      "source_bytes": 1296719,
+      "output_bytes": 1296719,
+      "sha256": "4f02a141bd49ba45685bd4b7e6da6e236cdb8586f98670f034435edaf355e4bf"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_28.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_28.mp3",
+      "source_bytes": 1478691,
+      "output_bytes": 1478691,
+      "sha256": "03a46dd9fb2773afac31d875cef35c3ada6f9950891426dd753c1ea146d06df1"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_29.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_29.mp3",
+      "source_bytes": 1271501,
+      "output_bytes": 1271501,
+      "sha256": "5fa8c3d9d535c5f41f6f6698a7847984d8b04fc197c8111bbd2bbc75ff8b881a"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-8",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_29_alt.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_29_alt.mp3",
+      "source_bytes": 1360287,
+      "output_bytes": 1360287,
+      "sha256": "1dfe305b9355e7c44db934f57f02cbeeaab95715ce4367b48223d426421208f0"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p126.jpg",
+      "output": "public/materials/books/A1.3/pages/p126.webp",
+      "source_bytes": 374561,
+      "output_bytes": 193906,
+      "sha256": "b906b562d59c2f02188d421d8922ea6feec8da7d9daa124e2ebb0c28fbcce922"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p127.jpg",
+      "output": "public/materials/books/A1.3/pages/p127.webp",
+      "source_bytes": 311382,
+      "output_bytes": 166066,
+      "sha256": "f06551fbbdd54e026fa9d51c730557e94dcd2bdd46135929ba21be7b91cd10e1"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p128.jpg",
+      "output": "public/materials/books/A1.3/pages/p128.webp",
+      "source_bytes": 271860,
+      "output_bytes": 142288,
+      "sha256": "6fa499cc409c51c6314541ed00c12e7670cbc4c63e83c344b0784abafa3b92ad"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p129.jpg",
+      "output": "public/materials/books/A1.3/pages/p129.webp",
+      "source_bytes": 367794,
+      "output_bytes": 210918,
+      "sha256": "0b14bcc0c4aa9fa54a3f77940c04ae5a3392d606e3963405a8a16bcd607a9f9f"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p130.jpg",
+      "output": "public/materials/books/A1.3/pages/p130.webp",
+      "source_bytes": 257196,
+      "output_bytes": 155336,
+      "sha256": "d9e7c80f82044bda89a3c6d4df8136a8857eadf3dbca2985d3e2ff82343c9e7b"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p131.jpg",
+      "output": "public/materials/books/A1.3/pages/p131.webp",
+      "source_bytes": 313508,
+      "output_bytes": 172816,
+      "sha256": "2b6308471d83638121c3d787d4bc1d79136db1b32bb1dbc504d420d49cbdcc77"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p132.jpg",
+      "output": "public/materials/books/A1.3/pages/p132.webp",
+      "source_bytes": 256476,
+      "output_bytes": 140752,
+      "sha256": "1b7ab8176611203d6702193ecf2b87a46f462af90a0c416a5159cc7f5871fc49"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p133.jpg",
+      "output": "public/materials/books/A1.3/pages/p133.webp",
+      "source_bytes": 221890,
+      "output_bytes": 106886,
+      "sha256": "3e0b66358b05de2ea39ff3eb6574523c449fae2ff21c4cb35c88fbdc59dc6698"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p134.jpg",
+      "output": "public/materials/books/A1.3/pages/p134.webp",
+      "source_bytes": 251809,
+      "output_bytes": 143844,
+      "sha256": "3fb005132c1940d33869024d853420cf8ff42038636027455cef1d14fba0b158"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p135.jpg",
+      "output": "public/materials/books/A1.3/pages/p135.webp",
+      "source_bytes": 281563,
+      "output_bytes": 152754,
+      "sha256": "d9f1fe2a06900250287c20552636f75114bf76cf1f3fb399761ffbbf19fe64d3"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p136.jpg",
+      "output": "public/materials/books/A1.3/pages/p136.webp",
+      "source_bytes": 284573,
+      "output_bytes": 156462,
+      "sha256": "7e633bdaa28173c3f72bcbe3446dcd1be5ab11f3e3a4f628d3c862ad719e9928"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p137.jpg",
+      "output": "public/materials/books/A1.3/pages/p137.webp",
+      "source_bytes": 296762,
+      "output_bytes": 165228,
+      "sha256": "1d89e70943cb1f82606c1a30fa199cec9ec9d38bcd8e55a71c2902ed3e0fed2d"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p138.jpg",
+      "output": "public/materials/books/A1.3/pages/p138.webp",
+      "source_bytes": 371148,
+      "output_bytes": 211970,
+      "sha256": "4e03a56ca586defc4eccd9f8b295d6eebfd5063ebf535cf2aa434ac99686ecb3"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "page",
+      "source_member": "A1.3_TABS_V1/pages/p139.jpg",
+      "output": "public/materials/books/A1.3/pages/p139.webp",
+      "source_bytes": 187771,
+      "output_bytes": 85998,
+      "sha256": "b0195733c8e6966c1b26d9af01f62e9b93e3b259576dfaca961f234d91b443ae"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_30.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_30.mp3",
+      "source_bytes": 1646806,
+      "output_bytes": 1646806,
+      "sha256": "0715308e8e8c31d3c632bcee263f823a383d8d2f778e52e9cdee703d7438b483"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_31.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_31.mp3",
+      "source_bytes": 1649067,
+      "output_bytes": 1649067,
+      "sha256": "24f7f0ee303e56d3febfce8edfe4dc5d61ee07504b9ff9780bc426108d2314a3"
+    },
+    {
+      "stage": "A1.3",
+      "lesson": "A1-9",
+      "kind": "audio",
+      "source_member": "A1.3_TABS_V1/audio/auint_plus_1_32.mp3",
+      "output": "public/materials/books/A1.3/audio/auint_plus_1_32.mp3",
+      "source_bytes": 559997,
+      "output_bytes": 559997,
+      "sha256": "4a09b1e9194cc4031bab6e7f4422805241697643c63fb0113b0994ccedae764d"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p010.jpg",
+      "output": "public/materials/books/A2.1/pages/p010.webp",
+      "source_bytes": 385386,
+      "output_bytes": 191470,
+      "sha256": "af62d5b67ab858e7041699fea0c4877963f89b69c68c19feb901b68d78638266"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p011.jpg",
+      "output": "public/materials/books/A2.1/pages/p011.webp",
+      "source_bytes": 402125,
+      "output_bytes": 217952,
+      "sha256": "a41a8a14e2fba83555b17abe0a70b9c6b0afc5345bf96dedfce7c205a1b14488"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p012.jpg",
+      "output": "public/materials/books/A2.1/pages/p012.webp",
+      "source_bytes": 230294,
+      "output_bytes": 117798,
+      "sha256": "316cec083097c6fdfdba2296c5e46e5fa723ac6de9d319c79215ff2fac5bea0e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p013.jpg",
+      "output": "public/materials/books/A2.1/pages/p013.webp",
+      "source_bytes": 362855,
+      "output_bytes": 190922,
+      "sha256": "65bfb2744bdcedbf5e4e00f072f094139b54adf67635d0c4d59a4c72469371d6"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p014.jpg",
+      "output": "public/materials/books/A2.1/pages/p014.webp",
+      "source_bytes": 277483,
+      "output_bytes": 209572,
+      "sha256": "c446d1e3f33f43a71139f8324f02ade700c35ca849ea04bf91039616fa4c279e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p015.jpg",
+      "output": "public/materials/books/A2.1/pages/p015.webp",
+      "source_bytes": 197808,
+      "output_bytes": 102288,
+      "sha256": "f6488352ab5bd97f79cb8c7e6f8c101cfa7ff43ece5f5e1ec0913b17c0e3301f"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p016.jpg",
+      "output": "public/materials/books/A2.1/pages/p016.webp",
+      "source_bytes": 357687,
+      "output_bytes": 192690,
+      "sha256": "b2b84ae8e9b8fddb2b10ffbb90ff724e981c64e6fb5864ed0a5f67718d620e78"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p017.jpg",
+      "output": "public/materials/books/A2.1/pages/p017.webp",
+      "source_bytes": 244669,
+      "output_bytes": 137644,
+      "sha256": "2a560c348e482486d3f7b9a856fee6402e290e1fabd58525095dbe4dcce0406a"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p018.jpg",
+      "output": "public/materials/books/A2.1/pages/p018.webp",
+      "source_bytes": 199798,
+      "output_bytes": 92188,
+      "sha256": "bfbe8906bd70ecb7c0e27f5c756f63fa5ef31221c877fec818d6c3e22659f226"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p019.jpg",
+      "output": "public/materials/books/A2.1/pages/p019.webp",
+      "source_bytes": 288343,
+      "output_bytes": 147994,
+      "sha256": "27354baca3edaf5e766efc1403aed048e7502319d8f33e061fdcf8f6db7a22c0"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p020.jpg",
+      "output": "public/materials/books/A2.1/pages/p020.webp",
+      "source_bytes": 226333,
+      "output_bytes": 120150,
+      "sha256": "549186e86d5c3734c93d97a7c92143f82763804b2e0071a5fdbff43aa8d3cec7"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p021.jpg",
+      "output": "public/materials/books/A2.1/pages/p021.webp",
+      "source_bytes": 286168,
+      "output_bytes": 162918,
+      "sha256": "cf23508b8ba00e20cd4a2a02354ed0e35977acb8a59e295fd214c062028e4a13"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p022.jpg",
+      "output": "public/materials/books/A2.1/pages/p022.webp",
+      "source_bytes": 223267,
+      "output_bytes": 115194,
+      "sha256": "74138e33c1c995d9b7acf4b11510b756002c05a18293419fad1e022a8db4b019"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "page",
+      "source_member": "A2.1/pages/p023.jpg",
+      "output": "public/materials/books/A2.1/pages/p023.webp",
+      "source_bytes": 183383,
+      "output_bytes": 93022,
+      "sha256": "6ceb5e78212ecb5efb4e6afbc70bd989ec712f245b7ca285c5dccb67e74be598"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_01.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_01.mp3",
+      "source_bytes": 1616106,
+      "output_bytes": 1616106,
+      "sha256": "9fbcebab6c8aaa2c7b8ef528077730bd7f23e4ed55b8443a57e90af5e2e6af45"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_02.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_02.mp3",
+      "source_bytes": 1853106,
+      "output_bytes": 1853106,
+      "sha256": "9c21549c795edcad7cdd6cb6df3b5a96c8fc0cbc4e039798f3a63ad411e1a3a9"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_02_alt.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_02_alt.mp3",
+      "source_bytes": 2004550,
+      "output_bytes": 2004550,
+      "sha256": "9df1df557950a788f36b51bd73163ca65ab195d00fc1414d6ad58f42ef004584"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_03.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_03.mp3",
+      "source_bytes": 416682,
+      "output_bytes": 416682,
+      "sha256": "6ae46b5b55220e3f0d368a3c2d6cd9298c0c7f37aeb4969dbdd604c61bcc4ec2"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_04.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_04.mp3",
+      "source_bytes": 684498,
+      "output_bytes": 684498,
+      "sha256": "26e8613a0c7a3b0945cf9fd99d507437337a261aafd2de87040d37e15a1dff29"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-1",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_05.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_05.mp3",
+      "source_bytes": 1632378,
+      "output_bytes": 1632378,
+      "sha256": "7052b3912464dc157e49b55b838fbd4b49185b9b19e944f4f7cf8781af7d65fb"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p024.jpg",
+      "output": "public/materials/books/A2.1/pages/p024.webp",
+      "source_bytes": 224056,
+      "output_bytes": 98538,
+      "sha256": "e42d89c3dfafb5ecd39dd4d5f15ae25e8ca38a7c95e47fdd0c473c25881017c3"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p025.jpg",
+      "output": "public/materials/books/A2.1/pages/p025.webp",
+      "source_bytes": 316861,
+      "output_bytes": 166316,
+      "sha256": "cee8083e5dff2a59006ba3b7216f5dc3578ee7a03265c4d113dd56d8dc777314"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p026.jpg",
+      "output": "public/materials/books/A2.1/pages/p026.webp",
+      "source_bytes": 278449,
+      "output_bytes": 146054,
+      "sha256": "e256e3c61797a284449d6cda12ceaba35d2d729d2046e13cebe5ca9cbd931463"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p027.jpg",
+      "output": "public/materials/books/A2.1/pages/p027.webp",
+      "source_bytes": 331763,
+      "output_bytes": 195646,
+      "sha256": "e64756155ae6ec8ba5f1016dceecfede2c769726aa4682ec194c644198d28186"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p028.jpg",
+      "output": "public/materials/books/A2.1/pages/p028.webp",
+      "source_bytes": 350924,
+      "output_bytes": 197510,
+      "sha256": "5d7166e124977006bdcfde22a4770886d84888ac2902c13e67c49013d7068b4a"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p029.jpg",
+      "output": "public/materials/books/A2.1/pages/p029.webp",
+      "source_bytes": 218916,
+      "output_bytes": 121196,
+      "sha256": "27ec8bff6725d8a1a4dceb2951726fac484a57c625b290bab6204b3d7f3eff53"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p030.jpg",
+      "output": "public/materials/books/A2.1/pages/p030.webp",
+      "source_bytes": 291751,
+      "output_bytes": 159194,
+      "sha256": "4c523101b005dff7ee6d9d27641a2490bd5f1eba1e4177f627dd4ffdde7f0d3a"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p031.jpg",
+      "output": "public/materials/books/A2.1/pages/p031.webp",
+      "source_bytes": 262060,
+      "output_bytes": 155324,
+      "sha256": "b7eddd6eb7e20c1141b2dd18dd0262bcafc866a9cc7d0b7d3dfb086e34c8e020"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p032.jpg",
+      "output": "public/materials/books/A2.1/pages/p032.webp",
+      "source_bytes": 218822,
+      "output_bytes": 107254,
+      "sha256": "e3291a29cf8cb3a214814f1d6d4902a374edca7de40052b233c9336176da1c2e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p033.jpg",
+      "output": "public/materials/books/A2.1/pages/p033.webp",
+      "source_bytes": 287856,
+      "output_bytes": 161008,
+      "sha256": "8f8ab7ccb2476bc6708380e6e2d5190df636c74a4ac30ba386ef676750a86da7"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p034.jpg",
+      "output": "public/materials/books/A2.1/pages/p034.webp",
+      "source_bytes": 310447,
+      "output_bytes": 162148,
+      "sha256": "3f981ecab3ab6a02121e72b96f8ef4b31b14725868c0cf7b647c01fc9e2ca427"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p035.jpg",
+      "output": "public/materials/books/A2.1/pages/p035.webp",
+      "source_bytes": 294201,
+      "output_bytes": 148440,
+      "sha256": "0a7ec80f86017884ee937e3a2a5349fe1f946f2e9e48faba87bc393b2723f05c"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p036.jpg",
+      "output": "public/materials/books/A2.1/pages/p036.webp",
+      "source_bytes": 276145,
+      "output_bytes": 151250,
+      "sha256": "a5c7b59b089b59b32205f09790bf29ace7e67f01c6df4b68f8a66836187751b1"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "page",
+      "source_member": "A2.1/pages/p037.jpg",
+      "output": "public/materials/books/A2.1/pages/p037.webp",
+      "source_bytes": 213993,
+      "output_bytes": 106574,
+      "sha256": "541d7fc7f220e1ab389736cd19db96a7dbaf7aedfc40cf154467c5cdb4424046"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_06.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_06.mp3",
+      "source_bytes": 2763018,
+      "output_bytes": 2763018,
+      "sha256": "8a4fbc6bab2ebbb07e0e0db0b1292878ce0651f43c142f4299e322b650742f0c"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_07.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_07.mp3",
+      "source_bytes": 1593810,
+      "output_bytes": 1593810,
+      "sha256": "ac9f23bdcddc94bb90ef3eb1b9bb3ae03ca19344788684fbd6d849bc1d93f1c2"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-2",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_07_alt.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_07_alt.mp3",
+      "source_bytes": 1162654,
+      "output_bytes": 1162654,
+      "sha256": "495d0b17b1ffcf81e1f0de18610009659b50f26f5e2f7f4841b437eebd274812"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p038.jpg",
+      "output": "public/materials/books/A2.1/pages/p038.webp",
+      "source_bytes": 225748,
+      "output_bytes": 85772,
+      "sha256": "c72d694659df5d961a02015c3f22634620de4b200d52d385abf30886fdf8b97d"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p039.jpg",
+      "output": "public/materials/books/A2.1/pages/p039.webp",
+      "source_bytes": 247545,
+      "output_bytes": 123162,
+      "sha256": "2dbc934b2343be8cfcc2ec17be412ab0f04f63a17f722e1db343836c1eabfff9"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p040.jpg",
+      "output": "public/materials/books/A2.1/pages/p040.webp",
+      "source_bytes": 329195,
+      "output_bytes": 194022,
+      "sha256": "68e908933acfb5e94d1a39265d4c14e22a2eaf902a0d186cfa05a5bfe2238efe"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p041.jpg",
+      "output": "public/materials/books/A2.1/pages/p041.webp",
+      "source_bytes": 370225,
+      "output_bytes": 211192,
+      "sha256": "4d3a7d688d3c0fe221e40315f8be9a14ea5f8dd25ea94a39da8bf7cfa2d94c22"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p042.jpg",
+      "output": "public/materials/books/A2.1/pages/p042.webp",
+      "source_bytes": 258746,
+      "output_bytes": 139520,
+      "sha256": "fdfe446b60af9e986f441f0bd0ac4de1af7fabbc80f7ae78beec73014789a406"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p043.jpg",
+      "output": "public/materials/books/A2.1/pages/p043.webp",
+      "source_bytes": 269371,
+      "output_bytes": 139726,
+      "sha256": "b4e268bb21046895447a2d3fc58c9ffbd7e85e567d3c48a2d64b3e1a4c7fc2ed"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p044.jpg",
+      "output": "public/materials/books/A2.1/pages/p044.webp",
+      "source_bytes": 296784,
+      "output_bytes": 167634,
+      "sha256": "e265583817b8282e43c5465335ed6da151bf9e0b9907bb58a5dcba35c3143883"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p045.jpg",
+      "output": "public/materials/books/A2.1/pages/p045.webp",
+      "source_bytes": 347976,
+      "output_bytes": 199986,
+      "sha256": "d5eb45ecb93ba596cfa9f086973df80208e9ac0919573b57328b53d217c1c9c4"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p046.jpg",
+      "output": "public/materials/books/A2.1/pages/p046.webp",
+      "source_bytes": 204965,
+      "output_bytes": 109678,
+      "sha256": "9c57e626f0889d2d5698341f377dca296690d397ce3b6a4ed43ac1ee14172294"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p047.jpg",
+      "output": "public/materials/books/A2.1/pages/p047.webp",
+      "source_bytes": 257822,
+      "output_bytes": 137482,
+      "sha256": "e8370784198631f9df285b4e382e962037183bb32f6491dcb97ec997b4b1ba58"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p048.jpg",
+      "output": "public/materials/books/A2.1/pages/p048.webp",
+      "source_bytes": 268081,
+      "output_bytes": 150804,
+      "sha256": "e42971b1d15e675c72f4e97ffa566c8a1c65e3f6475af58d7239ee076e4d298e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p049.jpg",
+      "output": "public/materials/books/A2.1/pages/p049.webp",
+      "source_bytes": 259720,
+      "output_bytes": 142602,
+      "sha256": "031e09079233915d7ca4e20fd913806623d54abd92659c1999c50dc77c842369"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p050.jpg",
+      "output": "public/materials/books/A2.1/pages/p050.webp",
+      "source_bytes": 240622,
+      "output_bytes": 126430,
+      "sha256": "c6378a3c6d8520d261e05c5bdc888f4580e55863c64e46977e3dcb2b64116220"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "page",
+      "source_member": "A2.1/pages/p051.jpg",
+      "output": "public/materials/books/A2.1/pages/p051.webp",
+      "source_bytes": 246966,
+      "output_bytes": 129350,
+      "sha256": "9cac9081b0dc07bf1cd143bd9b663663b78880dfa3246ebcdd60128e640f33b8"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_08.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_08.mp3",
+      "source_bytes": 1860115,
+      "output_bytes": 1860115,
+      "sha256": "91783426e5715254cbe7dd1c032ed1b023a5644167fdf14da9f75f08f0617820"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_08_alt.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_08_alt.mp3",
+      "source_bytes": 1659311,
+      "output_bytes": 1659311,
+      "sha256": "2120e8bc07b4fdc809c7e9d6755e9d3681739518fa20a4ac746f50aec3c029a4"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-3",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_09.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_09.mp3",
+      "source_bytes": 1034275,
+      "output_bytes": 1034275,
+      "sha256": "e84336a47ab04e7e3d140bb642786c42cc6107450131d03254fd48fa40fd01da"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p052.jpg",
+      "output": "public/materials/books/A2.1/pages/p052.webp",
+      "source_bytes": 360702,
+      "output_bytes": 199304,
+      "sha256": "323a2cce522f12aeaa8f64cf0b0cb6019827e717efd20690b0425ec04a2cde4b"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p053.jpg",
+      "output": "public/materials/books/A2.1/pages/p053.webp",
+      "source_bytes": 301628,
+      "output_bytes": 166270,
+      "sha256": "a80dec2e1b23d9bdfa9759a3efb1bdeadaa547dce00ed747a806bf864ba14dcb"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p054.jpg",
+      "output": "public/materials/books/A2.1/pages/p054.webp",
+      "source_bytes": 312458,
+      "output_bytes": 170370,
+      "sha256": "85961fb8e9d8f67d0a0f1d5c648a9c349790ddaeea883208e855df355171ccd0"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p055.jpg",
+      "output": "public/materials/books/A2.1/pages/p055.webp",
+      "source_bytes": 246497,
+      "output_bytes": 132742,
+      "sha256": "ec1d4a813b9f55b4d7261b576cae3453d9536c3997f2385f087713d09203388d"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p056.jpg",
+      "output": "public/materials/books/A2.1/pages/p056.webp",
+      "source_bytes": 224435,
+      "output_bytes": 109034,
+      "sha256": "f8ac0fd3672ac89336f3db168caa6284f847628485032c36976ca9fbe9b97bcd"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p057.jpg",
+      "output": "public/materials/books/A2.1/pages/p057.webp",
+      "source_bytes": 252966,
+      "output_bytes": 136370,
+      "sha256": "3154099f92e0e45835bc602cd169f35968aa06e8d5d3d8f543707f000e43893d"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p058.jpg",
+      "output": "public/materials/books/A2.1/pages/p058.webp",
+      "source_bytes": 278539,
+      "output_bytes": 157770,
+      "sha256": "c9d187c61d4a7fef587715c92a9397583fee6c42345fe22aef1f63c4a6b1516e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p059.jpg",
+      "output": "public/materials/books/A2.1/pages/p059.webp",
+      "source_bytes": 224494,
+      "output_bytes": 118980,
+      "sha256": "acf273583b320f34cc25157ac051fa1e0d4151b2f3b86ff74a066134a0128e8e"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p060.jpg",
+      "output": "public/materials/books/A2.1/pages/p060.webp",
+      "source_bytes": 268161,
+      "output_bytes": 128864,
+      "sha256": "8b47b77cd540fd76f37f8f33eadef7c4904b02aaf6aef7baf4a26d4ee1a49730"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p061.jpg",
+      "output": "public/materials/books/A2.1/pages/p061.webp",
+      "source_bytes": 284566,
+      "output_bytes": 143580,
+      "sha256": "2f953c93cd74040ce6785b46d1508fa984df1014f957717516e28885904787e8"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p062.jpg",
+      "output": "public/materials/books/A2.1/pages/p062.webp",
+      "source_bytes": 237106,
+      "output_bytes": 128712,
+      "sha256": "7d19a1dbd0aeec985d029a37be8b6a2c773114a11a39b8af3930cf135a882d89"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p063.jpg",
+      "output": "public/materials/books/A2.1/pages/p063.webp",
+      "source_bytes": 220217,
+      "output_bytes": 121140,
+      "sha256": "5895b9ec8b1e29e686f07b04dde6041e8a4330d00ece816949b4fc6d141f39c5"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p064.jpg",
+      "output": "public/materials/books/A2.1/pages/p064.webp",
+      "source_bytes": 238473,
+      "output_bytes": 126698,
+      "sha256": "a5483a436e0b8783fc1d1fa7814b973cdcc16d06c7750d22c8b1a38259e18c57"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "page",
+      "source_member": "A2.1/pages/p065.jpg",
+      "output": "public/materials/books/A2.1/pages/p065.webp",
+      "source_bytes": 201312,
+      "output_bytes": 99218,
+      "sha256": "0a46a8912288051446696bbbea06e2d7ca0fec88866980d6c098902c8915b727"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_10.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_10.mp3",
+      "source_bytes": 1528555,
+      "output_bytes": 1528555,
+      "sha256": "d1fdd8e253bc1f5d6edc0089744e56219c4f9796a80c0b4316c875ffa9f18542"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_10_alt.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_10_alt.mp3",
+      "source_bytes": 1065935,
+      "output_bytes": 1065935,
+      "sha256": "8bc32ed81384882790c7a91b48f29c2a0c4afdafff674d22de25702eb4930379"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_11.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_11.mp3",
+      "source_bytes": 1429939,
+      "output_bytes": 1429939,
+      "sha256": "99a4ca4bec4d57204b88efc97d62086c37bf86656e08496de07a70d6d22e4a0d"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_11_alt.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_11_alt.mp3",
+      "source_bytes": 1798607,
+      "output_bytes": 1798607,
+      "sha256": "c2a0b27021eb7a90cd65fa1e8685c0011e6a7c9bf367a9c6b0a7f339e9746524"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_12.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_12.mp3",
+      "source_bytes": 920803,
+      "output_bytes": 920803,
+      "sha256": "11facd9a3c640cca1bd72e03fc1afc19fef26fcc335f595b2af178ea5d5bae59"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_13.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_13.mp3",
+      "source_bytes": 535555,
+      "output_bytes": 535555,
+      "sha256": "48336fb5490fe35791c6bed99e89283cb84432000e63384a4ff43f11b5d33757"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_14.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_14.mp3",
+      "source_bytes": 643579,
+      "output_bytes": 643579,
+      "sha256": "3d05a9ccd4d0afdcb8881e5524d3b4d6429b7520ebb6722bd3fd70c8badc78cf"
+    },
+    {
+      "stage": "A2.1",
+      "lesson": "A2-4",
+      "kind": "audio",
+      "source_member": "A2.1/audio/auint_plus_2_15.mp3",
+      "output": "public/materials/books/A2.1/audio/auint_plus_2_15.mp3",
+      "source_bytes": 615595,
+      "output_bytes": 615595,
+      "sha256": "8967f9a651a673d05c26ed62bfb1ee503e6f6b8e760bc3f2e02f5b8986e4b0c3"
+    }
+  ],
+  "source_archives": {
+    "A1.1": [
+      "A1.1_v14_PARTE1_LIBRO.zip:1lIla_z26rk253c6GXVq_4V3xzphtVGHg",
+      "A1.1_v14_PARTE2_AUDIO.zip:10UvVBeUgyttwEMxlp-KWPqMRT2sSG5nm"
+    ],
+    "A1.2": [
+      "A1.2_TABS_V1_parte1.zip:1qljUnx5sexbUd1XhTekFCMUxdI6WNNrx",
+      "A1.2_TABS_V1_parte2.zip:1U7xnHXortUetLud0-CJHImKQGNdsvf_i"
+    ],
+    "A1.3": [
+      "A1.3_parte1.zip:1vNHObGRLwABY4vlR7AlTE1Qva-YgbU2j",
+      "A1.3_parte2.zip:1okXzalVaG3nD19SdHADsApOYl1YDRB6_",
+      "A1.3_parte3.zip:1NEAYHiYo6TfPMjTcyHsU0HD1xTAbVvCv"
+    ],
+    "A2.1": [
+      "A2.1_READY_FOR_WEBSITE_a646862936.zip:1P3Ml0ib_gnWszIcIhMiOeD2lj_V2zD3w"
+    ]
+  }
+}

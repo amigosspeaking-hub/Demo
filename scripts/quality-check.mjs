@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { lessonLibrary } from '../src/data/lessons.js';
+import { courseBookMaterials } from '../src/data/courseMaterials.js';
 import { buildListeningItems, transcriptText } from '../src/data/listening.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,6 +64,13 @@ check(homeSource.includes('const featuredLesson = courseLessons[0]'), 'Home chal
 check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home quick challenge must not award repeatable XP or show unrelated fixed-level content');
 check(appSource.includes('selectedStage, displayName') && appSource.includes("useState(initial.selectedStage || 'A1.1')"), 'Profile stage selection must persist locally');
 check(!/drive\.google\.com/i.test(appSource), 'Learner-facing pages must not send students to Google Drive');
+check(appSource.includes('function BookLessonMaterials(') && appSource.includes('<BookLessonMaterials lessonId={lessonId}/>'), 'Each mapped lesson must open its own original book pages and audio in-app');
+check(appSource.includes('<BookListeningLibrary stage={stage}/>'), 'Listening page must expose only original audio mapped to the selected course stage');
+check(appSource.includes('onClick={() => changeRate(value)}') && appSource.includes('Versión alternativa'), 'Original audio player must provide speed choices and explicit alternate-track labels');
+check(!/window\.open\(|target=["']_blank/i.test(appSource), 'Course material playback must stay inside the application');
+check(Object.keys(courseBookMaterials).length === 14, 'Imported book resources must map the 14 supported A1 and A2.1 lessons');
+check(courseBookMaterials['A1-0']?.pages[0]?.page === 10 && courseBookMaterials['A1-9']?.pages.at(-1)?.page === 139, 'A1 page ranges must follow the actual three archived course units');
+check(courseBookMaterials['A2-1']?.pages[0]?.page === 10 && courseBookMaterials['A2-4']?.pages.at(-1)?.page === 65, 'A2.1 pages must follow the four units actually present in its ready-to-website archive');
 
 const grammarGuides = await import('../src/data/grammar.js');
 const lessonStories = await import('../src/data/stories.js');
@@ -98,5 +106,8 @@ check(!JSON.stringify(translations).includes('drive.google.com'), 'Translation e
 const extraction = spawnSync(process.execPath, ['scripts/extract-course-assets.mjs', '--check'], { cwd: root, encoding: 'utf8' });
 check(extraction.status === 0, `Generated files must be current. ${extraction.stdout}${extraction.stderr}`);
 
+const bookCheck = spawnSync(process.execPath, ['scripts/book-materials-check.mjs'], { cwd: root, encoding: 'utf8' });
+check(bookCheck.status === 0, `Imported textbook files must exist and match their declared formats. ${bookCheck.stdout}${bookCheck.stderr}`);
+console.log(bookCheck.stdout.trim());
 console.log(`Quality checks passed: ${checks} assertions across ${items.length} local examples and ${materials.length} material files.`);
 console.log('Note: this validates currently available local lesson examples; it does not claim recovery of the historical 56-recording / 861-row archive.');

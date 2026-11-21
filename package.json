@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "extract:course-assets": "node scripts/extract-course-assets.mjs",
-    "quality:check": "node scripts/quality-check.mjs"
+    "quality:check": "node scripts/quality-check.mjs",
+    "materials:check": "node scripts/book-materials-check.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
