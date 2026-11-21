@@ -1,15 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { lessonLibrary } from './data/lessons.js';
-import { buildListeningItems, transcriptText } from './data/listening.js';
+import { buildListeningItems } from './data/listening.js';
+import { grammarGuides } from './data/grammar.js';
+import { lessonStories } from './data/stories.js';
+import { lessonSentenceBanks } from './data/sentences.js';
 import {
-  ArrowLeft, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
-  CircleHelp, Clock3, ExternalLink, Flame, Gamepad2, GraduationCap, Headphones, House, Image as ImageIcon, Lightbulb,
-  LockKeyhole, Menu, MessageCircle, Mic2, MoreHorizontal, Play, Puzzle, Search, Settings2,
-  Sparkles, Star, Target, Trophy, Volume2, X, Zap
+  ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
+  CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Image as ImageIcon, Lightbulb,
+  LockKeyhole, Menu, MessageCircle, MoreHorizontal, Play, Search, Settings2,
+  Sparkles, Target, Trophy, Volume2, X, Zap, Heart, Mic, RotateCcw, Timer, Shuffle
 } from 'lucide-react';
 
 const levels = [
-  { id: 'A1', name: 'بداية المشوار', book: 'Aula internacional Plus 1', tone: 'mint', lessons: 60, progress: 18, unlocked: true, summary: '١٠ وحدات · ٦٠ جلسة حسب برمجة الناشر', topics: [
+  { id: 'A1', name: 'بداية المشوار', book: 'Aula internacional Plus 1', tone: 'mint', lessons: 60, progress: 0, unlocked: true, summary: '١٠ وحدات · ١٠ محاضرات في المسار', topics: [
     { id: 'A1-0', es: 'En el aula', ar: 'في الفصل' },
     { id: 'A1-1', es: 'Nosotros y nosotras', ar: 'إحنا' },
     { id: 'A1-2', es: 'Quiero aprender español', ar: 'عايز أتعلم إسباني' },
@@ -21,7 +24,7 @@ const levels = [
     { id: 'A1-8', es: 'El barrio ideal', ar: 'الحيّ المثالي' },
     { id: 'A1-9', es: '¿Sabes conducir?', ar: 'بتعرف تسوق؟' },
   ] },
-  { id: 'A2', name: 'اتكلم براحتك', book: 'Aula internacional Plus 2', tone: 'peach', lessons: 12, progress: 0, unlocked: true, summary: '١٠ وحدات من مواد Drive · ٣ مراحل · ١٢ لقاء', topics: [
+  { id: 'A2', name: 'اتكلم براحتك', book: 'Aula internacional Plus 2', tone: 'peach', lessons: 12, progress: 0, unlocked: true, summary: '١٠ وحدات · ٣ مراحل · ١٢ لقاء', topics: [
     { id: 'A2-1', es: 'El español y tú', ar: 'الإسباني وإنت' },
     { id: 'A2-2', es: 'Una vida de película', ar: 'حياة زي الأفلام' },
     { id: 'A2-3', es: 'Yo soy así', ar: 'أنا كده' },
@@ -34,27 +37,19 @@ const levels = [
     { id: 'A2-10', es: 'Momentos especiales', ar: 'لحظات مميزة' },
   ] },
   { id: 'B1', name: 'خطوة للاستقلال', book: 'Aula internacional Plus 3', tone: 'lilac', lessons: 36, progress: 0, unlocked: false, summary: 'عبّر عن رأيك واحكي تجاربك', topics: ['احكي عن تجاربك', 'الخطط والاحتمالات', 'الأخبار والإعلام', 'العمل والدراسة'] },
-  { id: 'B2.1', name: 'طلاقة وثقة · ١', book: 'Aula internacional Plus 4', tone: 'yellow', lessons: 40, progress: 0, unlocked: false, summary: 'وسّعي قدرتك على النقاش والتعبير', topics: ['عرض الرأي والحجج', 'فهم نصوص أطول', 'تعبيرات أدق', 'تواصل في مواقف متنوعة'] },
-  { id: 'B2.2', name: 'طلاقة وثقة · ٢', book: 'Aula internacional Plus 5', tone: 'yellow', lessons: 40, progress: 0, unlocked: false, summary: 'ثبّتي B2 واستعدّي للمستوى المتقدم', topics: ['النقاش والإقناع', 'الفروق الدقيقة', 'اللغة المهنية', 'التعبيرات الاصطلاحية'] },
+  { id: 'B2.1', name: 'طلاقة وثقة · ١', book: 'Aula internacional Plus 4', tone: 'yellow', lessons: 40, progress: 0, unlocked: false, summary: 'وسّع قدرتك على النقاش والتعبير', topics: ['عرض الرأي والحجج', 'فهم نصوص أطول', 'تعبيرات أدق', 'تواصل في مواقف متنوعة'] },
+  { id: 'B2.2', name: 'طلاقة وثقة · ٢', book: 'Aula internacional Plus 5', tone: 'yellow', lessons: 40, progress: 0, unlocked: false, summary: 'ثبّت B2 واستعد للمستوى المتقدم', topics: ['النقاش والإقناع', 'الفروق الدقيقة', 'اللغة المهنية', 'التعبيرات الاصطلاحية'] },
   { id: 'C1', name: 'إسباني متقدم', book: 'Aula C1', tone: 'blue', lessons: 44, progress: 0, unlocked: false, summary: 'فهم عميق وتعبير مرن ودقيق', topics: ['الأسلوب والسياق', 'نصوص أكاديمية', 'البلاغة والتلميح', 'التعبير المتقدم'] },
 ];
 
-const a1DriveStages = [
-  { id: 'A1.1', units: 'الوحدات ٠–٣', startIndex: 0, folderHref: 'https://drive.google.com/drive/folders/1wjyqVGSKBbigy4OAeojjRb5APHvLk3nf', files: [
-    { label: 'ملف HTML الأحدث · v53 (Drive)', href: 'https://drive.google.com/file/d/1R04whF84_wkSO8mmpIzh74l4MDdvWvIz/view?usp=drivesdk' },
-    { label: 'الحزمة الكاملة الأحدث · v53 ZIP', href: 'https://drive.google.com/file/d/1DULmThyiEWdnTd29_j2v2IAo3VSzgqJd/view?usp=drivesdk' },
-  ] },
-  { id: 'A1.2', units: 'الوحدات ٤–٦', startIndex: 4, folderHref: 'https://drive.google.com/drive/folders/1KFDPO1fZrNB9StYbhT36Bm0KhYOnyUkS', files: [
-    { label: 'ملف الدروس — جزء ١', href: 'https://drive.google.com/file/d/1qljUnx5sexbUd1XhTekFCMUxdI6WNNrx/view?usp=drivesdk' },
-    { label: 'ملف الدروس — جزء ٢', href: 'https://drive.google.com/file/d/1U7xnHXortUetLud0-CJHImKQGNdsvf_i/view?usp=drivesdk' },
-  ] },
-  { id: 'A1.3', units: 'الوحدات ٧–٩', startIndex: 7, folderHref: 'https://drive.google.com/drive/folders/1VkdgdOJmylzinlOCz2s1NBpsQYH37iDh', files: [] },
+const a1CourseStages = [
+  { id: 'A1.1', units: 'الوحدات ٠–٣', startIndex: 0, endIndex: 3 },
+  { id: 'A1.2', units: 'الوحدات ٤–٦', startIndex: 4, endIndex: 6 },
+  { id: 'A1.3', units: 'الوحدات ٧–٩', startIndex: 7, endIndex: 9 },
 ];
 
 const a2Stages = [
-  { id: 'A2.1', meetings: 'اللقاءات ١–٤', units: 'الوحدات ١–٤', focus: 'العادات، التعارف، وصف الأشخاص والبيت', grammar: 'المضارع، الأفعال الانعكاسية، الماضي البسيط، وصف الصفات والمقارنة', check: 'مراجعة قصيرة في نهاية المرحلة', resources: [
-    { label: 'أحدث حزمة كاملة · v190 ZIP (Drive)', href: 'https://drive.google.com/file/d/1OnFlx8Z4lNgvck1oED6EA-SqY1Jq4WcY/view?usp=drivesdk', primary: true },
-  ] },
+  { id: 'A2.1', meetings: 'اللقاءات ١–٤', units: 'الوحدات ١–٤', focus: 'العادات، التعارف، وصف الأشخاص والبيت', grammar: 'المضارع، الأفعال الانعكاسية، الماضي البسيط، وصف الصفات والمقارنة', check: 'مراجعة قصيرة في نهاية المرحلة' },
   { id: 'A2.2', meetings: 'اللقاءات ٥–٨', units: 'الوحدات ٥–٨', focus: 'التواصل اليومي، وقت الفراغ، الطعام والصحة', grammar: 'المضارع المستمر، الماضي القريب، مفعول به مباشر، وصيغة الأمر', check: 'مراجعة قصيرة في نهاية المرحلة' },
   { id: 'A2.3', meetings: 'اللقاءات ٩–١٢', units: 'الوحدتان ٩–١٠ + مراجعة', focus: 'حكي الذكريات واللحظات المهمة ومقارنة زمان بدلوقتي', grammar: 'الماضي الناقص والبسيط والفرق بينهم في الحكي', check: 'مراجعة شاملة ومحاكاة DELE A2' },
 ];
@@ -62,10 +57,17 @@ const a2Stages = [
 const navItems = [
   { id: 'home', label: 'الرئيسية', icon: House },
   { id: 'path', label: 'رحلتي', icon: GraduationCap },
-  { id: 'listening', label: 'استمع وترجم', icon: Headphones },
-  { id: 'games', label: 'العب واتعلم', icon: Gamepad2 },
+  { id: 'lessons', label: 'المحاضرات', icon: BookOpen },
+  { id: 'grammar', label: 'الجرامر', icon: BookOpen },
+  { id: 'listening', label: 'الاستماع', icon: Headphones },
+  { id: 'speaking', label: 'التحدث', icon: Mic },
+  { id: 'games', label: 'الألعاب', icon: Gamepad2 },
+  { id: 'quiz', label: 'Quiz', icon: CircleHelp },
+  { id: 'flashcards', label: 'Flashcards', icon: Bookmark },
+  { id: 'exam', label: 'الامتحانات', icon: Award },
   { id: 'words', label: 'كلماتي', icon: Bookmark },
   { id: 'progress', label: 'إنجازاتي', icon: Trophy },
+  { id: 'profile', label: 'الملف', icon: Settings2 },
 ];
 
 const programPlanItems = [
@@ -124,7 +126,7 @@ function HolaArt() {
   </svg>;
 }
 
-function Sidebar({ active, onNavigate, streak }) {
+function Sidebar({ active, onNavigate, streak, onProfile, displayName = 'متعلم', selectedStage = 'A1.1' }) {
   return <aside className="sidebar">
     <div className="brand"><div className="brand-mark"><span>¡</span></div><div><b>Hola<span className="brand-dot">.</span></b><small>الإسباني بالمصري</small></div></div>
     <div className="side-label">القائمة</div>
@@ -132,123 +134,108 @@ function Sidebar({ active, onNavigate, streak }) {
       {navItems.map(({ id, label, icon: Icon }) => <button key={id} className={`nav-link ${active === id ? 'active' : ''}`} onClick={() => onNavigate(id)}><Icon size={19} strokeWidth={2.1}/><span>{label}</span>{id === 'games' && <span className="nav-new">جديد</span>}</button>)}
     </nav>
     <div className="side-spacer" />
-    <div className="side-streak"><div className="streak-icon"><Flame size={21} fill="currentColor" /></div><div><b>{streak} أيام ورا بعض!</b><span>حافظ على الستريك بتاعك</span></div></div>
-    <button className="profile-mini"><div className="avatar">م</div><div className="profile-copy"><b>مريم أحمد</b><span>مستوى A1 · مبتدئة</span></div><MoreHorizontal size={19} /></button>
+    <button className="profile-mini" onClick={onProfile}><div className="avatar">{displayName.slice(0,1) || 'م'}</div><div className="profile-copy"><b>{displayName}</b><span>المستوى {selectedStage} · الملف الشخصي</span></div><MoreHorizontal size={19} /></button>
   </aside>;
 }
 
-function Header({ active, onSearch }) {
-  const titles = { home: 'أهلاً يا مريم 👋', path: 'رحلتك في الإسباني', listening: 'استمعي واقرئي الترجمة', games: 'وقت اللعب والتعلّم', words: 'دفتر الكلمات', progress: 'إنجازاتك الحلوة' };
+function Header({ active, onSearch, onProfile, displayName = 'متعلم', selectedStage = 'A1.1' }) {
+  const titles = { home: `أهلاً يا ${displayName} 👋`, path: 'رحلتك في الإسباني', lessons: 'محاضرات المستوى', grammar: 'شرح القواعد', listening: 'الاستماع والترجمة', speaking: 'تدرّب على التحدث', games: 'صالة الألعاب', quiz: 'تدريب Quiz', flashcards: 'بطاقات المراجعة', exam: 'امتحانات المستوى', words: 'دفتر الكلمات', progress: 'إنجازاتك', profile: 'الملف الشخصي' };
   const subtitles = {
-    home: 'جاهزة نكمّل الإسباني سوا؟',
-    listening: 'النص والترجمة من أمثلة الدروس المحلية.',
+    home: `مستواك الحالي ${selectedStage} — كمّل خطوة جديدة النهارده.`,
+    listening: 'اختر محاضرة، اسمع الجملة، واظهر ترجمتها وقت ما تحب.',
   };
   return <header className="topbar">
     <div className="mobile-brand"><div className="brand-mark"><span>¡</span></div><b>Hola<span className="brand-dot">.</span></b></div>
     <div className="page-heading"><h1>{titles[active]}</h1><p>{subtitles[active] || 'كل يوم خطوة صغيرة تقرّبك من الطلاقة.'}</p></div>
-    <div className="top-actions"><button className="icon-button search-button" aria-label="بحث" onClick={onSearch}><Search size={19}/></button><button className="streak-chip"><Flame size={17} fill="currentColor"/> ٥ <span>أيام</span></button><button className="avatar top-avatar" aria-label="الملف الشخصي">م</button></div>
+    <div className="top-actions"><button className="icon-button search-button" aria-label="بحث" onClick={onSearch}><Search size={19}/></button><button className="avatar top-avatar" aria-label="الملف الشخصي" onClick={onProfile}>{displayName.slice(0,1) || 'م'}</button></div>
   </header>;
 }
 
 function LevelPill({ level = 'A1' }) { return <span className={`level-pill level-${level.toLowerCase().replaceAll('.', '-')}`}>{level}</span>; }
 
-function HomePage({ onOpenLesson, onNavigate, xp, doneLessons, savedWords, onSaveWord }) {
+function HomePage({ onOpenLesson, onNavigate, xp, doneLessons, completedLessons, savedWords, onSaveWord, selectedStage }) {
   const [answer, setAnswer] = useState(null);
-  const quizCorrect = answer === 1;
+  const courseLessons = currentLessons(selectedStage);
+  const [challengeOptions, setChallengeOptions] = useState(() => shuffled(courseLessons[0]?.answers || []));
+  const courseProgress = Math.round(courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length / Math.max(1, courseLessons.length) * 100);
+  const featuredLesson = courseLessons[0];
+  const quizCorrect = answer === featuredLesson?.answers[0];
+  useEffect(() => { setAnswer(null); setChallengeOptions(shuffled(currentLessons(selectedStage)[0]?.answers || [])); }, [selectedStage]);
+  const featuredWord = featuredLesson?.words[0];
+  const featuredGrammar = grammarGuides[featuredLesson?.id];
   return <>
     <section className="hero-card">
-      <div className="hero-copy"><div className="eyebrow"><Sparkles size={15}/> درس النهارده مستنيكي</div><h2>يلا نكمّل رحلتك<br/>ونقول <span>¡Hola!</span></h2><p>خطوة بسيطة كل يوم، وإسبانيك هيبقى أحسن بكتير. مستعدة؟</p><button className="primary-button" onClick={onOpenLesson}><Play size={17} fill="currentColor"/> كمّلي الدرس <ArrowLeft size={17}/></button><div className="hero-note"><CheckCircle2 size={15}/> درس قصير · حوالي ٥ دقايق</div></div>
+      <div className="hero-copy"><div className="eyebrow"><Sparkles size={15}/> درس النهارده مستنيك</div><h2>يلا نكمّل رحلتك<br/>ونقول <span>¡Hola!</span></h2><p>خطوة بسيطة كل يوم، وإسبانيك هيبقى أحسن بكتير. مستعد؟</p><button className="primary-button" onClick={onOpenLesson}><Play size={17} fill="currentColor"/> كمّل الدرس <ArrowLeft size={17}/></button><div className="hero-note"><CheckCircle2 size={15}/> درس قصير · حوالي ٥ دقايق</div></div>
       <div className="hero-visual"><div className="sun-sticker">¡Hola!</div><HolaArt/><div className="bubble-sticker">¡Qué bonito! <span>💛</span></div></div>
       <div className="hero-side-note"><span className="note-dot"/> <b>كل كلمة جديدة</b><small>بتقرّبك من هدفك</small></div>
     </section>
 
     <section className="stats-row" aria-label="ملخص التقدم">
-      <div className="stat-card"><span className="stat-icon stat-orange"><Flame size={19} fill="currentColor"/></span><div><b>٥ أيام</b><small>الستريك الحالي</small></div><span className="stat-trend">ممتاز!</span></div>
-      <div className="stat-card"><span className="stat-icon stat-yellow"><Zap size={18} fill="currentColor"/></span><div><b>{xp} نقطة</b><small>مجموع الـ XP</small></div><span className="stat-trend">+١٢ اليوم</span></div>
-      <div className="stat-card"><span className="stat-icon stat-green"><Target size={18}/></span><div><b>١٢ / ١٥ دقيقة</b><small>هدفك اليومي</small></div><div className="mini-progress"><i style={{width:'80%'}}/></div></div>
+      <div className="stat-card"><span className="stat-icon stat-orange"><BookOpen size={19}/></span><div><b>{doneLessons} محاضرة</b><small>محاضرات مكتملة</small></div></div>
+      <div className="stat-card"><span className="stat-icon stat-yellow"><Zap size={18} fill="currentColor"/></span><div><b>{xp} نقطة</b><small>مجموع الـ XP</small></div></div>
+      <div className="stat-card"><span className="stat-icon stat-green"><Bookmark size={18}/></span><div><b>{savedWords.length} كلمة</b><small>في كلماتي</small></div></div>
     </section>
 
     <section className="content-grid">
       <div className="main-column">
-        <div className="section-head"><div><h2>رحلتك التعليمية</h2><p>كل مستوى محطة جديدة في مشوارك</p></div><button className="text-link" onClick={() => onNavigate('path')}>شوفي الخطة كاملة <ChevronLeft size={16}/></button></div>
+        <div className="section-head"><div><h2>رحلتك التعليمية</h2><p>المستوى الحالي {selectedStage} — كل خطوة تقرّبك من هدفك</p></div><button className="text-link" onClick={() => onNavigate('path')}>شوف الخطة كاملة <ChevronLeft size={16}/></button></div>
         <div className="level-list">
-          {levels.map((level, index) => <button key={level.id} className={`level-card ${level.tone} ${!level.unlocked ? 'locked' : ''}`} onClick={() => level.unlocked ? onNavigate('path') : null}>
+          {levels.filter(level => level.id === selectedStage.split('.')[0]).map((level, index) => <button key={level.id} className={`level-card ${level.tone} ${!level.unlocked ? 'locked' : ''}`} onClick={() => level.unlocked ? onNavigate('path') : null}>
             <div className="level-badge">{level.unlocked ? <span>{level.id}</span> : <LockKeyhole size={17}/>}</div>
-            <div className="level-info"><div className="level-title-row"><b>{level.name}</b><LevelPill level={level.id}/></div><span>{level.summary}</span><div className="level-progress-row"><div className="progress-track"><i style={{width:`${level.progress}%`}}/></div><small>{level.progress ? `${level.progress}%` : 'مقفول'}</small></div></div>
+            <div className="level-info"><div className="level-title-row"><b>{level.name}</b><LevelPill level={level.id}/></div><span>{level.summary}</span><div className="level-progress-row"><div className="progress-track"><i style={{width:`${courseProgress}%`}}/></div><small>{courseProgress}%</small></div></div>
             <span className="level-chevron"><ChevronLeft size={19}/></span>
           </button>)}
         </div>
 
-        <div className="section-head vocab-head"><div><h2>كلمة النهارده <span className="tiny-spark">✳</span></h2><p>كلمة صغيرة… هتفرق في كلامك</p></div><button className="icon-button save-button" aria-label="حفظ الكلمة" onClick={() => onSaveWord('despacio')}><Bookmark size={18} fill={savedWords.includes('despacio') ? 'currentColor' : 'none'}/></button></div>
-        <div className="word-feature"><div className="word-art"><span className="word-sun"/><div className="word-cup">☕</div><span className="word-spark">✦</span></div><div className="word-copy"><span className="word-label">ظرف · A1</span><h3>despacio</h3><p className="word-pron">ديسپاسيو <button onClick={() => speakSpanish('despacio')} aria-label="اسمع نطق despacio"><Volume2 size={16}/></button></p><div className="word-meaning">بالبطيء / على مهلك <span>🐢</span></div><small>Habla despacio, por favor. <em>اتكلم بالراحة، لو سمحت.</em></small></div></div>
+        <div className="section-head vocab-head"><div><h2>كلمة النهارده <span className="tiny-spark">✳</span></h2><p>كلمة صغيرة… هتفرق في كلامك</p></div><button className="icon-button save-button" aria-label="حفظ الكلمة" onClick={() => featuredWord && onSaveWord(featuredWord.es)}><Bookmark size={18} fill={savedWords.includes(featuredWord?.es) ? 'currentColor' : 'none'}/></button></div>
+        {featuredWord && <div className="word-feature"><div className="word-art"><span className="word-sun"/><div className="word-cup">☕</div><span className="word-spark">✦</span></div><div className="word-copy"><span className="word-label">كلمة من {selectedStage}</span><h3 lang="es" dir="ltr">{featuredWord.es}</h3><p className="word-pron">{featuredWord.say} <button onClick={() => speakSpanish(featuredWord.es)} aria-label={`اسمع نطق ${featuredWord.es}`}><Volume2 size={16}/></button></p><div className="word-meaning">{featuredWord.ar} <span>🐢</span></div><small lang="es" dir="ltr">{featuredLesson.example} <em>{featuredLesson.translation}</em></small></div></div>}
       </div>
 
       <div className="right-column">
-        <div className="daily-card"><div className="daily-top"><div><span className="daily-label"><Lightbulb size={15}/> تحدّي سريع</span><h3>اختاري الإجابة الصح</h3></div><span className="daily-illustration">✏️</span></div><div className="quiz-question"><span>يعني إيه <b>gracias</b>؟</span><button onClick={() => speakSpanish('gracias')} className="sound-small" aria-label="استمع"><Volume2 size={16}/></button></div><div className="quiz-options">{['من فضلك', 'شكراً', 'صباح الخير'].map((option, i) => <button key={option} className={`quiz-option ${answer === i ? (i === 1 ? 'correct' : 'wrong') : ''} ${answer !== null && i === 1 ? 'show-correct' : ''}`} onClick={() => setAnswer(i)}><span className="option-letter">{['أ','ب','ج'][i]}</span>{option}{answer === i && (i === 1 ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`quiz-feedback ${quizCorrect ? 'good' : 'try-again'}`}>{quizCorrect ? 'بالظبط! ¡Muy bien! 🎉' : 'قريبة! الإجابة الصح هي «شكراً»'}</div>}<div className="daily-footer"><span><Clock3 size={14}/> أقل من دقيقة</span><span>+١٠ XP</span></div></div>
-        <div className="grammar-card"><div className="grammar-head"><span className="grammar-icon"><BookOpen size={18}/></span><span className="grammar-tag">جرامر على السريع</span><button className="dots-button" aria-label="المزيد"><MoreHorizontal size={18}/></button></div><h3>ser ولا estar؟</h3><p>الاتنين معناهم «يكون»، بس كل واحدة ليها استخدام مختلف!</p><div className="grammar-example"><span><b>Ser</b> = حاجة ثابتة</span><span className="example-es">Soy egipcia. <small>أنا مصرية.</small></span></div><div className="grammar-example"><span><b>Estar</b> = حالة مؤقتة</span><span className="example-es">Estoy feliz. <small>أنا مبسوطة.</small></span></div><button className="grammar-link" onClick={onOpenLesson}>افهمي القاعدة أكتر <ArrowLeft size={15}/></button></div>
-        <div className="weekly-card"><div className="weekly-head"><span>تقدّم الأسبوع</span><MoreHorizontal size={17}/></div><div className="weekly-chart">{[{d:'س',h:42},{d:'ح',h:70},{d:'ن',h:56},{d:'ث',h:88},{d:'ر',h:50},{d:'خ',h:100},{d:'ج',h:24}].map((x,i)=><div className="bar-column" key={i}><div className={`week-bar ${i===5?'today':''}`} style={{height:`${x.h}%`}}/ ><small>{x.d}</small></div>)}</div><div className="weekly-foot"><span><span className="chart-dot"/> دقايق تعلّم</span><b>٤٢ دقيقة <span>↗</span></b></div></div>
+        <div className="daily-card"><div className="daily-top"><div><span className="daily-label"><Lightbulb size={15}/> تحدّي سريع</span><h3>اختار الإجابة الصح</h3></div><span className="daily-illustration">✏️</span></div><div className="quiz-question"><span>{featuredLesson?.question}</span><button onClick={() => speakSpanish(featuredLesson?.example)} className="sound-small" aria-label="استمع للمثال"><Volume2 size={16}/></button></div><div className="quiz-options">{challengeOptions.map((option, i) => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} className={`quiz-option ${answer === option ? (option === featuredLesson?.answers[0] ? 'correct' : 'wrong') : ''} ${answer !== null && option === featuredLesson?.answers[0] ? 'show-correct' : ''}`} onClick={() => { if (answer === null) setAnswer(option); }}><span className="option-letter">{['أ','ب','ج','د'][i]}</span>{option}{answer === option && (option === featuredLesson?.answers[0] ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`quiz-feedback ${quizCorrect ? 'good' : 'try-again'}`}>{quizCorrect ? 'بالظبط! ¡Muy bien! 🎉' : `قريب! الإجابة الصح هي «${featuredLesson?.answers[0]}»`}</div>}<div className="daily-footer"><span><Clock3 size={14}/> تدريب سريع · {selectedStage}</span><span>{answer === null ? 'اختر إجابة' : 'اكتمل التحدّي'}</span></div></div>
+        {featuredGrammar && <div className="grammar-card"><div className="grammar-head"><span className="grammar-icon"><BookOpen size={18}/></span><span className="grammar-tag">جرامر {selectedStage}</span><button className="dots-button" aria-label="المزيد"><MoreHorizontal size={18}/></button></div><h3>{featuredGrammar.title}</h3><p>{featuredGrammar.explanation}</p>{featuredGrammar.examples.slice(0, 2).map(([es, ar]) => <div className="grammar-example" key={es}><span className="example-es" lang="es" dir="ltr">{es} <small>{ar}</small></span></div>)}<button className="grammar-link" onClick={onOpenLesson}>افهم القاعدة أكتر <ArrowLeft size={15}/></button></div>}
+        <div className="weekly-card home-shortcuts"><div className="weekly-head"><span>اختصارات المستوى {selectedStage}</span><MoreHorizontal size={17}/></div><button onClick={() => onNavigate('listening')}><Headphones size={16}/> استمع للجمل</button><button onClick={() => onNavigate('speaking')}><Mic size={16}/> تدرّب على النطق</button><button onClick={() => onNavigate('exam')}><Award size={16}/> ابدأ الامتحان</button></div>
       </div>
     </section>
   </>;
 }
 
-function PathPage({ onOpenLesson, onStartA1Course }) {
+function PathPage({ onOpenLesson, onStartA1Course, selectedStage = 'A1.1', completedLessons = [] }) {
+  const courseLessons = currentLessons(selectedStage);
+  const courseProgress = Math.round(courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length / Math.max(1, courseLessons.length) * 100);
   return <div className="path-page">
     <div className="path-intro">
       <div><span className="eyebrow"><GraduationCap size={15}/> المنهج من A1 لـ C1</span><h2>خريطة طريقك للطلاقة</h2><p>ترتيب المستويات ماشي مع كتب Aula internacional Plus، وبعد B2 نكمّل بكتاب Aula C1.</p></div>
       <div className="path-sticker">🗺️</div>
     </div>
     <div className="path-levels">
-      {levels.map((l, i) => <section className={`path-level ${l.tone}`} key={l.id}>
+      {levels.filter(l => l.id === (selectedStage.startsWith('A2') ? 'A2' : 'A1')).map((l, i) => <section className={`path-level ${l.tone}`} key={l.id}>
         <div className="path-level-head">
           <span className="path-level-number">{i + 1}</span>
           <div><LevelPill level={l.id}/><h3>{l.name}</h3><p>{l.summary}</p></div>
           <span className="path-hours">{l.book}</span>
         </div>
         <div className={`path-topics ${l.id === 'A2' ? 'a2-topics' : ''}`}>
-          {l.topics.map((topic, j) => {
+          {l.topics.filter(topic => { const number = Number(String(topic.id || '').split('-')[1]); const [from, to] = courseRanges[selectedStage] || courseRanges['A1.1']; return number >= from && number <= to; }).map((topic, j) => {
             const isStructuredUnit = typeof topic === 'object';
             const topicKey = isStructuredUnit ? topic.es : topic;
             const lessonAvailable = (l.id === 'A1' || l.id === 'A2') && Boolean(lessonLibrary[topic.id]);
             const isLocked = !l.unlocked || !lessonAvailable;
             return <button key={topicKey} onClick={() => lessonAvailable && l.unlocked && onOpenLesson(l.id, topic.id)} disabled={isLocked} className={`${isLocked ? 'topic-locked' : ''} ${isStructuredUnit ? 'book-unit' : ''}`}>
-              <span className="topic-check">{l.progress > j * 6 ? <Check size={14}/> : isLocked ? <LockKeyhole size={13}/> : <Play size={12} fill="currentColor"/>}</span>
+              <span className="topic-check">{completedLessons.includes(topic.id) ? <Check size={14}/> : isLocked ? <LockKeyhole size={13}/> : <Play size={12} fill="currentColor"/>}</span>
               {isStructuredUnit ? <span className="unit-topic"><b lang="es">{topic.es}</b><small>{topic.ar}</small></span> : <span>{topic}</span>}
               {isLocked ? <small className="unit-coming">قريباً</small> : <ChevronLeft size={16}/>}
             </button>;
           })}
         </div>
-        {l.id === 'A1' && <>
-          <p className="a1-source-note"><Lightbulb size={14}/> عناوين A1 راجعناها على الكتاب والبرنامج المنشور؛ مجلد Drive الأول فيه مواد المدرّس التفصيلية المتاحة للوحدات U0–U5. الشروح والأنشطة في التطبيق أصلية. <a href="https://drive.google.com/drive/folders/1RlWgPNBoAXuQ1cPbfKhQ855gpyAEzZ56" target="_blank" rel="noreferrer">مصدر الكتاب</a></p>
-          <div className="a1-course-mode-start"><div><b>كورس A1 · الترتيب العادي</b><small>ابدئي من الوحدة ٠؛ كمّلي الدروس بالترتيب لحد الوحدة ٩.</small></div><button className="primary-button" onClick={() => onStartA1Course(0)}><Play size={14} fill="currentColor"/> ابدئي الكورس</button></div>
-          <div className="a1-drive-stages" aria-label="تقسيم كورس A1 وملفات المحاضرات">
-            {a1DriveStages.map((stage) => <article className="a1-drive-stage" key={stage.id}>
-              <div className="a1-stage-heading"><span className="level-pill">{stage.id}</span><b>{stage.units}</b></div>
-              <button className="a1-stage-start" onClick={() => onStartA1Course(stage.startIndex)}>ابدئي {stage.id} بالترتيب <ChevronLeft size={14}/></button>
-              <div className="a1-drive-file-links">{stage.files.length ? stage.files.map((file) => <a key={file.href} href={file.href} target="_blank" rel="noreferrer"><ExternalLink size={12}/>{file.label}</a>) : <small className="a1-drive-pending">مجلد ملفات A1.3 فاضي حاليًا؛ وحداته موجودة في كورس التطبيق.</small>}</div>
-              {stage.id === 'A1.1' && <small className="a1-drive-pending">معاينة Drive لملف HTML لا تضمن تحميل الصور والخطوط والصوت النسبي؛ التشغيل الكامل يتطلب الحزمة مع مجلداتها.</small>}
-              {stage.folderHref && <a className="a1-folder-link" href={stage.folderHref} target="_blank" rel="noreferrer">افتحي مجلد {stage.id} على Drive</a>}
-            </article>)}
-          </div>
-        </>}
-        {l.id === 'A2' && <><p className="a1-source-note"><Lightbulb size={14}/> خريطة A2 من نسخة الكتاب ذات ١٠ وحدات في مجلد Drive؛ راجعنا أسماءها في تدقيق الكتاب، والخطة الأصلية في نفس المجلد هي اللي بتحدد التقسيم والتدريس. <a href="https://drive.google.com/drive/folders/1XLqKXRRO491-Wjxiff7BtqbAwB6BGpUe" target="_blank" rel="noreferrer">افتحي مجلد المصدر</a></p><div className="a2-course-plan">
-          <div className="a2-course-heading"><div><span className="a2-plan-label"><BookOpen size={14}/> خطة A2 من مجلدك</span><b>١٢ لقاء × ٣ ساعات = ٣٦ ساعة</b></div><span className="a2-plan-icon">🗓️</span></div>
-          <div className="a2-plan-metrics" aria-label="مخرجات مخططة في ملف المرجع"><span><b>١٠</b> وحدات</span><span><b>٧٢</b> مهمة قصيرة بالخطة</span><span><b>٧٢</b> رسالة مساندة بالخطة</span></div>
-          <div className="a2-stage-list">{a2Stages.map((stage, idx) => <article className="a2-stage" key={stage.id}>
-            <div className="a2-stage-top"><LevelPill level={stage.id}/><span>{stage.meetings}</span><b>{stage.units}</b></div>
-            <p>{stage.focus}</p><div className="a2-grammar"><BookOpen size={13}/><span><b>جرامر:</b> {stage.grammar}</span></div>
-            <small className="a2-checkpoint"><CheckCircle2 size={13}/>{stage.check}</small>
-            {stage.resources && <>
-              <div className="a2-drive-resources" aria-label="ملفات A2.1 على Google Drive">
-                {stage.resources.map((resource) => <a key={resource.label} className={resource.primary ? 'a2-drive-resource primary' : 'a2-drive-resource'} href={resource.href} target="_blank" rel="noreferrer"><ExternalLink size={12}/>{resource.label}</a>)}
-              </div>
-              <small className="a2-resource-note">ده رابط الحزمة الأصلية، مش تشغيل HTML محلي؛ ملفات الصور والصوت والخطوط لازم تفضل بجوار الصفحة بعد فك الضغط.</small>
-            </>}
-            {idx === 0 && <button className="a2-preview-button" onClick={() => onOpenLesson('A2')}>جربي نموذج درس A2.1 <ArrowLeft size={14}/></button>}
+        {l.id === 'A1' && <div className="selected-course-panel"><div><span className="eyebrow"><BookOpen size={14}/> كورس {selectedStage}</span><b>محاضرات المستوى من هنا</b><small>المحاضرة تفتح داخل الموقع، ومحتوى كل درس منفصل عن باقي الوحدات.</small></div><button className="primary-button" onClick={() => onStartA1Course(courseRanges[selectedStage]?.[0] || 0)}><Play size={14} fill="currentColor"/> ابدأ محاضرات {selectedStage}</button></div>}
+        {l.id === 'A2' && <div className="a2-course-plan">
+          <div className="a2-course-heading"><div><span className="a2-plan-label"><BookOpen size={14}/> محاضرات {selectedStage}</span><b>محتوى مستقل لكل محاضرة</b></div><span className="a2-plan-icon">🗓️</span></div>
+          <div className="a2-stage-list">{a2Stages.filter(stage => stage.id === selectedStage).map(stage => <article className="a2-stage" key={stage.id}>
+            <div className="a2-stage-top"><LevelPill level={stage.id}/><span>{stage.meetings}</span><b>{stage.units}</b></div><p>{stage.focus}</p><div className="a2-grammar"><BookOpen size={13}/><span><b>جرامر:</b> {stage.grammar}</span></div><small className="a2-checkpoint"><CheckCircle2 size={13}/>{stage.check}</small>
           </article>)}</div>
-          <p className="a2-plan-foot"><Lightbulb size={14}/> ملفك بيربط الوحدات العشر بمستويات A2.1–A2.3 على ١٢ لقاء، وده أساس الخطة هنا. مواد Drive تشير كمان لمسارات استماع؛ التطبيق هيستخدم نطقًا إسبانيًا مولّدًا، مش تسجيلات الكتاب، والأنشطة بالعربي المصري أصلية.</p>
-        </div></>}
-        <div className="path-level-foot"><div className="progress-track"><i style={{width:`${l.progress}%`}}/></div><small>{l.progress ? `${l.progress}% مكتمل` : l.unlocked ? 'ابدئي أول درس' : 'كمّلي المستوى اللي قبله عشان تفتحيه'}</small></div>
+        </div>}
+        <div className="path-level-foot"><div className="progress-track"><i style={{width:`${courseProgress}%`}}/></div><small>{courseProgress ? `${courseProgress}% مكتمل في ${selectedStage}` : `ابدأ أول درس في ${selectedStage}`}</small></div>
       </section>)}
     </div>
     <ProgramPlan />
@@ -280,104 +267,30 @@ function ProgramPlan() {
   </section>;
 }
 
-function GamesPage({ addXp }) {
-  const pairs = [{es:'casa',ar:'بيت'},{es:'agua',ar:'مياه'},{es:'libro',ar:'كتاب'}];
-  const [selected, setSelected] = useState(null);
-  const [matched, setMatched] = useState([]);
-  const [feedback, setFeedback] = useState('اختاري كلمة إسباني وبعدها معناها بالعربي.');
-  const [rightOrder] = useState(() => [...pairs].sort(() => Math.random() - .5));
-  function chooseEs(word) { if (matched.includes(word)) return; setSelected(word); setFeedback('اختاري معناها بالمصري 👇'); }
-  function chooseAr(pair) {
-    if (!selected) { setFeedback('ابدئي باختيار الكلمة الإسباني الأول!'); return; }
-    if (pairs.find(x => x.es === selected)?.ar === pair.ar) {
-      const next = [...matched, selected]; setMatched(next); setSelected(null); setFeedback(next.length === pairs.length ? 'عاش! كسبتي الجولة 🎉' : 'صح عليكي! كمّلي ✨');
-      if (next.length === pairs.length) addXp(15);
-    } else { setFeedback('مش دي، جرّبي تاني 💪'); }
-  }
-  return <div className="games-page"><div className="games-banner"><div><span className="eyebrow"><Gamepad2 size={15}/> العب واتعلّم</span><h2>اللعب كمان مذاكرة! 🎲</h2><p>تمارين سريعة تثبّت الكلمات في دماغك.</p></div><div className="game-emoji">🧩</div></div><div className="game-layout"><section className="match-game"><div className="game-title-row"><div><span className="game-kicker">لعبة ٠١ · مفردات</span><h3>وصّلي الكلمة بمعناها</h3></div><span className="game-timer"><Clock3 size={15}/> بدون ضغط</span></div><p className="game-instructions">اختاري كلمة بالإسباني، وبعدها دوسي على معناها.</p><div className="match-columns"><div>{pairs.map(p=><div key={p.es} className={`match-card ${selected===p.es?'selected':''} ${matched.includes(p.es)?'matched':''}`}><button className="match-choice" onClick={()=>chooseEs(p.es)} disabled={matched.includes(p.es)}>{p.es}</button><button className="nested-sound" aria-label={`اسمع ${p.es}`} onClick={()=>speakSpanish(p.es)}><Volume2 size={16}/></button></div>)}</div><div>{rightOrder.map(p=><button key={p.ar} className={`match-card arabic-match ${matched.some(word=>pairs.find(x=>x.es===word)?.ar===p.ar)?'matched':''}`} onClick={()=>chooseAr(p)} disabled={matched.some(word=>pairs.find(x=>x.es===word)?.ar===p.ar)}><span>{p.ar}</span><span className="match-circle">{matched.some(word=>pairs.find(x=>x.es===word)?.ar===p.ar)?<Check size={15}/>:''}</span></button>)}</div></div><div className={`game-feedback ${matched.length===pairs.length?'game-win':''}`}>{matched.length===pairs.length?<Trophy size={17}/>:<Sparkles size={16}/>} {feedback}</div><div className="game-foot"><span>{matched.length} من {pairs.length} أزواج</span><button onClick={()=>{setMatched([]);setSelected(null);setFeedback('جولة جديدة! ابدئي بالكلمة الإسباني.');}}>ابدئي من جديد <ArrowLeft size={14}/></button></div></section><div className="game-side"><div className="game-side-card"><div className="side-game-icon">🧠</div><h3>فلاش كاردز</h3><p>راجعي كلماتك القديمة بطريقة سريعة.</p><button onClick={()=>setFeedback('قريباً: فلاش كاردز بتتغير حسب الكلمات اللي محتاجة مراجعة.')}>ابدئي المراجعة <ArrowLeft size={14}/></button></div><div className="game-side-card pink-side"><div className="side-game-icon">🎧</div><h3>اسمع واختار</h3><p>درّبي ودنك على نُطق الإسباني.</p><button onClick={()=>{speakSpanish('Buenos días, ¿cómo estás?');setFeedback('اسمعي الجملة وحاولي تكرريها بصوت عالي!');}}>اسمعي جملة <Volume2 size={15}/></button></div></div></div></div>;
-}
-
-function ListeningPage() {
-  const items = useMemo(() => buildListeningItems(), []);
-  const [query, setQuery] = useState('');
-  const [levelFilter, setLevelFilter] = useState('الكل');
-  const [selectedId, setSelectedId] = useState(items[0]?.id || '');
-  const [language, setLanguage] = useState('ar');
-  const selected = items.find((item) => item.id === selectedId) || items[0];
-  const visibleItems = items.filter((item) => {
-    const matchesLevel = levelFilter === 'الكل' || item.level === levelFilter;
-    const searchable = `${item.title} ${item.spanish} ${item.arabic}`.toLocaleLowerCase();
-    return matchesLevel && searchable.includes(query.trim().toLocaleLowerCase());
-  });
-
-  return <div className="listening-page">
-    <section className="listening-intro">
-      <div>
-        <span className="eyebrow"><Headphones size={15}/> استماع وترجمة</span>
-        <h2>اسمعي الجملة واقرئي معناها</h2>
-        <p>أمثلة إسبانية وترجماتها العربية مأخوذة من محتوى الدروس المحلي الموجود في التطبيق.</p>
-      </div>
-      <div className="listening-summary"><b>{items.length}</b><span>مثال محلي</span></div>
-    </section>
-
-    <div className="listening-layout">
-      <aside className="listening-library" aria-label="أمثلة الاستماع المحلية">
-        <div className="listening-library-head"><div><h3>الأمثلة</h3><span>{visibleItems.length} من {items.length}</span></div><AudioLines size={19}/></div>
-        <label className="listening-search"><Search size={16}/><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحثي في الجملة أو المعنى" aria-label="ابحثي في أمثلة الاستماع"/></label>
-        <div className="listening-filters" role="group" aria-label="تصفية حسب المستوى">
-          {['الكل', 'A1', 'A2'].map((filter) => <button key={filter} className={levelFilter === filter ? 'selected' : ''} onClick={() => setLevelFilter(filter)}>{filter}</button>)}
-        </div>
-        <div className="listening-items">
-          {visibleItems.map((item) => <button key={item.id} className={`listening-item ${selected?.id === item.id ? 'selected' : ''}`} onClick={() => { setSelectedId(item.id); setLanguage('ar'); }} aria-pressed={selected?.id === item.id}>
-            <span className="listening-item-icon"><Headphones size={15}/></span>
-            <span className="listening-item-copy"><b>{item.title}</b><small lang="es" dir="ltr">{item.spanish}</small></span>
-            <span className="listening-item-level">{item.level}</span>
-          </button>)}
-          {!visibleItems.length && <p className="listening-empty">مفيش مثال مطابق للبحث ده.</p>}
-        </div>
-      </aside>
-
-      <section className="listening-player" aria-label="مشغل النص والترجمة">
-        {selected ? <>
-          <div className="listening-player-head">
-            <div><span className="listening-kicker">من محتوى الدرس المحلي</span><h3>{selected.title}</h3></div>
-            <button className="listening-play" onClick={() => speakSpanish(selected.spanish)}><Volume2 size={17}/> اسمعي الإسباني</button>
-          </div>
-          <div className="listening-tabs" role="tablist" aria-label="اختاري لغة النص">
-            <button id="transcript-tab-es" role="tab" aria-selected={language === 'es'} aria-controls="transcript-panel" className={language === 'es' ? 'active' : ''} onClick={() => setLanguage('es')}>النص الإسباني</button>
-            <button id="transcript-tab-ar" role="tab" aria-selected={language === 'ar'} aria-controls="transcript-panel" className={language === 'ar' ? 'active' : ''} onClick={() => setLanguage('ar')}>الترجمة العربية</button>
-          </div>
-          <div id="transcript-panel" role="tabpanel" aria-labelledby={language === 'ar' ? 'transcript-tab-ar' : 'transcript-tab-es'} className={`listening-transcript ${language === 'ar' ? 'arabic-transcript' : 'spanish-transcript'}`} lang={language} dir={language === 'ar' ? 'rtl' : 'ltr'} data-testid={language === 'ar' ? 'arabic-translation' : 'spanish-transcript'}>
-            {transcriptText(selected, language)}
-          </div>
-          <p className="listening-source-note"><Volume2 size={14}/> النطق مولّد من المتصفح، مش تسجيلًا صوتيًا من الكتاب.</p>
-        </> : <div className="listening-empty">مفيش أمثلة محلية للعرض.</div>}
-      </section>
-    </div>
-  </div>;
-}
-
-function WordsPage({ savedWords, onSaveWord }) {
+function WordsPage({ stage, savedWords, onSaveWord }) {
   const [filter, setFilter] = useState('الكل');
-  const words = [{es:'despacio',ar:'بالبطيء / على مهلك',example:'Habla despacio, por favor.',tag:'ظرف',saved:true},{es:'gracias',ar:'شكراً',example:'Muchas gracias por tu ayuda.',tag:'تعبير',saved:false},{es:'la casa',ar:'البيت',example:'Mi casa es pequeña.',tag:'اسم',saved:false},{es:'por favor',ar:'من فضلك',example:'Un café, por favor.',tag:'تعبير',saved:false}];
-  const shown = words.filter(w => filter==='المحفوظة' ? savedWords.includes(w.es) : true);
-  return <div className="words-page"><div className="words-intro"><div><span className="eyebrow"><Bookmark size={15}/> مفرداتك بتكبر</span><h2>كل كلمة جديدة مكسب 🪴</h2><p>كلمات اتعلمتيها وإنتي ماشية في رحلتك.</p></div><div className="word-count"><b>{Math.max(4, savedWords.length + 3)}</b><span>كلمة في قاموسك</span></div></div><div className="word-tools"><div className="word-search"><Search size={17}/><input placeholder="دوري على كلمة…" /></div><div className="word-filters">{['الكل','المحفوظة'].map(f=><button key={f} className={filter===f?'selected':''} onClick={()=>setFilter(f)}>{f}</button>)}</div></div><div className="dictionary-list">{shown.length ? shown.map(w=><article key={w.es} className="dictionary-card"><div className="dictionary-left"><span className="dict-icon">{w.tag==='اسم'?'🏠':w.tag==='ظرف'?'🐢':'💬'}</span><div><span className="word-label">{w.tag} · A1</span><h3>{w.es} <button aria-label={`اسمع ${w.es}`} onClick={()=>speakSpanish(w.es)}><Volume2 size={16}/></button></h3><p>{w.ar}</p><small>{w.example}</small></div></div><button className="save-word" onClick={()=>onSaveWord(w.es)} aria-label="حفظ الكلمة"><Bookmark size={18} fill={savedWords.includes(w.es)?'currentColor':'none'}/></button></article>) : <div className="empty-state">لسه مفيش كلمات محفوظة — دوسي على علامة الحفظ في أي كلمة ⭐</div>}</div><div className="review-reminder"><AudioLines size={19}/><div><b>وقت المراجعة الذكية!</b><span>راجعي كلماتك قبل ما تنسيها، ٣ دقايق بس.</span></div><button onClick={()=>speakSpanish('despacio, gracias, la casa, por favor')}>ابدئي <ArrowLeft size={14}/></button></div></div>;
+  const [query, setQuery] = useState('');
+  const words = currentLessons(stage).flatMap(lesson => lesson.words.map(word => ({ ...word, lesson: lesson.heading, example: lesson.example, tag: 'كلمة' })));
+  const shown = words.filter(word => (filter !== 'المحفوظة' || savedWords.includes(word.es)) && `${word.es} ${word.ar} ${word.lesson}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  return <div className="words-page"><div className="words-intro"><div><span className="eyebrow"><Bookmark size={15}/> مفردات {stage}</span><h2>بنك كلمات المحاضرات</h2><p>الكلمات هنا مرتبطة بالمستوى الحالي وبطاقات المراجعة.</p></div><div className="word-count"><b>{words.length}</b><span>كلمة في المستوى</span></div></div><div className="word-tools"><label className="word-search"><Search size={17}/><input value={query} onChange={event => setQuery(event.target.value)} placeholder="دور على كلمة أو معنى…" /></label><div className="word-filters">{['الكل','المحفوظة'].map(item => <button key={item} className={filter === item ? 'selected' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div></div><div className="dictionary-list">{shown.length ? shown.map(word => <article key={`${word.lesson}-${word.es}`} className="dictionary-card"><div className="dictionary-left"><span className="dict-icon">📘</span><div><span className="word-label">{stage} · {word.lesson.replace(/^A[12](?:\.\d)? · /, '')}</span><h3 lang="es" dir="ltr">{word.es} <button aria-label={`اسمع ${word.es}`} onClick={() => speakSpanish(word.es)}><Volume2 size={16}/></button></h3><p>{word.ar}</p><small lang="es" dir="ltr">{word.example}</small></div></div><button className="save-word" onClick={() => onSaveWord(word.es)} aria-label={savedWords.includes(word.es) ? 'إزالة من كلماتي' : 'إضافة إلى كلماتي'}><Bookmark size={18} fill={savedWords.includes(word.es) ? 'currentColor' : 'none'}/></button></article>) : <div className="empty-state">{filter === 'المحفوظة' ? 'مافيش كلمات محفوظة من المستوى ده لسه.' : 'مفيش كلمة مطابقة للبحث.'}</div>}</div><div className="review-reminder"><AudioLines size={19}/><div><b>مراجعة نفس بنك الكلمات</b><span>الكلمة اللي تحفظها بتظهر في فلتر المحفوظة وبطاقات المستوى.</span></div><button onClick={() => setFilter('المحفوظة')}>المحفوظة <ArrowLeft size={14}/></button></div></div>;
 }
-
-function ProgressPage({ xp, doneLessons }) {
-  const achievements = [{icon:'🔥',title:'أول أسبوع',desc:'ذاكري ٧ أيام ورا بعض',progress:'٥ / ٧',tone:'orange'},{icon:'📚',title:'عاشقة الكلمات',desc:'اتعلمي ٥٠ كلمة جديدة',progress:'١٨ / ٥٠',tone:'green'},{icon:'🎯',title:'ملتزمة بهدفك',desc:'كمّلي هدفك اليومي ٥ مرات',progress:'٣ / ٥',tone:'purple'}];
-  return <div className="progress-page"><div className="progress-intro"><span className="eyebrow"><Trophy size={15}/> كل خطوة تستاهل احتفال</span><h2>بصي عملتي إيه لحد دلوقتي! 🎉</h2><p>الإنجازات الصغيرة بتعمل فرق كبير.</p></div><div className="progress-summary"><div className="summary-big"><span className="summary-icon">⚡</span><b>{xp}</b><span>نقطة خبرة</span></div><div className="summary-big"><span className="summary-icon">📖</span><b>{doneLessons}</b><span>دروس مكتملة</span></div><div className="summary-big"><span className="summary-icon">🔥</span><b>٥</b><span>أيام متواصلة</span></div><div className="summary-big"><span className="summary-icon">⏱</span><b>٤٢</b><span>دقيقة تعلّم</span></div></div><div className="achievement-heading"><h3>إنجازاتك</h3><span>١ من ١٢ شارة</span></div><div className="achievement-list">{achievements.map((a,i)=><div key={a.title} className="achievement-card"><div className={`achievement-art ${a.tone}`}>{a.icon}</div><div className="achievement-copy"><b>{a.title}</b><span>{a.desc}</span><div className="achievement-progress"><i style={{width:i===0?'70%':i===1?'36%':'60%'}}/></div></div><span className="achievement-count">{a.progress}</span></div>)}</div></div>;
+function ProgressPage({ xp, doneLessons, savedWords, selectedStage }) {
+  const achievements = [
+    { icon: '📚', title: 'أول خمس محاضرات', desc: 'كمّل خمس محاضرات من الكورس', count: `${Math.min(doneLessons, 5)} / 5`, pct: Math.min(doneLessons / 5 * 100, 100), tone: 'green' },
+    { icon: '🔖', title: 'قاموسك الشخصي', desc: 'احفظ عشر كلمات للمراجعة', count: `${Math.min(savedWords.length, 10)} / 10`, pct: Math.min(savedWords.length / 10 * 100, 100), tone: 'orange' },
+    { icon: '⚡', title: 'نقاط الخبرة', desc: 'اجمع ١٠٠ نقطة من التدريب', count: `${Math.min(xp, 100)} / 100`, pct: Math.min(xp, 100), tone: 'purple' },
+  ];
+  return <div className="progress-page"><div className="progress-intro"><span className="eyebrow"><Trophy size={15}/> تقدمك المسجّل</span><h2>كل تدريب بيتحسب هنا</h2><p>الأرقام دي من الأنشطة المكتملة على جهازك.</p></div><div className="progress-summary"><div className="summary-big"><span className="summary-icon">⚡</span><b>{xp}</b><span>نقطة خبرة</span></div><div className="summary-big"><span className="summary-icon">📖</span><b>{doneLessons}</b><span>محاضرة مكتملة</span></div><div className="summary-big"><span className="summary-icon">🔖</span><b>{savedWords.length}</b><span>كلمة محفوظة</span></div><div className="summary-big"><span className="summary-icon">🎓</span><b>{selectedStage}</b><span>المستوى الحالي</span></div></div><div className="achievement-heading"><h3>أهدافك القادمة</h3><span>تتحدّث مع تقدمك</span></div><div className="achievement-list">{achievements.map(item => <div key={item.title} className="achievement-card"><div className={`achievement-art ${item.tone}`}>{item.icon}</div><div className="achievement-copy"><b>{item.title}</b><span>{item.desc}</span><div className="achievement-progress"><i style={{ width: `${item.pct}%` }}/></div></div><span className="achievement-count">{item.count}</span></div>)}</div></div>;
 }
-
-function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, courseMode = false, courseIndex = 0, onCoursePrevious }) {
+function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onSaveWord, savedWords = [], isCompleted = false, courseMode = false, courseIndex = 0, onCoursePrevious }) {
   const [step, setStep] = useState(0);
   const [answer, setAnswer] = useState(null);
-  const [saved, setSaved] = useState(false);
   const config = lessonLibrary[lessonId] || lessonLibrary[level === 'A2' ? 'A2-1' : 'A1-0'];
-  const courseStage = courseIndex <= 3 ? a1DriveStages[0] : courseIndex <= 6 ? a1DriveStages[1] : a1DriveStages[2];
-  useEffect(() => { setStep(0); setAnswer(null); setSaved(false); }, [lessonId]);
+  const courseStage = courseIndex <= 3 ? a1CourseStages[0] : courseIndex <= 6 ? a1CourseStages[1] : a1CourseStages[2];
+  useEffect(() => { setStep(0); setAnswer(null); }, [lessonId]);
   const words = config.words;
   const current = words[step];
+  const grammarGuide = grammarGuides[lessonId];
   const quiz = step >= words.length;
   function next() { if (quiz) { if (answer === 0) onComplete(); return; } setStep(step + 1); setAnswer(null); }
   return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className="lesson-modal" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
@@ -387,25 +300,206 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, cou
       <div className="lesson-step-label">{config.objective}</div>
       <div className="lesson-word-visual"><span>{config.emoji}</span><div className="word-orbit orbit-one"/><div className="word-orbit orbit-two"/></div>
       <h2 id="lesson-title" className="big-spanish" lang="es">{current.es}</h2><p className="big-arabic">{current.ar}</p>
-      <div className="pronunciation-line"><span>النطق التقريبي: <b>{current.say}</b></span><button className="listen-button" onClick={()=>speakSpanish(current.es)} title="صوت إسباني مولّد آليًا، مش تسجيل الكتاب"><Volume2 size={17}/> اسمعي النطق</button></div>
+      <div className="pronunciation-line"><span>النطق التقريبي: <b>{current.say}</b></span><button className="listen-button" onClick={()=>speakSpanish(current.es)} title="صوت إسباني مولّد آليًا، مش تسجيل الكتاب"><Volume2 size={17}/> اسمع النطق</button></div>
       <small className="speech-source-note">صوت إسباني مولّد من جهازك، مش تسجيل الكتاب</small>
-      {config.grammar && <div className="a2-grammar-box"><span><BookOpen size={14}/> قاعدة على السريع</span><b>{config.grammar.split(' = ')[0]}</b><small>{config.grammar}</small></div>}
-      <div className="lesson-example"><span>💬 مثال جديد</span><b lang="es">{config.example}</b><small>{config.translation}</small></div>
-      <button className="save-in-lesson" onClick={()=>setSaved(!saved)}><Bookmark size={16} fill={saved?'currentColor':'none'}/>{saved?'اتحفظت في قاموسك':'احفظي الكلمة'}</button>
+      {grammarGuide && <div className="lesson-grammar-detail"><span><BookOpen size={14}/> {grammarGuide.title}</span><p>{grammarGuide.explanation}</p>{grammarGuide.examples.slice(0, 1).map(([es, ar]) => <div key={es}><b lang="es" dir="ltr">{es}</b><small>{ar}</small></div>)}</div>}
+      <div className="lesson-example"><span>💬 مثال الدرس</span><b lang="es">{config.example}</b><small>{config.translation}</small></div>
+      <button className="save-in-lesson" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'اتحفظت في قاموسك' : 'احفظ الكلمة'}</button>
     </> : <>
       <div className="lesson-step-label">اختبار سريع · آخر خطوة</div><div className="quiz-finish-icon">🎯</div><h2 id="lesson-title">تمام! نراجع اللي اتعلمناه</h2>
       <p className="quiz-finish-question">{config.question}</p>
-      <div className="modal-quiz-answers">{config.answers.map((a,i)=><button key={a} className={answer===i?(i===0?'correct':'wrong'):answer!==null&&i===0?'correct':''} onClick={()=>setAnswer(i)}>{a}{answer===i&&i===0&&<Check size={16}/>}</button>)}</div>
-      {answer!==null&&<div className={`quiz-feedback ${answer===0?'good':'try-again'}`}>{answer===0?'صح عليكي! ¡Excelente! 🎉':`الإجابة الصح: ${config.answers[0]}`}</div>}
+      <div className="modal-quiz-answers">{config.answers.map((a,i)=><button key={a} dir={/[A-Za-zÀ-ÿ]/.test(a) ? 'ltr' : 'rtl'} className={answer===i?(i===0?'correct':'wrong'):answer!==null&&i===0?'correct':''} onClick={()=>setAnswer(i)}>{a}{answer===i&&i===0&&<Check size={16}/>}</button>)}</div>
+      {answer!==null&&<div className={`quiz-feedback ${answer===0?'good':'try-again'}`}>{answer===0?'صح عليك! ¡Excelente! 🎉':`الإجابة الصح: ${config.answers[0]}`}</div>}
     </>}</div>
     <div className={`modal-footer ${courseMode ? 'course-modal-footer' : ''}`}>
-      {courseMode && <button className="course-prev-button" onClick={onCoursePrevious} disabled={courseIndex===0}><ArrowLeft size={14}/> الدرس السابق</button>}
-      <span><span className="modal-xp">⚡</span> +١٥ نقطة خبرة</span>
-      <button className="primary-button" onClick={next}>{quiz ? answer===0 ? courseMode ? courseIndex===9?'إنهاء كورس A1':'الدرس التالي' : 'خلصت الدرس' : 'اختاري إجابة' : step===words.length-1?'اختبري نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
+      {courseMode && <button className="course-prev-button" onClick={onCoursePrevious} disabled={courseIndex<=courseStage.startIndex}><ArrowLeft size={14}/> الدرس السابق</button>}
+      <span>{isCompleted ? 'المحاضرة دي مكتملة قبل كده' : <><span className="modal-xp">⚡</span> +١٥ نقطة خبرة</>}</span>
+      <button className="primary-button" onClick={next}>{quiz ? answer===0 ? courseMode ? courseIndex===courseStage.endIndex?`إنهاء ${courseStage.id}`:'الدرس التالي' : 'خلصت الدرس' : 'اختار إجابة' : step===words.length-1?'اختبري نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
     </div>
   </section></div>;
 }
 
+const courseRanges = {
+  'A1.1': [0, 3], 'A1.2': [4, 6], 'A1.3': [7, 9],
+  'A2.1': [1, 4], 'A2.2': [5, 8], 'A2.3': [9, 10],
+};
+const courseOptions = Object.keys(courseRanges);
+const gameCatalog = [
+  { id: 'match', title: 'تطابق الكلمات', description: 'وصّل كل تعبير إسباني بمعناه.', icon: '🧩', mode: 'matching' },
+  { id: 'quiz', title: 'تحدي الاختيار', description: 'جاوب بنك أسئلة متغير من محاضرتك.', icon: '🎯', mode: 'choice' },
+  { id: 'listen', title: 'اسمع واختار', description: 'اسمع الجملة الإسبانية وحدد معناها.', icon: '🎧', mode: 'listening' },
+  { id: 'order', title: 'رتّب الجملة', description: 'كوّن الجملة الإسبانية من الكلمات.', icon: '🔤', mode: 'order' },
+];
+function currentLessons(stage = 'A1.1') {
+  const [from, to] = courseRanges[stage] || courseRanges['A1.1'];
+  const prefix = stage.startsWith('A2') ? 'A2-' : 'A1-';
+  return Object.entries(lessonLibrary).filter(([id]) => {
+    if (!id.startsWith(prefix)) return false;
+    const n = Number(id.split('-')[1]);
+    return n >= from && n <= to;
+  }).map(([id, lesson]) => ({ id, ...lesson }));
+}
+function questionPool(stage, onlyLessonId) {
+  const lessons = onlyLessonId ? currentLessons(stage).filter(item => item.id === onlyLessonId) : currentLessons(stage);
+  const allWords = currentLessons(stage).flatMap(item => item.words.map(word => word.ar));
+  return lessons.flatMap(lesson => [
+    ...lesson.words.map(word => ({ prompt: `يعني إيه «${word.es}»؟`, correct: word.ar, spanish: word.es, source: lesson.heading })),
+    { prompt: lesson.question, correct: lesson.answers[0], spanish: lesson.example, source: lesson.heading },
+  ]).map(item => ({ ...item, options: [...new Set([item.correct, ...allWords.filter(word => word !== item.correct)])].slice(0, 4) }));
+}
+function shuffled(items) { return [...items].sort(() => Math.random() - 0.5); }
+function drawQuestions(pool, amount) { if (!pool.length) return []; const shuffledPool = shuffled(pool); return Array.from({ length: amount }, (_, index) => shuffledPool[index % shuffledPool.length]); }
+function CourseSelect({ value, onChange, label = 'المستوى' }) {
+  return <label className="course-select"><span>{label}</span><select value={value} onChange={event => onChange(event.target.value)}>{courseOptions.map(stage => <option key={stage} value={stage}>{stage}</option>)}</select></label>;
+}
+function ProfilePage({ selectedStage, onSelectStage, displayName, onChangeName, xp, doneLessons }) {
+  return <div className="profile-page">
+    <section className="profile-hero"><div className="profile-avatar-large">{displayName.slice(0, 1) || 'م'}</div><div><span className="eyebrow"><GraduationCap size={15}/> ملف متعلمك</span><h2>{displayName}</h2><p>إعدادات المستوى والتقدم محفوظة على هذا الجهاز.</p></div></section>
+    <section className="profile-settings-card"><h3>بيانات الملف</h3><label className="profile-field"><span>الاسم الظاهر</span><input value={displayName} maxLength={24} onChange={event => onChangeName(event.target.value)} placeholder="اكتب اسمك" /></label>
+      <CourseSelect value={selectedStage} onChange={onSelectStage} label="المستوى الحالي" />
+      <p className="profile-help">المستوى المحدد هو الذي يظهر في المحاضرات والتدريبات والألعاب؛ تقدر تغيّره في أي وقت.</p>
+    </section>
+    <section className="profile-stat-row"><div><b>{xp}</b><span>نقطة خبرة</span></div><div><b>{doneLessons}</b><span>محاضرة مكتملة</span></div><div><b>{selectedStage}</b><span>مستواك المحدد</span></div></section>
+  </div>;
+}
+function LessonsPage({ stage, onOpenLesson }) {
+  const lessons = currentLessons(stage);
+  return <div className="course-page"><section className="course-page-intro"><span className="eyebrow"><BookOpen size={15}/> كورس {stage}</span><h2>المحاضرات بالترتيب</h2><p>كل محاضرة مستقلة؛ افتح محاضرتك من هنا من غير تبويبات وحدات ثانية.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
+    <div className="course-lesson-list">{lessons.map((lesson, index) => <article className="course-lesson-card" key={lesson.id}><span className="course-lesson-number">{String(index + 1).padStart(2, '0')}</span><div className="course-lesson-copy"><span className="level-pill">{stage}</span><h3 dir="ltr" lang="es">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><p>{lesson.objective}</p><small>{lesson.words.length} كلمات · شرح ومثال واختبار قصير</small></div><button className="primary-button" onClick={() => onOpenLesson(stage.startsWith('A2') ? 'A2' : 'A1', lesson.id)}>افتح المحاضرة <ArrowLeft size={15}/></button></article>)}</div>
+  </div>;
+}
+function GrammarPage({ stage }) {
+  const lessons = currentLessons(stage);
+  return <div className="grammar-page"><section className="course-page-intro grammar-intro"><span className="eyebrow"><BookOpen size={15}/> شرح مدرس بالمصري</span><h2>جرامر {stage}</h2><p>شرح القاعدة الموجودة في كل محاضرة مع أمثلة وتدريب سريع.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
+    <div className="grammar-guide-list">{lessons.map((lesson, index) => { const guide = grammarGuides[lesson.id] || { title: lesson.grammar || 'قاعدة الدرس', explanation: lesson.grammar || '', examples: [[lesson.example, lesson.translation]], practice: lesson.question }; return <article className="grammar-guide" key={lesson.id}><div className="grammar-guide-head"><span className="course-lesson-number">{index + 1}</span><div><span className="level-pill">{stage}</span><h3>{guide.title}</h3><small lang="es" dir="ltr">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</small></div></div><p className="grammar-explanation">{guide.explanation}</p><div className="grammar-example-list">{guide.examples.map(([es, ar]) => <div className="grammar-example-row" key={es}><b lang="es" dir="ltr">{es}</b><span dir="rtl" lang="ar">{ar}</span><button onClick={() => speakSpanish(es)} aria-label={`اسمع ${es}`}><Volume2 size={16}/></button></div>)}</div><div className="grammar-practice"><Lightbulb size={16}/><span><b>جرّب بنفسك:</b> {guide.practice}</span></div></article>; })}</div>
+  </div>;
+}
+function ListeningPage({ stage }) {
+  const lessons = currentLessons(stage);
+  const lessonIds = new Set(lessons.map(lesson => lesson.id));
+  const items = buildListeningItems(lessonLibrary).filter(item => lessonIds.has(item.id));
+  const [selectedId, setSelectedId] = useState(items[0]?.id || '');
+  const [query, setQuery] = useState('');
+  const [showArabic, setShowArabic] = useState(true);
+  const [rate, setRate] = useState(1);
+  const selected = items.find(item => item.id === selectedId) || items[0];
+  const visible = items.filter(item => `${item.title} ${item.spanish} ${item.arabic}`.toLowerCase().includes(query.trim().toLowerCase()));
+  useEffect(() => { if (!items.some(item => item.id === selectedId)) setSelectedId(items[0]?.id || ''); }, [stage]);
+  function speak(text = selected?.spanish) { if (!text || !('speechSynthesis' in window)) return; const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-ES'; utterance.rate = rate; const voices = window.speechSynthesis.getVoices(); utterance.voice = voices.find(voice => voice.lang?.toLowerCase() === 'es-es') || voices.find(voice => voice.lang?.toLowerCase().startsWith('es')) || null; window.speechSynthesis.cancel(); window.speechSynthesis.speak(utterance); }
+  return <div className="listening-page"><section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage}</span><h2>اسمع الجملة، والترجمة جنبها</h2><p>اختر محاضرة من مستواك. كل سطر إسباني من الشمال لليمين ومعناه العربي مقابله.</p></div><div className="listening-summary"><b>{items.length}</b><span>عبارة تدريب</span></div></section>
+    <div className="listening-layout"><aside className="listening-library"><div className="listening-library-head"><div><h3>عبارات المحاضرات</h3><span>{visible.length} عبارة</span></div><AudioLines size={19}/></div><label className="listening-search"><Search size={16}/><input value={query} onChange={event => setQuery(event.target.value)} placeholder="ابحث في العبارات" aria-label="بحث في العبارات"/></label><div className="listening-items">{visible.map(item => <button key={item.id} className={`listening-item ${selected?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} aria-pressed={selected?.id === item.id}><span className="listening-item-icon"><Headphones size={15}/></span><span className="listening-item-copy"><b>{item.title}</b><small lang="es" dir="ltr">{item.spanish}</small></span><span className="listening-item-level">{stage}</span></button>)}{!visible.length && <p className="listening-empty">مفيش عبارة مطابقة.</p>}</div></aside>
+      <section className="listening-player"><div className="listening-player-head"><div><span className="listening-kicker">جملة من {stage}</span><h3>{selected?.title || 'اختار محاضرة'}</h3></div><button className="listening-play" onClick={() => speak()}><Volume2 size={17}/> اسمع الإسباني</button></div>
+        <div className={`listening-transcript bilingual-transcript ${showArabic ? '' : 'arabic-hidden'}`} data-testid="bilingual-transcript"><div className="transcript-spanish" lang="es" dir="ltr">{selected?.spanish}</div>{showArabic && <div className="transcript-arabic" lang="ar" dir="rtl">{selected?.arabic}</div>}</div>
+        <div className="listening-controls"><button className="translation-toggle" onClick={() => setShowArabic(value => !value)}>{showArabic ? 'إخفاء الترجمة العربية' : 'إظهار الترجمة العربية'}</button><div className="speech-rates" aria-label="سرعة النطق">{[0.5, 0.75, 1, 1.25].map(value => <button key={value} className={rate === value ? 'selected' : ''} onClick={() => setRate(value)}>{value.toFixed(value === 1 ? 1 : 2).replace(/0$/, '')}×</button>)}</div></div>
+        <p className="listening-source-note"><Volume2 size={14}/> النطق الإسباني مُولّد من الجهاز. شغّل الصوت واختار السرعة المناسبة.</p></section></div></div>;
+}
+function SpeakingPage({ stage }) {
+  const lessons = currentLessons(stage);
+  const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
+  const [transcript, setTranscript] = useState('');
+  const [status, setStatus] = useState('اضغط زر الميكروفون وانطق الجملة الإسبانية.');
+  const [isListening, setIsListening] = useState(false);
+  const [supported, setSupported] = useState(true);
+  const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
+  const story = lessonStories[lessonId] || { es: lesson?.example || '', ar: lesson?.translation || '' };
+  const cleanSpeech = value => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f¿?¡!.,;:]/g, '').replace(/\s+/g, ' ').trim();
+  const heardWords = cleanSpeech(transcript).split(' ').filter(Boolean);
+  const expectedWords = cleanSpeech(lesson?.example || '').split(' ').filter(Boolean);
+  useEffect(() => { if (!lessons.some(item => item.id === lessonId)) setLessonId(lessons[0]?.id || ''); }, [stage]);
+  function startRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { setSupported(false); setStatus('المتصفح الحالي لا يدعم التعرّف الصوتي. جرّب Chrome أو Edge.'); return; }
+    const recognition = new SpeechRecognition(); recognition.lang = 'es-ES'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+    recognition.onstart = () => { setIsListening(true); setTranscript(''); setStatus('بسمعك دلوقتي… انطق الجملة بالإسباني.'); };
+    recognition.onerror = event => { setIsListening(false); setStatus(event.error === 'not-allowed' ? 'اسمح للمتصفح باستخدام الميكروفون وجرّب تاني.' : 'ما التقطتش الصوت بوضوح؛ قرّب من الميكروفون وجرّب تاني.'); };
+    recognition.onend = () => setIsListening(false);
+    recognition.onresult = event => { const spoken = event.results[0][0].transcript; setTranscript(spoken); setStatus(cleanSpeech(spoken) === cleanSpeech(lesson.example) ? 'الجملة كلها مطابقة — ممتاز!' : 'الكلمات الخضرا مطابقة؛ راجع الحمراء وحاول تاني.'); };
+    recognition.start();
+  }
+  return <div className="speaking-page"><section className="course-page-intro speaking-intro"><span className="eyebrow"><Mic size={15}/> تحدث من الميكروفون</span><h2>اسمع، انطق، وراجع كلامك</h2><p>اختار محاضرة وانطق الجملة بالإسباني من المايك؛ مفيش خانة كتابة.</p><label className="course-select"><span>المحاضرة</span><select value={lessonId} onChange={event => { setLessonId(event.target.value); setTranscript(''); }}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
+    {lesson && <section className="speaking-card"><div className="speaking-lesson-label">تحدّث من {lesson.heading}</div><div className="speaking-prompt" lang="es" dir="ltr">{lesson.example}</div><p className="speaking-translation" dir="rtl">{lesson.translation}</p><button className={`mic-start ${isListening ? 'recording' : ''}`} onClick={startRecognition} disabled={isListening || !supported}><Mic size={21}/>{isListening ? 'بيسجّل…' : 'ابدأ التحدث'}</button><div className="speech-feedback" role="status"><span className={transcript ? 'feedback-ready' : ''}>{status}</span>{transcript && <div className="speech-recognized"><small>مقارنة كلمة بكلمة:</small><div className="speech-word-check" lang="es" dir="ltr">{expectedWords.map((word, index) => <span key={`${word}-${index}`} className={heardWords[index] === word ? 'word-right' : 'word-wrong'}>{heardWords[index] || '—'}</span>)}{heardWords.slice(expectedWords.length).map((word, index) => <span key={`extra-${word}-${index}`} className="word-wrong">{word}</span>)}</div><b lang="es" dir="ltr">اللي اتقال: {transcript}</b></div>}</div><button className="speech-repeat" onClick={() => speakSpanish(lesson.example)}><Volume2 size={16}/> اسمع النموذج الإسباني</button></section>}
+    <section className="speaking-story"><span className="eyebrow"><BookOpen size={14}/> حكاية قصيرة · {stage}</span><h3>{lesson?.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><div className="story-bilingual"><p lang="es" dir="ltr">{story.es}</p><p dir="rtl">{story.ar}</p></div><button className="speech-repeat" onClick={() => speakSpanish(story.es)}><Volume2 size={16}/> اسمع الحكاية</button></section></div>;
+}
+function LearningFlow({ stage, exam = false, onFinish }) {
+  const lessons = currentLessons(stage);
+  const [lessonId, setLessonId] = useState('all');
+  const pool = useMemo(() => questionPool(stage, lessonId === 'all' ? null : lessonId), [stage, lessonId]);
+  const amount = exam ? 10 : Math.min(8, Math.max(5, pool.length));
+  const [questions, setQuestions] = useState(() => drawQuestions(pool, amount));
+  const [index, setIndex] = useState(0);
+  const [answer, setAnswer] = useState(null);
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [seconds, setSeconds] = useState(exam ? 15 * 60 : 0);
+  const item = questions[index];
+  const choices = useMemo(() => shuffled(item?.options || []), [item]);
+  useEffect(() => { if (!exam || finished) return undefined; const timer = setInterval(() => setSeconds(value => { if (value <= 1) { clearInterval(timer); setFinished(true); return 0; } return value - 1; }), 1000); return () => clearInterval(timer); }, [exam, finished]);
+  function restart(nextLessonId = lessonId) { const nextPool = questionPool(stage, nextLessonId === 'all' ? null : nextLessonId); const nextAmount = exam ? 10 : Math.min(8, Math.max(5, nextPool.length)); setQuestions(drawQuestions(nextPool, nextAmount)); setIndex(0); setAnswer(null); setScore(0); setFinished(false); setSeconds(exam ? 900 : 0); }
+  function next() { const total = score + (answer === item?.correct ? 1 : 0); setScore(total); if (index + 1 === questions.length) { onFinish(Math.round(total / questions.length * (exam ? 40 : 15))); setFinished(true); } else { setIndex(value => value + 1); setAnswer(null); } }
+  const percentage = questions.length ? Math.round(score / questions.length * 100) : 0;
+  return <div className="learning-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'امتحان مستقل' : 'تدريب قصير'}</span><h2>{exam ? `امتحان ${stage}` : `Quiz · ${stage}`}</h2><p>{exam ? 'اختبار مرحلي مستقل من بنك الأسئلة؛ الوقت والنتيجة يظهران هنا.' : 'اختار المحاضرة أو اختبر نفسك في كل محتوى المستوى الحالي.'}</p>{!finished && <label className="course-select"><span>نطاق الأسئلة</span><select value={lessonId} onChange={event => { const nextId = event.target.value; setLessonId(nextId); restart(nextId); }}><option value="all">كل محاضرات {stage}</option>{lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.heading}</option>)}</select></label>}</section>
+    {finished ? <section className="flow-result"><div className="result-medal">{percentage >= 70 ? '🏆' : '📘'}</div><span className="eyebrow">{exam ? 'نتيجة الامتحان' : 'نتيجة التدريب'}</span><h3>{score} / {questions.length} إجابات صحيحة</h3><p>{percentage >= 70 ? 'ممتاز! راجع الأخطاء وكمل للمحاضرة التالية.' : 'راجع المحاضرة، وبعدها جرّب مرة تانية.'}</p><div className="result-progress"><i style={{ width: `${percentage}%` }} /></div><button className="primary-button" onClick={() => restart()}><RotateCcw size={16}/> ابدأ محاولة جديدة</button></section> : item && <section className="flow-question-card"><div className="flow-stats"><span>{exam ? <><Timer size={15}/> {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}</> : <><Target size={15}/> سؤال {index + 1} من {questions.length}</>}</span><span><CheckCircle2 size={15}/> النتيجة {score}</span></div><div className="flow-progress"><i style={{ width: `${(index + 1) / questions.length * 100}%` }}/></div><small className="flow-source">{item.source}</small><h3>{item.prompt}</h3>{item.spanish && <p lang="es" dir="ltr" className="flow-spanish">{item.spanish}</p>}<div className="flow-options">{choices.map((option, i) => <button key={`${item.prompt}-${option}`} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} onClick={() => answer === null && setAnswer(option)} className={`${answer === option ? (option === item.correct ? 'is-correct' : 'is-wrong') : ''} ${answer !== null && option === item.correct ? 'is-correct' : ''}`}><span>{['A','B','C','D'][i]}</span>{option}{answer === option && (option === item.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`flow-feedback ${answer === item.correct ? 'good' : 'bad'}`}>{answer === item.correct ? 'إجابة صحيحة — عاش!' : `الإجابة الصحيحة: ${item.correct}`}</div>}<button className="primary-button flow-next" disabled={answer === null} onClick={next}>{index + 1 === questions.length ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button></section>}
+  </div>;
+}
+function GameRun({ game, lesson, stage, onBack, onAward }) {
+  const words = lesson.words;
+  const [index, setIndex] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [answerChoice, setAnswerChoice] = useState(null);
+  const [matched, setMatched] = useState([]);
+  const [usedTiles, setUsedTiles] = useState([]);
+  const [order, setOrder] = useState([]);
+  const [lives, setLives] = useState(3);
+  const [score, setScore] = useState(0);
+  const [seconds, setSeconds] = useState(90);
+  const [feedback, setFeedback] = useState('');
+  const [finished, setFinished] = useState(false);
+  const questions = useMemo(() => questionPool(stage, lesson.id), [stage, lesson.id]);
+  const current = words[index % words.length];
+  const question = questions[index % questions.length];
+  const sentenceBank = [lesson.example, ...(lessonSentenceBanks[lesson.id] || [])];
+  const roundSentence = sentenceBank[index % sentenceBank.length];
+  const sentenceTokens = useMemo(() => shuffled(roundSentence.split(/\s+/)), [roundSentence]);
+  const matchWords = useMemo(() => shuffled(words), [lesson.id, game.id]);
+  const roundCount = game.id === 'match' ? words.length : game.id === 'order' ? sentenceBank.length : questions.length;
+  useEffect(() => { if (finished) return undefined; const timer = setInterval(() => setSeconds(value => { if (value <= 1) { clearInterval(timer); setFinished(true); return 0; } return value - 1; }), 1000); return () => clearInterval(timer); }, [finished]);
+  function mark(option) { const correct = option === question.correct; setAnswerChoice(option); if (correct) { setScore(value => value + 10); setFeedback('صح! +١٠ نقاط'); } else { setLives(value => Math.max(0, value - 1)); setFeedback('مش دي — الإجابة الخضرا موضحة قدامك.'); } setSelected(correct ? 'correct' : 'wrong'); }
+  function next() { if (lives <= 0) { setFinished(true); return; } if (game.id === 'match' && matched.length < words.length - 1) { setFeedback('كمّل توصيل باقي الكلمات.'); return; } if (index + 1 >= roundCount) { setFinished(true); return; } setIndex(value => value + 1); setSelected(null); setAnswerChoice(null); setUsedTiles([]); setOrder([]); setFeedback(''); }
+  useEffect(() => { if (game.id === 'match' && matched.length === words.length) setFinished(true); }, [matched, game.id, words.length]);
+  useEffect(() => { if (finished) onAward(score); }, [finished]);
+  const choices = useMemo(() => shuffled([...new Set([question.correct, ...question.options.filter(option => option !== question.correct)])]).slice(0, 4), [question]);
+  function selectMatchArabic(ar) { if (!selected || selected === 'correct') return; const isCorrect = words.find(word => word.es === selected)?.ar === ar; if (isCorrect) { setMatched(value => [...value, selected]); setFeedback('تطابق صحيح — عاش!'); setScore(value => value + 10); } else { setLives(value => Math.max(0, value - 1)); setFeedback('مش المطابقة دي؛ الصح باين بالأخضر.'); } }
+  function checkOrder() { const proposed = order.map(i => sentenceTokens[i]).join(' '); const norm = value => value.toLowerCase().replace(/[.,!?¿¡]/g, '').replace(/\s+/g, ' ').trim(); const isCorrect = norm(proposed) === norm(roundSentence); setSelected(isCorrect ? 'correct' : 'wrong'); setFeedback(isCorrect ? 'الجملة مظبوطة! +١٠ نقاط' : `الجملة الصحيحة: ${roundSentence}`); if (isCorrect) setScore(value => value + 10); else setLives(value => Math.max(0, value - 1)); }
+  return <div className="game-run-page"><header className="game-run-top"><button className="icon-button" onClick={onBack} aria-label="العودة لصالة الألعاب"><ArrowRight size={18}/></button><div><span className="level-pill">{lesson.heading.split(' · ')[0]}</span><b>{game.title}</b></div><div className="run-stats"><span><Heart size={16} fill="currentColor"/> {lives}</span><span><Timer size={16}/> {seconds}s</span><span>⚡ {score}</span></div></header>
+    {finished ? <section className="game-result"><div className="result-medal">{lives > 0 ? '🏆' : '💪'}</div><span className="eyebrow">انتهت الجولة</span><h2>{lives > 0 ? 'عاش! جولة ممتازة' : 'خلصت القلوب — جرب تاني'}</h2><p>جمعت {score} نقطة في {game.title} · {lesson.heading}</p><div className="game-result-actions"><button className="primary-button" onClick={onBack}>ارجع لصالة الألعاب</button></div></section> : <section className="game-board"><div className="game-board-heading"><span>{game.icon} {lesson.heading}</span><div className="game-run-progress"><i style={{width:`${Math.min(100, (game.id === 'match' ? matched.length : index + 1) / roundCount * 100)}%`}}/></div></div>
+      {game.id === 'match' ? <><h2>وصّل الإسباني بمعناه</h2><div className="live-match-grid"><div>{words.map(word => <div key={word.es} className={`live-match-choice ${selected === word.es ? 'selected' : ''} ${matched.includes(word.es) ? 'matched' : ''}`}><button className="live-match-text" onClick={() => { if (!matched.includes(word.es)) { setSelected(word.es); setFeedback('اختار المعنى المقابل.'); } }} disabled={matched.includes(word.es)} lang="es" dir="ltr">{word.es}</button><button className="match-sound" onClick={() => speakSpanish(word.es)} aria-label={`اسمع ${word.es}`}><Volume2 size={15}/></button></div>)}</div><div>{matchWords.map(word => <button key={word.ar} className={`live-match-choice arabic ${matched.some(es => words.find(item => item.es === es)?.ar === word.ar) ? 'matched' : ''}`} onClick={() => selectMatchArabic(word.ar)} disabled={matched.some(es => words.find(item => item.es === es)?.ar === word.ar)}>{word.ar}</button>)}</div></div></> : game.id === 'order' ? <><h2>رتّب كلمات الجملة</h2><p className="order-built" lang="es" dir="ltr">{order.map((tile, i) => <button key={`${tile}-${i}`} onClick={() => { setOrder(order.filter((_, j) => j !== i)); setUsedTiles(usedTiles.filter(value => value !== tile)); }}>{sentenceTokens[tile]}</button>)}</p><div className="order-tiles" lang="es" dir="ltr">{sentenceTokens.map((token, tile) => <button key={tile} disabled={usedTiles.includes(tile)} onClick={() => { setUsedTiles([...usedTiles, tile]); setOrder([...order, tile]); }}>{token}</button>)}</div><button className="primary-button" onClick={checkOrder} disabled={selected === 'correct'}>تحقق من الجملة <Check size={16}/></button></> : <><h2>{game.id === 'listen' ? 'اسمع واختر المعنى' : question.prompt}</h2>{game.id === 'listen' && <button className="game-listen-button" onClick={() => speakSpanish(question.spanish)}><Volume2 size={18}/> شغّل الصوت الإسباني</button>}{game.id !== 'listen' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr">{question.spanish}</p>}<div className="game-answer-grid">{choices.map((option, i) => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} disabled={selected !== null} className={`${selected && option === question.correct ? 'is-correct' : ''} ${selected === 'wrong' && answerChoice === option ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A','B','C','D'][i]}</span>{option}</button>)}</div></>}
+      {feedback && <div className={`game-live-feedback ${selected === 'wrong' ? 'bad' : selected === 'correct' || feedback.startsWith('تطابق') ? 'good' : ''}`}>{feedback}</div>}{game.id !== 'match' && <button className="game-next-button" onClick={next}>{game.id === 'order' ? 'الجملة التالية' : 'السؤال التالي'} <ArrowLeft size={16}/></button>}
+    </section>}</div>;
+}
+function GamesPage({ stage, addXp }) {
+  const [lessonId, setLessonId] = useState(currentLessons(stage)[0]?.id || '');
+  const [activeGame, setActiveGame] = useState(null);
+  const lessons = currentLessons(stage);
+  const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
+  useEffect(() => { setLessonId(currentLessons(stage)[0]?.id || ''); setActiveGame(null); }, [stage]);
+  if (activeGame && lesson) return <GameRun key={`${activeGame.id}-${lesson.id}`} game={activeGame} lesson={lesson} stage={stage} onBack={() => setActiveGame(null)} onAward={addXp}/>;
+  return <div className="arcade-page"><section className="games-banner"><div><span className="eyebrow"><Gamepad2 size={15}/> صالة الألعاب · {stage}</span><h2>اختار المحاضرة، وبعدها اللعبة</h2><p>كل لعبة تفتح بنظامها الخاص وبنك أسئلة من محتوى المحاضرة.</p></div><div className="game-emoji">🕹️</div></section><div className="arcade-controls"><label className="course-select"><span>محاضرتك</span><select value={lessonId} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><span className="arcade-selected-lesson">{lesson?.objective}</span></div><div className="arcade-grid">{gameCatalog.map(game => <article className="arcade-game-card" key={game.id}><span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {lesson?.heading.split(' · ').at(-1)}</span><h3>{game.title}</h3><p>{game.description}</p><button className="primary-button" onClick={() => setActiveGame(game)}>ابدأ اللعبة <Play size={15} fill="currentColor"/></button></article>)}</div></div>;
+}
+function FlashcardsPage({ stage, savedWords, onSaveWord }) {
+  const lessons = currentLessons(stage);
+  const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
+  const [index, setIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [savedOnly, setSavedOnly] = useState(false);
+  const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
+  const words = (lesson?.words || []).filter(word => !savedOnly || savedWords.includes(word.es));
+  const current = words[index];
+  useEffect(() => { setLessonId(currentLessons(stage)[0]?.id || ''); setIndex(0); setFlipped(false); }, [stage]);
+  useEffect(() => { setIndex(0); setFlipped(false); }, [lessonId, savedOnly]);
+  function step(amount) { setIndex(value => (value + amount + words.length) % words.length); setFlipped(false); }
+  return <div className="flashcards-page"><section className="course-page-intro"><span className="eyebrow"><Bookmark size={15}/> بنك الكلمات · {stage}</span><h2>Flashcards</h2><p>اقلب البطاقة لمشاهدة المعنى، احفظها في «كلماتي»، وراجعها بأي ترتيب.</p><label className="course-select"><span>المحاضرة</span><select value={lessonId} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><div className="flashcard-filter"><button className={!savedOnly ? 'selected' : ''} onClick={() => setSavedOnly(false)}>كل كلمات المحاضرة</button><button className={savedOnly ? 'selected' : ''} onClick={() => setSavedOnly(true)}>المحفوظة فقط ({(lesson?.words || []).filter(word => savedWords.includes(word.es)).length})</button></div></section>
+    {current ? <><div className="flashcard-progress">بطاقة {index + 1} من {words.length}<button onClick={() => { setIndex(Math.floor(Math.random() * words.length)); setFlipped(false); }}><Shuffle size={15}/> اخلط</button></div><button className={`flashcard ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(value => !value)} aria-label="اقلب البطاقة"><span className="flashcard-side-label">{flipped ? 'المعنى والمثال' : 'الإسبانية'}</span>{!flipped ? <><b lang="es" dir="ltr">{current.es}</b><small>اضغط لقلب البطاقة</small></> : <><b className="flashcard-arabic" dir="rtl">{current.ar}</b><span className="flashcard-example" lang="es" dir="ltr">{lesson?.example}</span><small className="flashcard-example-ar">{lesson?.translation}</small></>}</button><div className="flashcard-controls"><button className="secondary-button" onClick={() => step(-1)}><ArrowRight size={16}/> السابق</button><button className="secondary-button" onClick={() => speakSpanish(current.es)}><Volume2 size={16}/> اسمع</button><button className="secondary-button" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'محفوظة' : 'احفظ الكلمة'}</button><button className="primary-button" onClick={() => step(1)}>التالي <ArrowLeft size={16}/></button></div></> : <div className="empty-state flashcard-empty">مافيش كلمات محفوظة للمحاضرة دي. احفظ كلمات من المحاضرة أو ارجع لكل الكلمات.</div>}</div>;
+}
 function App() {
   const initial = useMemo(readSaved, []);
   const [active, setActive] = useState('home');
@@ -413,38 +507,61 @@ function App() {
   const [lessonLevel, setLessonLevel] = useState('A1');
   const [lessonId, setLessonId] = useState('A1-0');
   const [a1CourseMode, setA1CourseMode] = useState(false);
-  const [a1CourseIndex, setA1CourseIndex] = useState(initial.a1CourseIndex || 0);
-  const [xp, setXp] = useState(initial.xp || 125);
-  const [doneLessons, setDoneLessons] = useState(initial.doneLessons || 3);
-  const [savedWords, setSavedWords] = useState(initial.savedWords || ['gracias']);
+  const [a1CourseIndex, setA1CourseIndex] = useState(initial.a1CourseIndex ?? 0);
+  const [selectedStage, setSelectedStage] = useState(initial.selectedStage || 'A1.1');
+  const [displayName, setDisplayName] = useState(initial.displayName || 'متعلم');
+  const [xp, setXp] = useState(initial.completedLessons ? (initial.xp ?? 0) : 0);
+  const [doneLessons, setDoneLessons] = useState(initial.completedLessons ? (initial.doneLessons ?? 0) : 0);
+  const [completedLessons, setCompletedLessons] = useState(initial.completedLessons || []);
+  const [savedWords, setSavedWords] = useState(initial.savedWords || []);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  useEffect(() => { localStorage.setItem('hola-progress', JSON.stringify({xp, doneLessons, savedWords, a1CourseIndex})); }, [xp, doneLessons, savedWords, a1CourseIndex]);
-  function openLesson(level = 'A1', lessonId = level === 'A2' ? 'A2-1' : 'A1-0') { setA1CourseMode(false); setLessonLevel(level); setLessonId(lessonId); setLessonOpen(true); }
-  function startA1Course(index = 0) {
+  useEffect(() => { localStorage.setItem('hola-progress', JSON.stringify({ xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName })); }, [xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName]);
+  function openLesson(level = selectedStage.startsWith('A2') ? 'A2' : 'A1', id = currentLessons(selectedStage)[0]?.id || 'A1-0') {
+    setA1CourseMode(false); setLessonLevel(level); setLessonId(id); setLessonOpen(true);
+  }
+  function startA1Course(index = courseRanges[selectedStage]?.[0] || 0) {
     const safeIndex = Math.max(0, Math.min(9, index));
     setA1CourseMode(true); setA1CourseIndex(safeIndex); setLessonLevel('A1');
-    setLessonId(levels[0].topics[safeIndex].id); setLessonOpen(true);
+    setLessonId(`A1-${safeIndex}`); setLessonOpen(true);
   }
   function goToA1CourseLesson(index) {
     const safeIndex = Math.max(0, Math.min(9, index));
-    setA1CourseIndex(safeIndex); setLessonLevel('A1'); setLessonId(levels[0].topics[safeIndex].id);
+    setA1CourseIndex(safeIndex); setLessonLevel('A1'); setLessonId(`A1-${safeIndex}`);
   }
   function completeLesson() {
-    setXp(x=>x+15); setDoneLessons(x=>x+1);
-    if (a1CourseMode && a1CourseIndex < 9) goToA1CourseLesson(a1CourseIndex + 1);
+    if (!completedLessons.includes(lessonId)) { setXp(value => value + 15); setCompletedLessons(items => [...items, lessonId]); setDoneLessons(value => value + 1); }
+    if (a1CourseMode && a1CourseIndex < 9 && a1CourseIndex < courseRanges[selectedStage][1]) goToA1CourseLesson(a1CourseIndex + 1);
     else { setLessonOpen(false); setA1CourseMode(false); }
   }
-  function toggleWord(word) { setSavedWords(items => items.includes(word) ? items.filter(w=>w!==word) : [...items,word]); }
+  function toggleWord(word) { setSavedWords(items => items.includes(word) ? items.filter(item => item !== word) : [...items, word]); }
+  function updateDisplayName(name) { setDisplayName(name.slice(0, 24)); }
   function page() {
-    if (active === 'path') return <PathPage onOpenLesson={openLesson} onStartA1Course={startA1Course} />;
-    if (active === 'listening') return <ListeningPage />;
-    if (active === 'games') return <GamesPage addXp={amount=>setXp(x=>x+amount)} />;
-    if (active === 'words') return <WordsPage savedWords={savedWords} onSaveWord={toggleWord}/>;
-    if (active === 'progress') return <ProgressPage xp={xp} doneLessons={doneLessons}/>;
-    return <HomePage onOpenLesson={()=>openLesson('A1')} onNavigate={setActive} xp={xp} doneLessons={doneLessons} savedWords={savedWords} onSaveWord={toggleWord}/>;
+    if (active === 'profile') return <ProfilePage selectedStage={selectedStage} onSelectStage={setSelectedStage} displayName={displayName} onChangeName={updateDisplayName} xp={xp} doneLessons={doneLessons}/>;
+    if (active === 'path') return <PathPage selectedStage={selectedStage} completedLessons={completedLessons} onOpenLesson={openLesson} onStartA1Course={startA1Course}/>;
+    if (active === 'lessons') return <LessonsPage stage={selectedStage} onOpenLesson={openLesson}/>;
+    if (active === 'grammar') return <GrammarPage stage={selectedStage}/>;
+    if (active === 'listening') return <ListeningPage stage={selectedStage}/>;
+    if (active === 'speaking') return <SpeakingPage stage={selectedStage}/>;
+    if (active === 'games') return <GamesPage stage={selectedStage} addXp={amount => setXp(value => value + amount)}/>;
+    if (active === 'quiz') return <LearningFlow key={`quiz-${selectedStage}`} stage={selectedStage} onFinish={amount => setXp(value => value + amount)}/>;
+    if (active === 'exam') return <LearningFlow key={`exam-${selectedStage}`} stage={selectedStage} exam onFinish={amount => setXp(value => value + amount)}/>;
+    if (active === 'flashcards') return <FlashcardsPage key={selectedStage} stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
+    if (active === 'words') return <WordsPage stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
+    if (active === 'progress') return <ProgressPage xp={xp} doneLessons={doneLessons} savedWords={savedWords} selectedStage={selectedStage}/>;
+    return <HomePage onOpenLesson={() => openLesson(selectedStage.startsWith('A2') ? 'A2' : 'A1', currentLessons(selectedStage)[0]?.id)} onNavigate={setActive} xp={xp} doneLessons={doneLessons} savedWords={savedWords} onSaveWord={toggleWord} selectedStage={selectedStage} completedLessons={completedLessons}/>;
   }
-  return <div className="app-shell"><Sidebar active={active} onNavigate={setActive} streak={5}/><main className="main-area"><Header active={active} onSearch={()=>setSearchOpen(!searchOpen)}/>{searchOpen&&<div className="quick-search"><Search size={18}/><input autoFocus placeholder="دوري على درس، كلمة أو قاعدة…" onKeyDown={e=>e.key==='Escape'&&setSearchOpen(false)}/><button onClick={()=>setSearchOpen(false)} aria-label="إغلاق البحث"><X size={17}/></button></div>}<div className="page-content">{page()}<footer className="app-footer"><span>مصنوع بحب عشان الإسباني يبقى أسهل 💛</span><span>¡Vamos! <span className="footer-star">✳</span></span></footer></div></main>{mobileMenuOpen&&<div className="mobile-drawer"><button className="drawer-close" onClick={()=>setMobileMenuOpen(false)}><X/></button><Sidebar active={active} onNavigate={id=>{setActive(id);setMobileMenuOpen(false)}} streak={5}/></div>}<nav className="mobile-nav" aria-label="تنقل الموبايل">{navItems.map(({id,label,icon:Icon})=><button key={id} className={active===id?'active':''} onClick={()=>setActive(id)}><Icon size={20}/><span>{label}</span></button>)}</nav>{lessonOpen&&<LessonModal level={lessonLevel} lessonId={lessonId} courseMode={a1CourseMode} courseIndex={a1CourseIndex} onCoursePrevious={()=>goToA1CourseLesson(a1CourseIndex-1)} onClose={()=>{setLessonOpen(false);setA1CourseMode(false)}} onComplete={completeLesson}/>}</div>;
+  const sidebarProps = { active, onNavigate: id => { setActive(id); setMobileMenuOpen(false); }, streak: 0, onProfile: () => setActive('profile'), displayName, selectedStage };
+  return <div className="app-shell">
+    <Sidebar {...sidebarProps}/>
+    <main className="main-area">
+      <Header active={active} selectedStage={selectedStage} displayName={displayName} onProfile={() => setActive('profile')} onSearch={() => setSearchOpen(value => !value)}/>
+      {searchOpen && <div className="quick-search"><Search size={18}/><input autoFocus placeholder="دور على محاضرة أو كلمة أو قاعدة…" onKeyDown={event => event.key === 'Escape' && setSearchOpen(false)}/><button onClick={() => setSearchOpen(false)} aria-label="إغلاق البحث"><X size={17}/></button></div>}
+      <div className="page-content">{page()}<footer className="app-footer"><span>خطوة بخطوة في الإسباني 💛</span><span>¡Vamos! <span className="footer-star">✳</span></span></footer></div>
+    </main>
+    {mobileMenuOpen && <div className="mobile-drawer"><button className="drawer-close" onClick={() => setMobileMenuOpen(false)} aria-label="إغلاق القائمة"><X/></button><Sidebar {...sidebarProps}/></div>}
+    <nav className="mobile-nav" aria-label="تنقل الموبايل">{navItems.map(({ id, label, icon: Icon }) => <button key={id} className={active === id ? 'active' : ''} onClick={() => setActive(id)}><Icon size={20}/><span>{label}</span></button>)}</nav>
+    {lessonOpen && <LessonModal level={lessonLevel} lessonId={lessonId} savedWords={savedWords} isCompleted={completedLessons.includes(lessonId)} onSaveWord={toggleWord} courseMode={a1CourseMode} courseIndex={a1CourseIndex} onCoursePrevious={() => goToA1CourseLesson(Math.max(courseRanges[selectedStage][0], a1CourseIndex - 1))} onClose={() => { setLessonOpen(false); setA1CourseMode(false); }} onComplete={completeLesson}/>}
+  </div>;
 }
-
 export default App;

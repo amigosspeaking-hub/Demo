@@ -42,8 +42,36 @@ for (const item of items) {
 const localDataSource = await readFile(path.join(root, 'src/data/lessons.js'), 'utf8');
 check(!/drive\.google\.com|transcripts_v17/i.test(localDataSource), 'Local translation source must not link to the Drive Spanish transcript');
 const appSource = await readFile(path.join(root, 'src/App.jsx'), 'utf8');
-check(appSource.includes('data-testid={language === \'ar\' ? \'arabic-translation\' : \'spanish-transcript\'}'), 'Listening UI must expose a stable transcript test hook');
-check(appSource.includes('{transcriptText(selected, language)}'), 'Listening UI must render the selected transcript field without added labels');
+check(!/اسألي|تسألي|اتكلمي|وصّفي|اطلبي|تطلبي|مستعدة|فاهمة/u.test(JSON.stringify(lessonLibrary)), 'Lesson objectives and prompts must address the learner in masculine wording');
+check(appSource.includes('data-testid="bilingual-transcript"'), 'Listening UI must expose a stable bilingual transcript test hook');
+check(appSource.includes("showArabic ? '' : 'arabic-hidden'"), 'Listening UI must collapse to one column when Arabic is hidden');
+const styleSource = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+check(styleSource.includes('.bilingual-transcript{direction:ltr}') && styleSource.includes('.story-bilingual,.grammar-example-row,.live-match-grid{direction:ltr}'), 'Mixed-script sentence layouts must place Spanish content from left to right');
+check(appSource.includes('onClick={() => onSaveWord(current.es)}'), 'Saving a lesson word must update the shared vocabulary list');
+check(appSource.includes('{selected?.spanish}') && appSource.includes('{selected?.arabic}'), 'Listening UI must render each Spanish sentence alongside its Arabic translation');
+check(appSource.includes('setShowArabic(value => !value)'), 'Listening UI must let learners show or hide Arabic translations');
+check(appSource.includes('setRate(value)'), 'Listening UI must expose selectable speech rates');
+check(appSource.includes('buildListeningItems(lessonLibrary).filter(item => lessonIds.has(item.id))'), 'Listening UI must present bilingual lesson sentences, not isolated vocabulary pairs');
+check(appSource.includes('const questions = useMemo(() => questionPool(stage, lesson.id), [stage, lesson.id])'), 'Game question order must stay stable while a learner answers');
+check(appSource.includes('const pool = useMemo(() => questionPool(stage, lessonId === \'all\' ? null : lessonId), [stage, lessonId])'), 'Quiz options must stay stable while a learner answers');
+check(appSource.includes('onClick={() => restart()}'), 'Restart button must restart with the currently selected scope');
+check(!appSource.includes('window.location.reload()'), 'Game flow must return to the arcade without reloading the entire app');
+check(appSource.includes('window.SpeechRecognition || window.webkitSpeechRecognition'), 'Speaking UI must use the browser microphone recognition API');
+check(appSource.includes('const gameCatalog = [') && appSource.includes('function GameRun('), 'Arcade must offer separate playable game modes');
+const homeSource = appSource.slice(appSource.indexOf('function HomePage('), appSource.indexOf('function PathPage('));
+check(homeSource.includes('const featuredLesson = courseLessons[0]'), 'Home challenge must use the selected stage content');
+check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home quick challenge must not award repeatable XP or show unrelated fixed-level content');
+check(appSource.includes('selectedStage, displayName') && appSource.includes("useState(initial.selectedStage || 'A1.1')"), 'Profile stage selection must persist locally');
+check(!/drive\.google\.com/i.test(appSource), 'Learner-facing pages must not send students to Google Drive');
+
+const grammarGuides = await import('../src/data/grammar.js');
+const lessonStories = await import('../src/data/stories.js');
+const sentenceBanks = await import('../src/data/sentences.js');
+for (const lessonId of Object.keys(lessonLibrary)) {
+  check(Boolean(grammarGuides.grammarGuides[lessonId]?.explanation), `${lessonId}: detailed grammar guide must exist`);
+  check(Boolean(lessonStories.lessonStories[lessonId]?.es && lessonStories.lessonStories[lessonId]?.ar), `${lessonId}: bilingual speaking story must exist`);
+  check(sentenceBanks.lessonSentenceBanks[lessonId]?.length >= 3, `${lessonId}: independent sentence game bank must contain multiple prompts`);
+}
 
 const materials = [
   { id: 'A1.1', ids: ['A1-0', 'A1-1', 'A1-2', 'A1-3'] },

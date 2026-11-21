@@ -18,7 +18,7 @@
         },
         {
           "es": "No entiendo",
-          "ar": "مش فاهم / فاهمة",
+          "ar": "مش فاهم",
           "say": "نو إنتييندو"
         },
         {
@@ -32,8 +32,8 @@
       "id": "A1-1",
       "title": "Nosotros y nosotras",
       "level": "A1",
-      "exampleSpanish": "Me llamo Sara y soy de Egipto.",
-      "translationArabic": "اسمي سارة وأنا من مصر.",
+      "exampleSpanish": "Me llamo Omar y soy de Egipto.",
+      "translationArabic": "اسمي عمر وأنا من مصر.",
       "words": [
         {
           "es": "Me llamo",
@@ -61,7 +61,7 @@
       "words": [
         {
           "es": "Quiero aprender",
-          "ar": "عايز / عايزة أتعلم",
+          "ar": "عايز أتعلم",
           "say": "كييرو أبريندير"
         },
         {
