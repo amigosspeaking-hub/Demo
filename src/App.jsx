@@ -7,8 +7,8 @@ import { lessonSentenceBanks } from './data/sentences.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
 import {
   ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
-  CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Image as ImageIcon, Lightbulb, Pause,
-  LockKeyhole, Menu, MessageCircle, MoreHorizontal, Play, Search, Settings2,
+  CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Lightbulb, Pause,
+  LockKeyhole, MoreHorizontal, Play, Search, Settings2,
   Sparkles, Target, Trophy, Volume2, X, Zap, Heart, Mic, RotateCcw, Timer, Shuffle
 } from 'lucide-react';
 
@@ -55,29 +55,31 @@ const a2Stages = [
   { id: 'A2.3', meetings: 'اللقاءات ٩–١٢', units: 'الوحدتان ٩–١٠ + مراجعة', focus: 'حكي الذكريات واللحظات المهمة ومقارنة زمان بدلوقتي', grammar: 'الماضي الناقص والبسيط والفرق بينهم في الحكي', check: 'مراجعة شاملة ومحاكاة DELE A2' },
 ];
 
-const navItems = [
-  { id: 'home', label: 'الرئيسية', icon: House },
-  { id: 'path', label: 'رحلتي', icon: GraduationCap },
-  { id: 'lessons', label: 'المحاضرات', icon: BookOpen },
-  { id: 'grammar', label: 'الجرامر', icon: BookOpen },
-  { id: 'listening', label: 'الاستماع', icon: Headphones },
-  { id: 'speaking', label: 'التحدث', icon: Mic },
-  { id: 'games', label: 'الألعاب', icon: Gamepad2 },
-  { id: 'quiz', label: 'Quiz', icon: CircleHelp },
-  { id: 'flashcards', label: 'Flashcards', icon: Bookmark },
-  { id: 'exam', label: 'الامتحانات', icon: Award },
-  { id: 'words', label: 'كلماتي', icon: Bookmark },
-  { id: 'progress', label: 'إنجازاتي', icon: Trophy },
-  { id: 'profile', label: 'الملف', icon: Settings2 },
+const navGroups = [
+  { label: 'ابدأ', items: [
+    { id: 'home', label: 'الرئيسية', icon: House },
+    { id: 'lessons', label: 'المحاضرات', icon: BookOpen },
+    { id: 'path', label: 'خطة التعلّم', icon: GraduationCap },
+  ] },
+  { label: 'تدرّب', items: [
+    { id: 'listening', label: 'الاستماع', icon: Headphones },
+    { id: 'grammar', label: 'الجرامر', icon: BookOpen },
+    { id: 'speaking', label: 'التحدث', icon: Mic },
+    { id: 'games', label: 'الألعاب', icon: Gamepad2 },
+    { id: 'quiz', label: 'اختبار سريع', icon: CircleHelp },
+    { id: 'exam', label: 'الامتحانات', icon: Award },
+  ] },
+  { label: 'مكتبتي', items: [
+    { id: 'flashcards', label: 'بطاقات المراجعة', icon: Bookmark },
+    { id: 'words', label: 'كلماتي', icon: Bookmark },
+    { id: 'progress', label: 'إنجازاتي', icon: Trophy },
+  ] },
 ];
-
-const programPlanItems = [
-  { icon: MessageCircle, title: 'تعليم وشرح بالمصري', text: 'الشرح والتعليمات والتغذية الراجعة بالعربي المصري، مع أمثلة إسبانية أصلية وواضحة.' },
-  { icon: ImageIcon, title: 'صور تعليمية أصلية', text: 'رسوم وصور للمفردات والمواقف: الفصل، البيت، الحي، الأكل والصحة، من غير نسخ صفحات الكتاب.' },
-  { icon: Gamepad2, title: 'ألعاب تثبّت التعلّم', text: 'مطابقة كلمات، استماع واختيار، بطاقات مراجعة وتحديات قصيرة مرتبطة بالوحدة.' },
-  { icon: BookOpen, title: 'قواعد خطوة بخطوة', text: 'قاعدة بالمصري، مثال في سياق، تدريب متدرّج، وبعده استخدام عملي للغة.' },
-  { icon: Volume2, title: 'نطق إسباني مولّد', text: 'تشغيل نطق إسباني آلي من المتصفح؛ مش تسجيلات الكتاب، مع مراعاة الصوت المتاح على الجهاز.' },
-  { icon: Target, title: 'محتوى شامل ودقيق', text: 'أهداف ومفردات وقواعد واستماع ونطق ومحادثة وقراءة وكتابة وتقييم لكل مرحلة، ومراجعة مقابل الطبعة والمصدر.' },
+const mobileNavItems = [
+  { id: 'home', label: 'الرئيسية', icon: House },
+  { id: 'lessons', label: 'المحاضرات', icon: BookOpen },
+  { id: 'listening', label: 'الاستماع', icon: Headphones },
+  { id: 'games', label: 'الألعاب', icon: Gamepad2 },
 ];
 
 function readSaved() {
@@ -102,37 +104,15 @@ function speakSpanish(text) {
   return true;
 }
 
-function HolaArt() {
-  return <svg className="hero-art" viewBox="0 0 340 240" role="img" aria-label="رسم ملوّن لشارع إسباني وشمس مشرقة">
-    <circle cx="259" cy="52" r="29" fill="#FFD778" />
-    <path d="M0 153 Q54 113 109 148T220 141T340 123V240H0Z" fill="#F7B89B" />
-    <path d="M0 182 Q82 145 153 179T340 160V240H0Z" fill="#F19A7D" />
-    <rect x="26" y="90" width="105" height="124" rx="5" fill="#F8E7CC" />
-    <path d="M18 93 77 49l62 44Z" fill="#D8775B" />
-    <rect x="41" y="110" width="24" height="34" rx="12" fill="#8EB9A4" />
-    <rect x="91" y="110" width="24" height="34" rx="12" fill="#8EB9A4" />
-    <rect x="68" y="163" width="23" height="51" rx="11" fill="#B77759" />
-    <rect x="191" y="112" width="98" height="102" rx="5" fill="#F6D6A7" />
-    <path d="M181 115 240 72l59 43Z" fill="#E78B69" />
-    <rect x="207" y="132" width="23" height="31" rx="11" fill="#8EB9A4" />
-    <rect x="251" y="132" width="23" height="31" rx="11" fill="#8EB9A4" />
-    <rect x="233" y="170" width="18" height="44" rx="9" fill="#B77759" />
-    <path d="M0 212h340" stroke="#C97760" strokeWidth="5" />
-    <path d="M146 216 165 216l-9-34Z" fill="#F8F0DD" />
-    <circle cx="155" cy="174" r="10" fill="#446C59" /><path d="M155 184v28m0-19-12 9m12-7 12 7" stroke="#3C5A4D" strokeWidth="5" strokeLinecap="round" />
-    <circle cx="318" cy="157" r="12" fill="#4F755F" /><path d="M318 169v44m0-26-14 12m14-8 13 12" stroke="#3E5E4B" strokeWidth="5" strokeLinecap="round" />
-    <path d="M280 50c10-12 21-8 25 2-11 5-19 5-25-2Z" fill="#7DAF8E" />
-    <path d="M289 56c-7-11-2-20 9-22 2 12 0 19-9 22Z" fill="#92BE91" />
-    <path d="M165 92c8-11 19-8 23 2-9 5-17 4-23-2Z" fill="#7DAF8E" />
-  </svg>;
-}
 
 function Sidebar({ active, onNavigate, streak, onProfile, displayName = 'متعلم', selectedStage = 'A1.1' }) {
   return <aside className="sidebar">
     <div className="brand"><div className="brand-mark"><span>¡</span></div><div><b>Hola<span className="brand-dot">.</span></b><small>الإسباني بالمصري</small></div></div>
-    <div className="side-label">القائمة</div>
     <nav className="side-nav" aria-label="التنقل الرئيسي">
-      {navItems.map(({ id, label, icon: Icon }) => <button key={id} className={`nav-link ${active === id ? 'active' : ''}`} onClick={() => onNavigate(id)}><Icon size={19} strokeWidth={2.1}/><span>{label}</span>{id === 'games' && <span className="nav-new">جديد</span>}</button>)}
+      {navGroups.map(group => <div className="side-nav-group" key={group.label}>
+        <div className="side-label">{group.label}</div>
+        {group.items.map(({ id, label, icon: Icon }) => <button key={id} className={`nav-link ${active === id ? 'active' : ''}`} onClick={() => onNavigate(id)}><Icon size={18} strokeWidth={2}/><span>{label}</span></button>)}
+      </div>)}
     </nav>
     <div className="side-spacer" />
     <button className="profile-mini" onClick={onProfile}><div className="avatar">{displayName.slice(0,1) || 'م'}</div><div className="profile-copy"><b>{displayName}</b><span>المستوى {selectedStage} · الملف الشخصي</span></div><MoreHorizontal size={19} /></button>
@@ -154,51 +134,69 @@ function Header({ active, onSearch, onProfile, displayName = 'متعلم', selec
 
 function LevelPill({ level = 'A1' }) { return <span className={`level-pill level-${level.toLowerCase().replaceAll('.', '-')}`}>{level}</span>; }
 
-function HomePage({ onOpenLesson, onNavigate, xp, doneLessons, completedLessons, savedWords, onSaveWord, selectedStage }) {
-  const [answer, setAnswer] = useState(null);
+function LessonCard({ lesson, stage, index, completed, onOpen }) {
+  const material = courseBookMaterials[lesson.id];
+  const page = material?.pages?.[0];
+  const title = lesson.heading.replace(/^A[12](?:\.\d)? · /, '');
+  return <article className={`lesson-card ${completed ? 'is-complete' : ''}`}>
+    <div className="lesson-card-cover">
+      {page ? <img src={page.src} alt={`صفحة من ${material.book}`} loading="lazy"/> : <span aria-hidden="true">{lesson.emoji || '📘'}</span>}
+      <span className="lesson-card-index">{String(index + 1).padStart(2, '0')}</span>
+    </div>
+    <div className="lesson-card-body">
+      <div className="lesson-card-meta"><LevelPill level={stage}/>{completed && <span className="lesson-complete-label"><CheckCircle2 size={13}/> مكتملة</span>}</div>
+      <h3 lang="es" dir="ltr">{title}</h3>
+      <p>{lesson.objective}</p>
+      <div className="lesson-card-details"><span>{lesson.words.length} كلمات</span>{material?.pages?.length > 0 && <span>{material.pages.length} صفحة</span>}{material?.tracks?.length > 0 && <span>{material.tracks.length} تسجيل</span>}</div>
+    </div>
+    <button className={completed ? 'lesson-review-button' : 'lesson-start-button'} onClick={() => onOpen(lesson.id)}>{completed ? 'مراجعة' : 'ابدأ'} <ArrowLeft size={15}/></button>
+  </article>;
+}
+
+function HomePage({ onOpenLesson, onNavigate, completedLessons, selectedStage }) {
   const courseLessons = currentLessons(selectedStage);
-  const [challengeOptions, setChallengeOptions] = useState(() => shuffled(courseLessons[0]?.answers || []));
-  const courseProgress = Math.round(courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length / Math.max(1, courseLessons.length) * 100);
-  const featuredLesson = courseLessons[0];
-  const quizCorrect = answer === featuredLesson?.answers[0];
-  useEffect(() => { setAnswer(null); setChallengeOptions(shuffled(currentLessons(selectedStage)[0]?.answers || [])); }, [selectedStage]);
-  const featuredWord = featuredLesson?.words[0];
-  const featuredGrammar = grammarGuides[featuredLesson?.id];
-  return <>
-    <section className="hero-card">
-      <div className="hero-copy"><div className="eyebrow"><Sparkles size={15}/> درس النهارده مستنيك</div><h2>يلا نكمّل رحلتك<br/>ونقول <span>¡Hola!</span></h2><p>خطوة بسيطة كل يوم، وإسبانيك هيبقى أحسن بكتير. مستعد؟</p><button className="primary-button" onClick={onOpenLesson}><Play size={17} fill="currentColor"/> كمّل الدرس <ArrowLeft size={17}/></button><div className="hero-note"><CheckCircle2 size={15}/> درس قصير · حوالي ٥ دقايق</div></div>
-      <div className="hero-visual"><div className="sun-sticker">¡Hola!</div><HolaArt/><div className="bubble-sticker">¡Qué bonito! <span>💛</span></div></div>
-      <div className="hero-side-note"><span className="note-dot"/> <b>كل كلمة جديدة</b><small>بتقرّبك من هدفك</small></div>
-    </section>
+  const completedCount = courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length;
+  const courseProgress = Math.round(completedCount / Math.max(1, courseLessons.length) * 100);
+  const nextLesson = courseLessons.find(lesson => !completedLessons.includes(lesson.id)) || courseLessons[0];
+  const nextPage = courseBookMaterials[nextLesson?.id]?.pages?.[0];
+  const allComplete = courseLessons.length > 0 && completedCount === courseLessons.length;
 
-    <section className="stats-row" aria-label="ملخص التقدم">
-      <div className="stat-card"><span className="stat-icon stat-orange"><BookOpen size={19}/></span><div><b>{doneLessons} محاضرة</b><small>محاضرات مكتملة</small></div></div>
-      <div className="stat-card"><span className="stat-icon stat-yellow"><Zap size={18} fill="currentColor"/></span><div><b>{xp} نقطة</b><small>مجموع الـ XP</small></div></div>
-      <div className="stat-card"><span className="stat-icon stat-green"><Bookmark size={18}/></span><div><b>{savedWords.length} كلمة</b><small>في كلماتي</small></div></div>
-    </section>
-
-    <section className="content-grid">
-      <div className="main-column">
-        <div className="section-head"><div><h2>رحلتك التعليمية</h2><p>المستوى الحالي {selectedStage} — كل خطوة تقرّبك من هدفك</p></div><button className="text-link" onClick={() => onNavigate('path')}>شوف الخطة كاملة <ChevronLeft size={16}/></button></div>
-        <div className="level-list">
-          {levels.filter(level => level.id === selectedStage.split('.')[0]).map((level, index) => <button key={level.id} className={`level-card ${level.tone} ${!level.unlocked ? 'locked' : ''}`} onClick={() => level.unlocked ? onNavigate('path') : null}>
-            <div className="level-badge">{level.unlocked ? <span>{level.id}</span> : <LockKeyhole size={17}/>}</div>
-            <div className="level-info"><div className="level-title-row"><b>{level.name}</b><LevelPill level={level.id}/></div><span>{level.summary}</span><div className="level-progress-row"><div className="progress-track"><i style={{width:`${courseProgress}%`}}/></div><small>{courseProgress}%</small></div></div>
-            <span className="level-chevron"><ChevronLeft size={19}/></span>
-          </button>)}
+  return <div className="home-dashboard">
+    <section className="home-welcome" aria-labelledby="home-welcome-title">
+      <div className="home-welcome-copy">
+        <span className="eyebrow"><Sparkles size={15}/> {allComplete ? 'مستوى مكتمل' : `مستواك الحالي · ${selectedStage}`}</span>
+        <h2 id="home-welcome-title">{allComplete ? 'أحسنت! راجع اللي اتعلمته' : 'كمّل رحلتك، درس واحد في كل مرة'}</h2>
+        <p>{allComplete ? 'خلصت كل محاضرات المرحلة. تقدر تراجع أي درس أو تختار مستوى تاني من ملفك.' : nextLesson?.objective || 'اختار محاضرة وابدأ التعلّم.'}</p>
+        <div className="home-welcome-actions">
+          {nextLesson && <button className="primary-button" onClick={() => onOpenLesson(nextLesson.id)}><Play size={16} fill="currentColor"/>{allComplete ? 'راجع آخر محاضرة' : 'ابدأ المحاضرة التالية'} <ArrowLeft size={16}/></button>}
+          <button className="secondary-button" onClick={() => onNavigate('profile')}>تغيير المستوى</button>
         </div>
-
-        <div className="section-head vocab-head"><div><h2>كلمة النهارده <span className="tiny-spark">✳</span></h2><p>كلمة صغيرة… هتفرق في كلامك</p></div><button className="icon-button save-button" aria-label="حفظ الكلمة" onClick={() => featuredWord && onSaveWord(featuredWord.es)}><Bookmark size={18} fill={savedWords.includes(featuredWord?.es) ? 'currentColor' : 'none'}/></button></div>
-        {featuredWord && <div className="word-feature"><div className="word-art"><span className="word-sun"/><div className="word-cup">☕</div><span className="word-spark">✦</span></div><div className="word-copy"><span className="word-label">كلمة من {selectedStage}</span><h3 lang="es" dir="ltr">{featuredWord.es}</h3><p className="word-pron">{featuredWord.say} <button onClick={() => speakSpanish(featuredWord.es)} aria-label={`اسمع نطق ${featuredWord.es}`}><Volume2 size={16}/></button></p><div className="word-meaning">{featuredWord.ar} <span>🐢</span></div><small lang="es" dir="ltr">{featuredLesson.example} <em>{featuredLesson.translation}</em></small></div></div>}
       </div>
-
-      <div className="right-column">
-        <div className="daily-card"><div className="daily-top"><div><span className="daily-label"><Lightbulb size={15}/> تحدّي سريع</span><h3>اختار الإجابة الصح</h3></div><span className="daily-illustration">✏️</span></div><div className="quiz-question"><span>{featuredLesson?.question}</span><button onClick={() => speakSpanish(featuredLesson?.example)} className="sound-small" aria-label="استمع للمثال"><Volume2 size={16}/></button></div><div className="quiz-options">{challengeOptions.map((option, i) => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} className={`quiz-option ${answer === option ? (option === featuredLesson?.answers[0] ? 'correct' : 'wrong') : ''} ${answer !== null && option === featuredLesson?.answers[0] ? 'show-correct' : ''}`} onClick={() => { if (answer === null) setAnswer(option); }}><span className="option-letter">{['أ','ب','ج','د'][i]}</span>{option}{answer === option && (option === featuredLesson?.answers[0] ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`quiz-feedback ${quizCorrect ? 'good' : 'try-again'}`}>{quizCorrect ? 'بالظبط! ¡Muy bien! 🎉' : `قريب! الإجابة الصح هي «${featuredLesson?.answers[0]}»`}</div>}<div className="daily-footer"><span><Clock3 size={14}/> تدريب سريع · {selectedStage}</span><span>{answer === null ? 'اختر إجابة' : 'اكتمل التحدّي'}</span></div></div>
-        {featuredGrammar && <div className="grammar-card"><div className="grammar-head"><span className="grammar-icon"><BookOpen size={18}/></span><span className="grammar-tag">جرامر {selectedStage}</span><button className="dots-button" aria-label="المزيد"><MoreHorizontal size={18}/></button></div><h3>{featuredGrammar.title}</h3><p>{featuredGrammar.explanation}</p>{featuredGrammar.examples.slice(0, 2).map(([es, ar]) => <div className="grammar-example" key={es}><span className="example-es" lang="es" dir="ltr">{es} <small>{ar}</small></span></div>)}<button className="grammar-link" onClick={onOpenLesson}>افهم القاعدة أكتر <ArrowLeft size={15}/></button></div>}
-        <div className="weekly-card home-shortcuts"><div className="weekly-head"><span>اختصارات المستوى {selectedStage}</span><MoreHorizontal size={17}/></div><button onClick={() => onNavigate('listening')}><Headphones size={16}/> استمع للجمل</button><button onClick={() => onNavigate('speaking')}><Mic size={16}/> تدرّب على النطق</button><button onClick={() => onNavigate('exam')}><Award size={16}/> ابدأ الامتحان</button></div>
+      <div className="home-book-preview">
+        {nextPage ? <img src={nextPage.src} alt={`صفحة من كتاب ${courseBookMaterials[nextLesson.id].book}`} fetchPriority="high"/> : <span className="home-book-fallback">{nextLesson?.emoji || '📘'}</span>}
+        <div className="home-book-caption"><BookOpen size={15}/><span>{courseBookMaterials[nextLesson?.id]?.book || `مرحلة ${selectedStage}`}</span></div>
+      </div>
+      <div className="home-stage-progress">
+        <div className="home-stage-progress-copy"><span>تقدم {selectedStage}</span><b>{completedCount} من {courseLessons.length} محاضرات</b></div>
+        <div className="home-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={courseProgress} aria-label={`تقدم ${selectedStage}`}><i style={{ width: `${courseProgress}%` }}/></div>
+        <small>{courseProgress}% من المرحلة مكتمل</small>
       </div>
     </section>
-  </>;
+
+    <section className="home-lessons-section" aria-labelledby="home-lessons-title">
+      <div className="home-section-heading"><div><span className="eyebrow"><BookOpen size={14}/> خطة المرحلة</span><h2 id="home-lessons-title">محاضرات {selectedStage}</h2><p>الكتاب والصوتيات والتمارين المرتبطة بكل محاضرة في مكان واحد.</p></div><button className="text-link" onClick={() => onNavigate('lessons')}>عرض المحاضرات <ChevronLeft size={16}/></button></div>
+      <div className="home-lesson-list">{courseLessons.map((lesson, index) => <LessonCard key={lesson.id} lesson={lesson} stage={selectedStage} index={index} completed={completedLessons.includes(lesson.id)} onOpen={onOpenLesson}/>)}</div>
+    </section>
+
+    <section className="home-tools" aria-labelledby="home-tools-title">
+      <div className="home-tools-heading"><div><span className="eyebrow">تدريب إضافي</span><h2 id="home-tools-title">اختار طريقة المراجعة</h2></div></div>
+      <div className="home-tool-links">
+        <button onClick={() => onNavigate('listening')}><span className="home-tool-icon"><Headphones size={18}/></span><span><b>استماع الكتاب</b><small>التسجيلات حسب المرحلة</small></span><ChevronLeft size={17}/></button>
+        <button onClick={() => onNavigate('grammar')}><span className="home-tool-icon"><BookOpen size={18}/></span><span><b>شرح القواعد</b><small>راجع جرامر المحاضرات</small></span><ChevronLeft size={17}/></button>
+        <button onClick={() => onNavigate('games')}><span className="home-tool-icon"><Gamepad2 size={18}/></span><span><b>ألعاب قصيرة</b><small>تدريب تفاعلي للمستوى</small></span><ChevronLeft size={17}/></button>
+      </div>
+    </section>
+  </div>;
 }
 
 function PathPage({ onOpenLesson, onStartA1Course, selectedStage = 'A1.1', completedLessons = [] }) {
@@ -239,34 +237,10 @@ function PathPage({ onOpenLesson, onStartA1Course, selectedStage = 'A1.1', compl
         <div className="path-level-foot"><div className="progress-track"><i style={{width:`${courseProgress}%`}}/></div><small>{courseProgress ? `${courseProgress}% مكتمل في ${selectedStage}` : `ابدأ أول درس في ${selectedStage}`}</small></div>
       </section>)}
     </div>
-    <ProgramPlan />
     <div className="curriculum-note"><Lightbulb size={18}/><span><b>طريقة الوحدة:</b> نلاحظ اللغة في سياق، نتمرّن على الجرامر والمفردات، وبعدين نستخدم اللي اتعلمناه في مهمة تواصلية، مع استماع ونطق وثقافة. المحتوى والأنشطة بالمصري وبصياغة أصلية.</span></div>
   </div>;
 }
 
-function ProgramPlan() {
-  return <section className="program-plan" aria-labelledby="program-plan-title">
-    <div className="program-plan-heading">
-      <span className="eyebrow"><Sparkles size={15}/> خطة البرنامج التعليمية</span>
-      <h2 id="program-plan-title">إسباني شامل، بالمصري، وبطريقة ممتعة</h2>
-      <p>الأولوية دلوقتي لاستكمال A1 وA2، مع الحفاظ على خريطة التعلّم الأوسع لحد C1.</p>
-    </div>
-    <div className="program-plan-grid">
-      {programPlanItems.map(({ icon: Icon, title, text }) => <article className="program-plan-card" key={title}>
-        <span className="program-plan-icon"><Icon size={19}/></span>
-        <div><h3>{title}</h3><p>{text}</p></div>
-      </article>)}
-    </div>
-    <aside className="assistant-capabilities">
-      <div className="assistant-capability-icon"><Sparkles size={19}/></div>
-      <div className="assistant-capability-copy">
-        <h3>إزاي المساعد يقدر يساعد في إنشاء البرنامج؟</h3>
-        <p>أقدر أرتّب المنهج حسب المصدر والطبعة، وأكتب شرح وتمارين أصلية بالمصري، وأجهّز أفكار صور وألعاب وصوت إسباني مولّد، وأراجع دقة القواعد وتدرّج الدروس وأصلّحها معاك خطوة بخطوة.</p>
-        <small>هنفصل دايمًا بين فهرس الكتاب وخطة التدريس، ومش هنعيد نشر مواده المحمية.</small>
-      </div>
-    </aside>
-  </section>;
-}
 
 function WordsPage({ stage, savedWords, onSaveWord }) {
   const [filter, setFilter] = useState('الكل');
@@ -288,7 +262,7 @@ function originalReaderForLesson(id) {
   if (!match) return null;
   const [, level, rawIndex] = match;
   const index = Number(rawIndex);
-  const course = level === 'A2' ? (index >= 1 && index <= 4 ? 'A2.1' : null)
+  const course = level === 'A2' ? (index >= 1 && index <= 4 ? 'A2.1' : index >= 5 && index <= 8 ? 'A2.2' : index >= 9 && index <= 10 ? 'A2.3' : null)
     : index <= 3 ? 'A1.1' : index <= 6 ? 'A1.2' : index <= 9 ? 'A1.3' : null;
   const firstPage = courseBookMaterials[id]?.pages?.[0]?.page;
   if (!course || !firstPage) return null;
@@ -388,12 +362,20 @@ function ProfilePage({ selectedStage, onSelectStage, displayName, onChangeName, 
     <section className="profile-stat-row"><div><b>{xp}</b><span>نقطة خبرة</span></div><div><b>{doneLessons}</b><span>محاضرة مكتملة</span></div><div><b>{selectedStage}</b><span>مستواك المحدد</span></div></section>
   </div>;
 }
-function LessonsPage({ stage, onOpenLesson }) {
+function LessonsPage({ stage, onSelectStage, onOpenLesson, completedLessons = [] }) {
   const lessons = currentLessons(stage);
-  return <div className="course-page"><section className="course-page-intro"><span className="eyebrow"><BookOpen size={15}/> كورس {stage}</span><h2>المحاضرات بالترتيب</h2><p>كل محاضرة مستقلة؛ افتح محاضرتك من هنا من غير تبويبات وحدات ثانية.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
-    <div className="course-lesson-list">{lessons.map((lesson, index) => <article className="course-lesson-card" key={lesson.id}><span className="course-lesson-number">{String(index + 1).padStart(2, '0')}</span><div className="course-lesson-copy"><span className="level-pill">{stage}</span><h3 dir="ltr" lang="es">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><p>{lesson.objective}</p><small>{lesson.words.length} كلمات · شرح ومثال واختبار قصير</small></div><button className="primary-button" onClick={() => onOpenLesson(stage.startsWith('A2') ? 'A2' : 'A1', lesson.id)}>افتح المحاضرة <ArrowLeft size={15}/></button></article>)}</div>
+  const completedCount = lessons.filter(lesson => completedLessons.includes(lesson.id)).length;
+  const progress = Math.round(completedCount / Math.max(1, lessons.length) * 100);
+  return <div className="course-page redesigned-lessons-page">
+    <section className="course-page-intro lesson-page-intro">
+      <div className="lesson-page-title"><span className="eyebrow"><BookOpen size={15}/> خطة المحاضرات</span><h2>كل محاضرات {stage} في مكان واحد</h2><p>اختار درسًا عشان تفتح شرحه وصورة الكتاب والصوتيات المرتبطة به.</p></div>
+      <CourseSelect value={stage} onChange={onSelectStage} label="المستوى"/>
+      <div className="lesson-page-progress"><div className="home-stage-progress-copy"><span>إنجاز المرحلة</span><b>{completedCount} من {lessons.length} مكتملة</b></div><div className="home-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={progress}><i style={{ width: `${progress}%` }}/></div></div>
+    </section>
+    <div className="course-lesson-list lesson-page-list">{lessons.map((lesson, index) => <LessonCard key={lesson.id} lesson={lesson} stage={stage} index={index} completed={completedLessons.includes(lesson.id)} onOpen={id => onOpenLesson(stage.startsWith('A2') ? 'A2' : 'A1', id)}/>)}</div>
   </div>;
 }
+
 function BookAudioPlayer({ track }) {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -664,7 +646,7 @@ function App() {
   function page() {
     if (active === 'profile') return <ProfilePage selectedStage={selectedStage} onSelectStage={setSelectedStage} displayName={displayName} onChangeName={updateDisplayName} xp={xp} doneLessons={doneLessons}/>;
     if (active === 'path') return <PathPage selectedStage={selectedStage} completedLessons={completedLessons} onOpenLesson={openLesson} onStartA1Course={startA1Course}/>;
-    if (active === 'lessons') return <LessonsPage stage={selectedStage} onOpenLesson={openLesson}/>;
+    if (active === 'lessons') return <LessonsPage stage={selectedStage} onSelectStage={setSelectedStage} completedLessons={completedLessons} onOpenLesson={openLesson}/>;
     if (active === 'grammar') return <GrammarPage stage={selectedStage}/>;
     if (active === 'listening') return <ListeningPage stage={selectedStage}/>;
     if (active === 'speaking') return <SpeakingPage stage={selectedStage}/>;
@@ -674,9 +656,9 @@ function App() {
     if (active === 'flashcards') return <FlashcardsPage key={selectedStage} stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
     if (active === 'words') return <WordsPage stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
     if (active === 'progress') return <ProgressPage xp={xp} doneLessons={doneLessons} savedWords={savedWords} selectedStage={selectedStage}/>;
-    return <HomePage onOpenLesson={() => openLesson(selectedStage.startsWith('A2') ? 'A2' : 'A1', currentLessons(selectedStage)[0]?.id)} onNavigate={setActive} xp={xp} doneLessons={doneLessons} savedWords={savedWords} onSaveWord={toggleWord} selectedStage={selectedStage} completedLessons={completedLessons}/>;
+    return <HomePage onOpenLesson={id => openLesson(selectedStage.startsWith('A2') ? 'A2' : 'A1', id)} onNavigate={setActive} selectedStage={selectedStage} completedLessons={completedLessons}/>;
   }
-  const sidebarProps = { active, onNavigate: id => { setActive(id); setMobileMenuOpen(false); }, streak: 0, onProfile: () => setActive('profile'), displayName, selectedStage };
+  const sidebarProps = { active, onNavigate: id => { setActive(id); setMobileMenuOpen(false); }, streak: 0, onProfile: () => { setActive('profile'); setMobileMenuOpen(false); }, displayName, selectedStage };
   return <div className="app-shell">
     <Sidebar {...sidebarProps}/>
     <main className="main-area">
@@ -684,8 +666,8 @@ function App() {
       {searchOpen && <div className="quick-search"><Search size={18}/><input autoFocus placeholder="دور على محاضرة أو كلمة أو قاعدة…" onKeyDown={event => event.key === 'Escape' && setSearchOpen(false)}/><button onClick={() => setSearchOpen(false)} aria-label="إغلاق البحث"><X size={17}/></button></div>}
       <div className="page-content">{page()}<footer className="app-footer"><span>خطوة بخطوة في الإسباني 💛</span><span>¡Vamos! <span className="footer-star">✳</span></span></footer></div>
     </main>
-    {mobileMenuOpen && <div className="mobile-drawer"><button className="drawer-close" onClick={() => setMobileMenuOpen(false)} aria-label="إغلاق القائمة"><X/></button><Sidebar {...sidebarProps}/></div>}
-    <nav className="mobile-nav" aria-label="تنقل الموبايل">{navItems.map(({ id, label, icon: Icon }) => <button key={id} className={active === id ? 'active' : ''} onClick={() => setActive(id)}><Icon size={20}/><span>{label}</span></button>)}</nav>
+    {mobileMenuOpen && <div className="mobile-drawer" onClick={() => setMobileMenuOpen(false)}><button className="drawer-close" onClick={() => setMobileMenuOpen(false)} aria-label="إغلاق القائمة"><X/></button><div className="mobile-drawer-panel" onClick={event => event.stopPropagation()}><Sidebar {...sidebarProps}/></div></div>}
+    <nav className="mobile-nav" aria-label="التنقل السريع">{mobileNavItems.map(({ id, label, icon: Icon }) => <button key={id} className={active === id ? 'active' : ''} onClick={() => { setActive(id); setMobileMenuOpen(false); }}><Icon size={20}/><span>{label}</span></button>)}<button className={!mobileNavItems.some(item => item.id === active) ? 'active' : ''} onClick={() => setMobileMenuOpen(true)} aria-expanded={mobileMenuOpen}><MoreHorizontal size={20}/><span>المزيد</span></button></nav>
     {lessonOpen && <LessonModal level={lessonLevel} lessonId={lessonId} savedWords={savedWords} isCompleted={completedLessons.includes(lessonId)} onSaveWord={toggleWord} courseMode={a1CourseMode} courseIndex={a1CourseIndex} onCoursePrevious={() => goToA1CourseLesson(Math.max(courseRanges[selectedStage][0], a1CourseIndex - 1))} onClose={() => { setLessonOpen(false); setA1CourseMode(false); }} onComplete={completeLesson}/>}
   </div>;
 }

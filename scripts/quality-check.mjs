@@ -61,30 +61,49 @@ check(!appSource.includes('window.location.reload()'), 'Game flow must return to
 check(appSource.includes('window.SpeechRecognition || window.webkitSpeechRecognition'), 'Speaking UI must use the browser microphone recognition API');
 check(appSource.includes('const gameCatalog = [') && appSource.includes('function GameRun('), 'Arcade must offer separate playable game modes');
 const homeSource = appSource.slice(appSource.indexOf('function HomePage('), appSource.indexOf('function PathPage('));
-check(homeSource.includes('const featuredLesson = courseLessons[0]'), 'Home challenge must use the selected stage content');
-check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home quick challenge must not award repeatable XP or show unrelated fixed-level content');
+check(homeSource.includes('find(lesson => !completedLessons.includes(lesson.id))'), 'Home primary action must continue the next unfinished lesson in the selected stage');
+check(homeSource.includes('courseBookMaterials[nextLesson?.id]?.pages?.[0]'), 'Home feature area must use a real local textbook scan');
+check(homeSource.includes('home-lesson-list') && homeSource.includes('completedCount} من {courseLessons.length}'), 'Home must show the selected stage lessons and a compact, accurate progress summary');
+check(!homeSource.includes('daily-card') && !homeSource.includes('word-feature') && !homeSource.includes('grammar-card'), 'Home must not duplicate the challenge, word-of-day, and grammar panels');
+check(appSource.includes('function LessonCard(') && appSource.includes('lesson-card-cover') && appSource.includes('material?.tracks?.length'), 'Lesson cards must include book previews and locally mapped audio metadata');
+check(appSource.includes('const mobileNavItems = [') && appSource.includes("{ id: 'games', label: 'الألعاب'"), 'Mobile navigation must keep a small set of primary destinations');
+check(appSource.includes('<span>المزيد</span>') && appSource.includes('aria-expanded={mobileMenuOpen}'), 'Secondary sections must remain accessible through the expandable More menu');
+check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home must not award repeatable XP or show unrelated fixed-level content');
 check(appSource.includes('selectedStage, displayName') && appSource.includes("useState(initial.selectedStage || 'A1.1')"), 'Profile stage selection must persist locally');
 check(!/drive\.google\.com/i.test(appSource), 'Learner-facing pages must not send students to Google Drive');
 check(appSource.includes('function BookLessonMaterials(') && appSource.includes('<BookLessonMaterials lessonId={lessonId}/>'), 'Each mapped lesson must open its own original book pages and audio in-app');
 check(appSource.includes('<BookListeningLibrary stage={stage}/>'), 'Listening page must expose only original audio mapped to the selected course stage');
 check(appSource.includes('onClick={() => changeRate(value)}') && appSource.includes('Versión alternativa'), 'Original audio player must provide speed choices and explicit alternate-track labels');
 check(!/window\.open\(|target=["']_blank/i.test(appSource), 'Course material playback must stay inside the application');
-check(Object.keys(courseBookMaterials).length === 14, 'Imported book resources must map the 14 supported A1 and A2.1 lessons');
+check(Object.keys(courseBookMaterials).length === 20, 'Imported book resources must map all 20 A1 and A2.1–A2.3 lessons');
 check(courseBookMaterials['A1-0']?.pages[0]?.page === 10 && courseBookMaterials['A1-9']?.pages.at(-1)?.page === 139, 'A1 page ranges must follow the actual three archived course units');
 check(courseBookMaterials['A2-1']?.pages[0]?.page === 10 && courseBookMaterials['A2-4']?.pages.at(-1)?.page === 65, 'A2.1 pages must follow the four units actually present in its ready-to-website archive');
+check(courseBookMaterials['A2-5']?.pages[0]?.page === 66 && courseBookMaterials['A2-8']?.pages[0]?.page === 108 && courseBookMaterials['A2-8']?.pages.some(item => item.page === 206), 'A2.2 lesson materials must include units 5–8 plus their linked grammar and exercise pages');
+check(courseBookMaterials['A2-9']?.pages[0]?.page === 122 && courseBookMaterials['A2-10']?.pages[0]?.page === 136 && courseBookMaterials['A2-10']?.pages.some(item => item.page === 947), 'A2.3 lesson materials must include units 9–10 plus their linked transcript pages');
+check(courseBookMaterials['A2-5']?.tracks.length === 18 && courseBookMaterials['A2-10']?.tracks.length === 8, 'A2.2 and A2.3 materials must map their verified primary and alternate recordings');
 const readerManifest = JSON.parse(await readFile(path.join(root, 'public/materials/readers/reader-manifest.json'), 'utf8'));
-const expectedReaders = { 'A1.1': [46, 12, 64], 'A1.2': [42, 9, 48], 'A1.3': [42, 11, 48], 'A2.1': [56, 15, 0] };
+const expectedReaders = { 'A1.1': [121, 12, 64], 'A1.2': [81, 9, 48], 'A1.3': [79, 11, 48], 'A2.1': [56, 15, 0], 'A2.2': [114, 46, 0], 'A2.3': [62, 12, 0] };
 for (const [course, [pageCount, audioTracks, quizQuestions]] of Object.entries(expectedReaders)) {
   const reader = readerManifest[course];
   check(Boolean(reader), `${course}: original in-app reader must be present`);
   check(reader.pageCount === pageCount && reader.pageNumbers.length === pageCount, `${course}: reader scan count must match the locally installed pages`);
   check(reader.audioTracks === audioTracks && reader.interactiveQuizQuestions === quizQuestions, `${course}: preserved reader activity metadata must match the inspected source`);
   check(existsSync(path.join(root, 'public', reader.url)), `${course}: in-app reader route must be a real file`);
-  check(reader.pageNumbers.every((page) => existsSync(path.join(root, 'public/materials/books', course, 'pages', `p${String(page).padStart(3, '0')}.webp`))), `${course}: every reader page must resolve to its original local scan`);
+  check(reader.pageNumbers.every((page) => {
+    const asset = reader.pageAssets?.[String(page)] || `p${String(page).padStart(3, '0')}.webp`;
+    return existsSync(path.join(root, 'public/materials/books', course, 'pages', asset));
+  }), `${course}: every reader page must resolve to its original local scan`);
+  if (course.startsWith('A1.')) {
+    check(Array.isArray(reader.missingIndexedTranscriptPages), `${course}: manifest must disclose unavailable indexed transcript scans`);
+    check(reader.pageNumbers.every(page => !reader.missingIndexedTranscriptPages.includes(page)), `${course}: unavailable transcript scans must not be exposed as working pages`);
+    const transcriptPages = reader.pageNumbers.filter(page => page >= 1001 && page <= 1032);
+    check(transcriptPages.every(page => reader.pageAssets[String(page)]?.startsWith('t')), `${course}: transcript page IDs must map to the source transcript image filenames`);
+  }
   const readerHtml = await readFile(path.join(root, 'public', reader.url), 'utf8');
   check(readerHtml.includes('كل الإجابات') && readerHtml.includes('فهرس الوحدة'), `${course}: original answer controls and unit index must remain in the reader`);
   check(!/youtube\.com|youtu\.be|drive\.google/i.test(readerHtml), `${course}: reader must not send the learner to external video or Drive pages`);
-  const readerStyles = course === 'A2.1' ? readerHtml : await readFile(path.join(root, 'public/materials/readers', course, 'tabs_style.css'), 'utf8');
+  if (course.startsWith('A1.')) check(!readerHtml.includes('src="pages/'), `${course}: static and fallback page templates must use local optimized scans`);
+  const readerStyles = course.startsWith('A1.') ? await readFile(path.join(root, 'public/materials/readers', course, 'tabs_style.css'), 'utf8') : readerHtml;
   check(readerStyles.includes('#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}'), `${course}: teacher editing and admin controls must stay hidden from learners`);
   const inlineScripts = [...readerHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
   for (const [, attributes, code] of inlineScripts) {
@@ -92,7 +111,7 @@ for (const [course, [pageCount, audioTracks, quizQuestions]] of Object.entries(e
     const syntax = spawnSync(process.execPath, ['--check', '-'], { input: code, encoding: 'utf8' });
     check(syntax.status === 0, `${course}: embedded reader script must parse (${syntax.stderr.trim()})`);
   }
-  if (course !== 'A2.1') {
+  if (course.startsWith('A1.')) {
     for (const filename of ['tabs_data.js', 'tabs_engine.js']) {
       const code = await readFile(path.join(root, 'public/materials/readers', course, filename), 'utf8');
       const syntax = spawnSync(process.execPath, ['--check', '-'], { input: code, encoding: 'utf8' });
@@ -102,6 +121,7 @@ for (const [course, [pageCount, audioTracks, quizQuestions]] of Object.entries(e
 }
 check(appSource.includes('function OriginalBookReader(') && appSource.includes('sandbox="allow-scripts allow-same-origin"'), 'Original reader must stay sandboxed and embedded inside the lesson dialog');
 check(appSource.includes('function originalReaderForLesson(') && appSource.includes('/materials/readers/${course}/index.html#p${firstPage}'), 'Each supported lesson must open its own book reader at the matching page inside the app');
+check(appSource.includes("index >= 5 && index <= 8 ? 'A2.2'") && appSource.includes("index >= 9 && index <= 10 ? 'A2.3'"), 'A2 lessons 5–10 must open the restored A2.2 and A2.3 in-app readers');
 
 const grammarGuides = await import('../src/data/grammar.js');
 const lessonStories = await import('../src/data/stories.js');
@@ -117,6 +137,8 @@ const materials = [
   { id: 'A1.2', ids: ['A1-4', 'A1-5', 'A1-6'] },
   { id: 'A1.3', ids: ['A1-7', 'A1-8', 'A1-9'] },
   { id: 'A2.1', ids: ['A2-1', 'A2-2', 'A2-3', 'A2-4'] },
+  { id: 'A2.2', ids: ['A2-5', 'A2-6', 'A2-7', 'A2-8'] },
+  { id: 'A2.3', ids: ['A2-9', 'A2-10'] },
 ];
 for (const material of materials) {
   const file = path.join(root, 'public/materials', material.id, 'activity-data.json');

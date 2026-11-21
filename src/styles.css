@@ -683,3 +683,127 @@ button:disabled{cursor:not-allowed}
   .book-audio-rates{margin-inline-start:0;}
   .book-listening-card .book-page-preview img{max-height:410px;}
 }
+
+/* Cleaner course home, real book previews, and grouped navigation */
+.side-nav{display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:calc(100vh - 190px);padding-inline-end:3px}
+.side-nav-group{display:grid;gap:3px}
+.side-label{padding:4px 12px 5px;color:#9aa49a;font-size:10px;font-weight:700;letter-spacing:.02em}
+.side-nav .nav-link{height:40px;border-radius:9px;font-size:12px}
+.side-nav .nav-link svg{flex:none}
+.side-nav .nav-link.active{box-shadow:inset -3px 0 0 var(--spanish-red)}
+
+.home-dashboard{display:grid;gap:24px;min-width:0}
+.home-welcome{display:grid;grid-template-columns:minmax(0,1fr) 190px;grid-template-rows:1fr auto;gap:12px 24px;align-items:center;min-height:245px;padding:24px 28px;border:1px solid #e9e9de;border-radius:20px;background:linear-gradient(115deg,#f3f6ed 0%,#fff8ec 100%);overflow:hidden}
+.home-welcome-copy{min-width:0;align-self:end}
+.home-welcome-copy .eyebrow{color:#578267}
+.home-welcome-copy h2{max-width:650px;margin:11px 0 7px;color:#274634;font-size:clamp(22px,2.6vw,32px);line-height:1.45;letter-spacing:-.5px}
+.home-welcome-copy>p{max-width:640px;margin:0;color:#718078;font-size:13px;line-height:1.8}
+.home-welcome-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px}
+.home-welcome-actions .primary-button{padding:11px 15px}
+.home-book-preview{position:relative;grid-column:2;grid-row:1;align-self:center;justify-self:center;width:174px;height:185px;padding:8px;border:1px solid #ffffffb8;border-radius:15px;background:#ffffffa8;box-shadow:0 12px 28px #526a4d16;transform:rotate(2deg)}
+.home-book-preview>img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;border-radius:9px}
+.home-book-fallback{display:grid;width:100%;height:100%;place-items:center;border-radius:9px;background:#e6eee2;font-size:48px}
+.home-book-caption{position:absolute;inset-inline:12px;bottom:13px;display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #ffffffa6;border-radius:8px;background:#ffffffed;color:#435f49;font-size:9px;font-weight:700;box-shadow:0 4px 12px #26383212}
+.home-book-caption span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-stage-progress{grid-column:1;grid-row:2;display:grid;gap:7px;max-width:580px;padding-top:10px;border-top:1px solid #dfe7dc}
+.home-stage-progress-copy{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#718078;font-size:10px}
+.home-stage-progress-copy b{color:#365940;font-size:10px}
+.home-progress-track{height:7px;overflow:hidden;border-radius:99px;background:#e4eade}
+.home-progress-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#6d9b70,#9bb980);transition:width .25s ease}
+.home-stage-progress>small{color:#89958b;font-size:9px}
+.home-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.home-section-heading .eyebrow{font-size:10px}
+.home-section-heading h2,.home-tools-heading h2{margin:5px 0 2px;color:#2d4837;font-size:19px}
+.home-section-heading p{margin:0;color:#87928a;font-size:11px;line-height:1.7}
+.home-lesson-list,.lesson-page-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.lesson-card{display:grid;grid-template-columns:78px minmax(0,1fr);grid-template-rows:1fr auto;gap:8px 12px;min-width:0;padding:12px;border:1px solid #e7ebe4;border-radius:15px;background:#fff;box-shadow:0 3px 12px #314b3606;transition:border-color .16s,box-shadow .16s,transform .16s}
+.lesson-card:hover{transform:translateY(-2px);border-color:#cadbc9;box-shadow:0 8px 18px #314b3610}
+.lesson-card-cover{position:relative;grid-column:1;grid-row:1/3;width:78px;height:104px;overflow:hidden;border-radius:9px;background:#eef1e9}
+.lesson-card-cover img{display:block;width:100%;height:100%;object-fit:cover}
+.lesson-card-cover>span:not(.lesson-card-index){display:grid;width:100%;height:100%;place-items:center;font-size:32px}
+.lesson-card-index{position:absolute;top:5px;inset-inline-start:5px;display:grid;min-width:24px;height:23px;place-items:center;padding:0 4px;border:1px solid #ffffffa8;border-radius:7px;background:#ffffffeb;color:#45644a;font:700 9px 'DM Sans',sans-serif}
+.lesson-card-body{grid-column:2;grid-row:1;min-width:0}
+.lesson-card-meta{display:flex;align-items:center;justify-content:space-between;gap:5px;min-height:20px}
+.lesson-complete-label{display:inline-flex;align-items:center;gap:3px;color:#5b8863;font-size:9px;white-space:nowrap}
+.lesson-card-body h3{margin:6px 0 4px;color:#324b39;font:700 14px 'DM Sans','IBM Plex Sans Arabic',sans-serif;overflow-wrap:anywhere}
+.lesson-card-body>p{display:-webkit-box;overflow:hidden;margin:0;color:#758279;font-size:10px;line-height:1.65;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.lesson-card-details{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.lesson-card-details span{padding:3px 6px;border:1px solid #edf0e9;border-radius:6px;background:#fafbf8;color:#718078;font-size:8px;white-space:nowrap}
+.lesson-start-button,.lesson-review-button{grid-column:2;grid-row:2;justify-self:start;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:6px 10px;border:0;border-radius:8px;background:#3d7057;color:#fff;font-size:10px;font-weight:700}
+.lesson-start-button:hover{background:#2e5c43}
+.lesson-review-button{border:1px solid #e3e9e0;background:#f7faf5;color:#57765c}
+.lesson-review-button:hover{background:#edf4e9}
+.lesson-card.is-complete{border-color:#dce8d9}
+.home-tools{padding:16px 18px;border:1px solid #e8ece5;border-radius:15px;background:#fff}
+.home-tools-heading h2{font-size:15px}
+.home-tool-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}
+.home-tool-links>button{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid #edf0e9;border-radius:10px;background:#fafbf8;text-align:right;transition:.15s}
+.home-tool-links>button:hover{border-color:#d5e3d2;background:#f4f8f1}
+.home-tool-icon{display:grid;width:34px;height:34px;flex:none;place-items:center;border-radius:9px;background:#e9f1e6;color:#557d5a}
+.home-tool-links>button>span:nth-child(2){display:grid;gap:3px;flex:1;min-width:0}
+.home-tool-links b{color:#405847;font-size:10px}
+.home-tool-links small{overflow:hidden;color:#89948b;font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.home-tool-links>button>svg{flex:none;color:#89998a}
+
+.lesson-page-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,230px);gap:12px 24px;align-items:center}
+.lesson-page-title h2{margin:7px 0 4px}
+.lesson-page-title>p{margin:0;color:#758279;font-size:11px;line-height:1.7}
+.lesson-page-intro>.course-select{grid-column:2;grid-row:1;max-width:none;width:100%;margin:0}
+.lesson-page-progress{grid-column:1/-1;display:grid;gap:7px;padding-top:11px;border-top:1px solid #e5eae1}
+.lesson-page-list{margin-top:2px}
+
+@media(max-width:900px){
+  .home-welcome{grid-template-columns:minmax(0,1fr) 150px;padding:20px;gap:12px 15px}
+  .home-book-preview{width:142px;height:158px}
+  .home-lesson-list,.lesson-page-list{grid-template-columns:1fr}
+  .lesson-card{grid-template-columns:72px minmax(0,1fr)}
+  .lesson-card-cover{width:72px;height:96px}
+}
+@media(max-width:760px){
+  .side-nav{max-height:calc(100vh - 190px)}
+  .mobile-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch;justify-content:stretch;overflow:visible;overscroll-behavior:auto;height:calc(67px + env(safe-area-inset-bottom));padding:5px 7px max(5px,env(safe-area-inset-bottom));}
+  .mobile-nav button{width:auto!important;min-width:0!important;flex:1 1 0;gap:2px;overflow:hidden;color:#829087}
+  .mobile-nav button span{max-width:100%;font-size:9px;line-height:1.2;text-overflow:ellipsis;overflow:hidden}
+  .mobile-nav button.active svg{padding:3px 10px}
+  .main-area{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .home-welcome{grid-template-columns:minmax(0,1fr) 125px;min-height:210px;padding:17px;gap:10px 12px}
+  .home-welcome-copy h2{font-size:22px}
+  .home-welcome-copy>p{font-size:11px}
+  .home-book-preview{width:116px;height:137px}
+  .home-book-caption{inset-inline:8px;bottom:9px;font-size:8px;padding:6px}
+  .home-section-heading h2{font-size:17px}
+  .home-section-heading p{font-size:10px}
+  .home-tool-links{grid-template-columns:1fr;gap:6px}
+  .home-tool-links>button{padding:8px}
+  .lesson-page-intro{grid-template-columns:minmax(0,1fr);gap:11px}
+  .lesson-page-intro>.course-select{grid-column:1;grid-row:auto;margin:0}
+  .lesson-page-progress{grid-column:1}
+  .mobile-drawer-panel .sidebar{display:flex}
+}
+@media(max-width:480px){
+  .home-dashboard{gap:18px}
+  .home-welcome{grid-template-columns:minmax(0,1fr) 92px;min-height:0;padding:14px;gap:10px}
+  .home-welcome-copy h2{font-size:18px;line-height:1.5}
+  .home-welcome-copy .eyebrow{font-size:9px}
+  .home-welcome-copy>p{font-size:10px}
+  .home-welcome-actions{grid-column:1/-1;gap:7px;margin-top:11px}
+  .home-welcome-actions .primary-button,.home-welcome-actions .secondary-button{min-height:36px;padding:8px 10px;font-size:9px}
+  .home-book-preview{grid-column:2;grid-row:1;width:88px;height:111px;padding:5px;border-radius:11px}
+  .home-book-caption{inset-inline:6px;bottom:6px;gap:3px;font-size:7px;padding:4px}
+  .home-stage-progress{grid-column:1/-1}
+  .home-stage-progress-copy{font-size:9px}
+  .home-stage-progress-copy b{font-size:9px}
+  .home-section-heading{align-items:flex-start}
+  .home-section-heading .text-link{font-size:9px;white-space:nowrap}
+  .lesson-card{grid-template-columns:58px minmax(0,1fr);gap:7px 9px;padding:9px;border-radius:12px}
+  .lesson-card-cover{width:58px;height:82px}
+  .lesson-card-index{min-width:20px;height:19px;font-size:8px}
+  .lesson-card-body h3{font-size:12px}
+  .lesson-card-body>p{font-size:9px}
+  .lesson-card-details{gap:4px;margin-top:6px}
+  .lesson-card-details span{font-size:7px;padding:3px 5px}
+  .lesson-start-button,.lesson-review-button{min-height:29px;font-size:9px}
+  .home-tools{padding:13px}
+  .home-tool-links b{font-size:9px}
+  .mobile-nav button span{font-size:8px}
+}

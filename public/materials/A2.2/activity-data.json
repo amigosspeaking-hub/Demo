@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "material": "A2.2",
+  "source": "src/data/lessons.js",
+  "itemCount": 4,
+  "activities": [
+    {
+      "id": "A2-5",
+      "title": "¿Cómo va todo?",
+      "level": "A2",
+      "exampleSpanish": "¿Me prestas tu bolígrafo, por favor?",
+      "translationArabic": "ممكن تسلفني قلمك، لو سمحت؟",
+      "words": [
+        {
+          "es": "¿Me prestas…?",
+          "ar": "ممكن تسلفني…؟",
+          "say": "مي بريستاس"
+        },
+        {
+          "es": "Estoy trabajando",
+          "ar": "أنا بشتغل دلوقتي",
+          "say": "إستوي تراباخاندو"
+        },
+        {
+          "es": "por favor",
+          "ar": "لو سمحت",
+          "say": "بور فابور"
+        }
+      ]
+    },
+    {
+      "id": "A2-6",
+      "title": "Guía del ocio",
+      "level": "A2",
+      "exampleSpanish": "Te recomiendo visitar el museo.",
+      "translationArabic": "برشّحلك تزور المتحف.",
+      "words": [
+        {
+          "es": "se puede visitar",
+          "ar": "ممكن تزور",
+          "say": "سي بويدي بيسيتار"
+        },
+        {
+          "es": "te recomiendo",
+          "ar": "برشّحلك",
+          "say": "تي ريكيومييندو"
+        },
+        {
+          "es": "¿Qué te pareció?",
+          "ar": "إيه رأيك؟",
+          "say": "كي تي باريثيو"
+        }
+      ]
+    },
+    {
+      "id": "A2-7",
+      "title": "¿Comes de todo?",
+      "level": "A2",
+      "exampleSpanish": "Primero se corta la cebolla.",
+      "translationArabic": "أول حاجة بنقطع البصل.",
+      "words": [
+        {
+          "es": "desayunar",
+          "ar": "يفطر",
+          "say": "ديسايونار"
+        },
+        {
+          "es": "sin gluten",
+          "ar": "من غير جلوتين",
+          "say": "سين غلوتين"
+        },
+        {
+          "es": "se corta",
+          "ar": "بيتقطع",
+          "say": "سي كورتا"
+        }
+      ]
+    },
+    {
+      "id": "A2-8",
+      "title": "Estamos muy bien",
+      "level": "A2",
+      "exampleSpanish": "Descansa y bebe mucha agua.",
+      "translationArabic": "ارتاح واشرب مية كتير.",
+      "words": [
+        {
+          "es": "me duele la espalda",
+          "ar": "ضهري بيوجعني",
+          "say": "مي دويلي لا إسبالدا"
+        },
+        {
+          "es": "descansa",
+          "ar": "ارتاح / ارتاحي",
+          "say": "ديسكانسا"
+        },
+        {
+          "es": "es bueno para",
+          "ar": "مفيد لـ",
+          "say": "إس بوينو بارا"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "material": "A2.3",
+  "source": "src/data/lessons.js",
+  "itemCount": 2,
+  "activities": [
+    {
+      "id": "A2-9",
+      "title": "Antes y ahora",
+      "level": "A2",
+      "exampleSpanish": "Antes vivía en Alejandría y ahora vivo en Giza.",
+      "translationArabic": "زمان كنت عايش في إسكندرية، ودلوقتي ساكن في الجيزة.",
+      "words": [
+        {
+          "es": "antes",
+          "ar": "زمان / قبل كده",
+          "say": "أنتيس"
+        },
+        {
+          "es": "cuando era pequeño",
+          "ar": "لما كنت صغير",
+          "say": "كواندو إيرا بيكينييا"
+        },
+        {
+          "es": "vivía",
+          "ar": "كنت بعيش / كنت ساكن",
+          "say": "بيبيا"
+        }
+      ]
+    },
+    {
+      "id": "A2-10",
+      "title": "Momentos especiales",
+      "level": "A2",
+      "exampleSpanish": "Estaba celebrando cuando recibí la noticia.",
+      "translationArabic": "كنت بحتفل لما جالي الخبر.",
+      "words": [
+        {
+          "es": "estaba celebrando",
+          "ar": "كنت بحتفل",
+          "say": "إستابا ثيليبْراندو"
+        },
+        {
+          "es": "cuando recibí",
+          "ar": "لما استلمت / جالي",
+          "say": "كواندو ريثيبي"
+        },
+        {
+          "es": "de repente",
+          "ar": "فجأة",
+          "say": "دي ريپينتي"
+        }
+      ]
+    }
+  ]
+}

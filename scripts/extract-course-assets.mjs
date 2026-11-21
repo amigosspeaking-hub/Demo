@@ -16,6 +16,8 @@ const materials = [
   { id: 'A1.2', itemIds: ['A1-4', 'A1-5', 'A1-6'] },
   { id: 'A1.3', itemIds: ['A1-7', 'A1-8', 'A1-9'] },
   { id: 'A2.1', itemIds: ['A2-1', 'A2-2', 'A2-3', 'A2-4'] },
+  { id: 'A2.2', itemIds: ['A2-5', 'A2-6', 'A2-7', 'A2-8'] },
+  { id: 'A2.3', itemIds: ['A2-9', 'A2-10'] },
 ];
 
 const outputs = new Map();

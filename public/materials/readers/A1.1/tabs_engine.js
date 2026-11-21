@@ -478,7 +478,7 @@ function xListenOpen(id){
 
   /* reproductor (siempre visible) */
   const pl = xEl('div','xply');
-  pl.innerHTML = '<audio id="xAudio" preload="metadata" src="/materials/books/A1.1/audio/'+t.file+'"></audio>'+
+  pl.innerHTML = '<audio id="xAudio" preload="metadata" src="'+window.bookAudioUrl(t.file)+'"></audio>'+
     '<div class="xseek"><span class="tm"><b id="xCur">0:00</b> / <span id="xDur">—</span></span>'+
     '<input type="range" id="xSeek" min="0" max="100" value="0" step="0.1"></div>';
   const ctrls = xEl('div','xply-c');
@@ -638,7 +638,7 @@ function xExamAudioBox(session, idx){
   const cur = session.audio[idx];
   box.appendChild(xEl('div','xexl-h','<b>Comprensión auditiva</b><span>Escucha y elige la opción correcta</span>'));
   const au = xEl('audio','xexl-a');
-  au.id = 'xExAudio'; au.preload='metadata'; au.src = '/materials/books/A1.1/audio/'+cur.file;
+  au.id = 'xExAudio'; au.preload='metadata'; au.src = window.bookAudioUrl(cur.file);
   box.appendChild(au);
   const row = xEl('div','xply-c');
   const play = xEl('button','xplay','▶ Escuchar');
