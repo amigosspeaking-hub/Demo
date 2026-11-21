@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "extract:course-assets": "node scripts/extract-course-assets.mjs",
+    "readers:import": "python3 scripts/import-book-readers.py",
     "quality:check": "node scripts/quality-check.mjs",
     "materials:check": "node scripts/book-materials-check.mjs"
   },

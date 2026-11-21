@@ -283,21 +283,42 @@ function ProgressPage({ xp, doneLessons, savedWords, selectedStage }) {
   ];
   return <div className="progress-page"><div className="progress-intro"><span className="eyebrow"><Trophy size={15}/> تقدمك المسجّل</span><h2>كل تدريب بيتحسب هنا</h2><p>الأرقام دي من الأنشطة المكتملة على جهازك.</p></div><div className="progress-summary"><div className="summary-big"><span className="summary-icon">⚡</span><b>{xp}</b><span>نقطة خبرة</span></div><div className="summary-big"><span className="summary-icon">📖</span><b>{doneLessons}</b><span>محاضرة مكتملة</span></div><div className="summary-big"><span className="summary-icon">🔖</span><b>{savedWords.length}</b><span>كلمة محفوظة</span></div><div className="summary-big"><span className="summary-icon">🎓</span><b>{selectedStage}</b><span>المستوى الحالي</span></div></div><div className="achievement-heading"><h3>أهدافك القادمة</h3><span>تتحدّث مع تقدمك</span></div><div className="achievement-list">{achievements.map(item => <div key={item.title} className="achievement-card"><div className={`achievement-art ${item.tone}`}>{item.icon}</div><div className="achievement-copy"><b>{item.title}</b><span>{item.desc}</span><div className="achievement-progress"><i style={{ width: `${item.pct}%` }}/></div></div><span className="achievement-count">{item.count}</span></div>)}</div></div>;
 }
+function originalReaderForLesson(id) {
+  const match = /^(A1|A2)-(\d+)$/.exec(id || '');
+  if (!match) return null;
+  const [, level, rawIndex] = match;
+  const index = Number(rawIndex);
+  const course = level === 'A2' ? (index >= 1 && index <= 4 ? 'A2.1' : null)
+    : index <= 3 ? 'A1.1' : index <= 6 ? 'A1.2' : index <= 9 ? 'A1.3' : null;
+  const firstPage = courseBookMaterials[id]?.pages?.[0]?.page;
+  if (!course || !firstPage) return null;
+  return { course, page: firstPage, src: `/materials/readers/${course}/index.html#p${firstPage}` };
+}
+
+function OriginalBookReader({ reader, onReturn }) {
+  return <section className="book-reader-panel" aria-label={`قارئ الكتاب ${reader.course}`}>
+    <div className="book-reader-toolbar"><div><span className="book-reader-kicker"><BookOpen size={14}/> صفحات الكتاب والتدريبات</span><b>{reader.course} · افتح فهرس الوحدة من داخل القارئ</b></div><button type="button" onClick={onReturn}>ارجع لخطوات المحاضرة <ArrowRight size={15}/></button></div>
+    <iframe title={`قارئ الكتاب التفاعلي ${reader.course}`} src={reader.src} loading="eager" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" />
+  </section>;
+}
+
 function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onSaveWord, savedWords = [], isCompleted = false, courseMode = false, courseIndex = 0, onCoursePrevious }) {
   const [step, setStep] = useState(0);
   const [answer, setAnswer] = useState(null);
+  const [readerOpen, setReaderOpen] = useState(false);
   const config = lessonLibrary[lessonId] || lessonLibrary[level === 'A2' ? 'A2-1' : 'A1-0'];
+  const reader = originalReaderForLesson(lessonId);
   const courseStage = courseIndex <= 3 ? a1CourseStages[0] : courseIndex <= 6 ? a1CourseStages[1] : a1CourseStages[2];
-  useEffect(() => { setStep(0); setAnswer(null); }, [lessonId]);
+  useEffect(() => { setStep(0); setAnswer(null); setReaderOpen(false); }, [lessonId]);
   const words = config.words;
   const current = words[step];
   const grammarGuide = grammarGuides[lessonId];
   const quiz = step >= words.length;
   function next() { if (quiz) { if (answer === 0) onComplete(); return; } setStep(step + 1); setAnswer(null); }
-  return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className="lesson-modal" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
-    <div className="modal-top"><span>{courseMode ? <><BookOpen size={16}/> {courseStage.id} · كورس A1 · الوحدة {courseIndex}</> : <><BookOpen size={16}/> نموذج درس · {config.heading}</>}</span><button className="icon-button" onClick={onClose} aria-label="إغلاق"><X size={19}/></button></div>
+  return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className={`lesson-modal ${readerOpen ? 'lesson-modal-reader' : ''}`} role="dialog" aria-modal="true" aria-labelledby={readerOpen ? 'book-reader-title' : 'lesson-title'}>
+    <div className="modal-top"><span id={readerOpen ? 'book-reader-title' : undefined}>{readerOpen ? <><BookOpen size={16}/> قارئ الكتاب · {reader?.course}</> : courseMode ? <><BookOpen size={16}/> {courseStage.id} · كورس A1 · الوحدة {courseIndex}</> : <><BookOpen size={16}/> نموذج درس · {config.heading}</>}</span><button className="icon-button" onClick={onClose} aria-label="إغلاق"><X size={19}/></button></div>
     <div className="lesson-progress"><i style={{width:`${quiz?100:(step+1)/(words.length+1)*100}%`}}/></div>
-    <div className="modal-content">{!quiz ? <>
+    <div className="modal-content">{readerOpen && reader ? <OriginalBookReader reader={reader} onReturn={() => setReaderOpen(false)}/> : !quiz ? <>
       <div className="lesson-step-label">{config.objective}</div>
       <div className="lesson-word-visual"><span>{config.emoji}</span><div className="word-orbit orbit-one"/><div className="word-orbit orbit-two"/></div>
       <h2 id="lesson-title" className="big-spanish" lang="es">{current.es}</h2><p className="big-arabic">{current.ar}</p>
@@ -306,6 +327,7 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onS
       {grammarGuide && <div className="lesson-grammar-detail"><span><BookOpen size={14}/> {grammarGuide.title}</span><p>{grammarGuide.explanation}</p>{grammarGuide.examples.slice(0, 1).map(([es, ar]) => <div key={es}><b lang="es" dir="ltr">{es}</b><small>{ar}</small></div>)}</div>}
       <div className="lesson-example"><span>💬 مثال الدرس</span><b lang="es">{config.example}</b><small>{config.translation}</small></div>
       <BookLessonMaterials lessonId={lessonId}/>
+      {reader && <button className="book-reader-launch" type="button" onClick={() => setReaderOpen(true)}><span className="book-reader-launch-icon"><BookOpen size={19}/></span><span><b>افتح صفحات الكتاب في القارئ</b><small>{reader.course} · الفهرس، صفحات الوحدة، الإجابات والصوتيات</small></span><ArrowLeft size={17}/></button>}
       <button className="save-in-lesson" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'اتحفظت في قاموسك' : 'احفظ الكلمة'}</button>
     </> : <>
       <div className="lesson-step-label">اختبار سريع · آخر خطوة</div><div className="quiz-finish-icon">🎯</div><h2 id="lesson-title">تمام! نراجع اللي اتعلمناه</h2>
@@ -314,9 +336,11 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onS
       {answer!==null&&<div className={`quiz-feedback ${answer===0?'good':'try-again'}`}>{answer===0?'صح عليك! ¡Excelente! 🎉':`الإجابة الصح: ${config.answers[0]}`}</div>}
     </>}</div>
     <div className={`modal-footer ${courseMode ? 'course-modal-footer' : ''}`}>
-      {courseMode && <button className="course-prev-button" onClick={onCoursePrevious} disabled={courseIndex<=courseStage.startIndex}><ArrowLeft size={14}/> الدرس السابق</button>}
-      <span>{isCompleted ? 'المحاضرة دي مكتملة قبل كده' : <><span className="modal-xp">⚡</span> +١٥ نقطة خبرة</>}</span>
-      <button className="primary-button" onClick={next}>{quiz ? answer===0 ? courseMode ? courseIndex===courseStage.endIndex?`إنهاء ${courseStage.id}`:'الدرس التالي' : 'خلصت الدرس' : 'اختار إجابة' : step===words.length-1?'اختبري نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
+      {readerOpen ? <><span>صفحات الكتاب والتدريبات داخل الموقع</span><button className="primary-button" onClick={() => setReaderOpen(false)}>العودة للمحاضرة <ArrowRight size={15}/></button></> : <>
+        {courseMode && <button className="course-prev-button" onClick={onCoursePrevious} disabled={courseIndex<=courseStage.startIndex}><ArrowLeft size={14}/> الدرس السابق</button>}
+        <span>{isCompleted ? 'المحاضرة دي مكتملة قبل كده' : <><span className="modal-xp">⚡</span> +١٥ نقطة خبرة</>}</span>
+        <button className="primary-button" onClick={next}>{quiz ? answer===0 ? courseMode ? courseIndex===courseStage.endIndex?`إنهاء ${courseStage.id}`:'الدرس التالي' : 'خلصت الدرس' : 'اختار إجابة' : step===words.length-1?'اختبري نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
+      </>}
     </div>
   </section></div>;
 }

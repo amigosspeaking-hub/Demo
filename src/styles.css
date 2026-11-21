@@ -612,6 +612,24 @@ button:disabled{cursor:not-allowed}
 
 /* Book scans and original course audio stay inside the learner's selected lesson. */
 .book-material-card,.book-listening-library{min-width:0;border:1px solid #e7ebe4;border-radius:15px;background:#fbfcf9;padding:15px;margin-top:14px;}
+.book-reader-launch{width:100%;margin-top:11px;padding:12px 13px;border:1px solid #dce9da;border-radius:12px;background:#f4f9f1;display:flex;align-items:center;gap:10px;text-align:right;color:#3b6949;transition:.16s;}
+.book-reader-launch:hover{background:#edf6ea;border-color:#bad3b8;transform:translateY(-1px);}
+.book-reader-launch-icon{width:36px;height:36px;border-radius:11px;background:#e4f0e2;display:grid;place-items:center;flex:none;}
+.book-reader-launch>span:nth-child(2){min-width:0;flex:1;}
+.book-reader-launch b,.book-reader-launch small{display:block;}
+.book-reader-launch b{font-size:11px;}
+.book-reader-launch small{margin-top:3px;color:#829385;font-size:9px;}
+.lesson-modal-reader{width:min(1120px,calc(100vw - 36px));max-height:94vh;overflow:hidden;display:flex;flex-direction:column;}
+.lesson-modal-reader .lesson-progress{display:none;}
+.lesson-modal-reader .modal-content{min-height:0;overflow:auto;padding:10px 13px 12px;text-align:initial;}
+.lesson-modal-reader .modal-footer{flex:none;}
+.book-reader-panel{min-width:0;}
+.book-reader-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 1px 9px;color:#355c41;}
+.book-reader-toolbar>div{min-width:0;}
+.book-reader-toolbar b{display:block;font-size:11px;margin-top:4px;}
+.book-reader-kicker{display:flex;align-items:center;gap:5px;color:#829487;font-size:9px;}
+.book-reader-toolbar>button{flex:none;display:inline-flex;align-items:center;gap:5px;border:1px solid #e5ebe3;border-radius:8px;background:#fff;padding:7px 9px;color:#54745b;font-size:9px;}
+.book-reader-panel iframe{display:block;width:100%;height:min(68vh,740px);min-height:300px;border:1px solid #e7ebe4;border-radius:11px;background:#fafbf8;}
 .book-material-heading{display:flex;align-items:center;gap:10px;min-width:0;}
 .book-material-icon{width:34px;height:34px;border-radius:10px;background:#eaf3e9;color:#4d805d;display:grid;place-items:center;flex:none;}
 .book-material-heading>div{min-width:0;}
@@ -648,6 +666,12 @@ button:disabled{cursor:not-allowed}
 .book-listening-card{margin-top:10px;background:#fbfcfa;}
 .book-listening-card .book-page-preview img{max-height:520px;}
 @media(max-width:650px){
+  .lesson-modal-reader{width:calc(100vw - 16px);max-height:calc(100dvh - 16px);}
+  .lesson-modal-reader .modal-content{padding:8px;}
+  .book-reader-toolbar{align-items:flex-start;}
+  .book-reader-toolbar>button{max-width:132px;white-space:normal;line-height:1.5;}
+  .book-reader-panel iframe{height:calc(100dvh - 190px);min-height:220px;max-height:70vh;}
+  .book-reader-launch{padding:10px;}
   .book-material-card,.book-listening-library{padding:12px;border-radius:12px;}
   .book-material-selectors{grid-template-columns:1fr;gap:7px;}
   .book-material-heading h3{font-size:14px;}

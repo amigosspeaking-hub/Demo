@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,6 +72,36 @@ check(!/window\.open\(|target=["']_blank/i.test(appSource), 'Course material pla
 check(Object.keys(courseBookMaterials).length === 14, 'Imported book resources must map the 14 supported A1 and A2.1 lessons');
 check(courseBookMaterials['A1-0']?.pages[0]?.page === 10 && courseBookMaterials['A1-9']?.pages.at(-1)?.page === 139, 'A1 page ranges must follow the actual three archived course units');
 check(courseBookMaterials['A2-1']?.pages[0]?.page === 10 && courseBookMaterials['A2-4']?.pages.at(-1)?.page === 65, 'A2.1 pages must follow the four units actually present in its ready-to-website archive');
+const readerManifest = JSON.parse(await readFile(path.join(root, 'public/materials/readers/reader-manifest.json'), 'utf8'));
+const expectedReaders = { 'A1.1': [46, 12, 64], 'A1.2': [42, 9, 48], 'A1.3': [42, 11, 48], 'A2.1': [56, 15, 0] };
+for (const [course, [pageCount, audioTracks, quizQuestions]] of Object.entries(expectedReaders)) {
+  const reader = readerManifest[course];
+  check(Boolean(reader), `${course}: original in-app reader must be present`);
+  check(reader.pageCount === pageCount && reader.pageNumbers.length === pageCount, `${course}: reader scan count must match the locally installed pages`);
+  check(reader.audioTracks === audioTracks && reader.interactiveQuizQuestions === quizQuestions, `${course}: preserved reader activity metadata must match the inspected source`);
+  check(existsSync(path.join(root, 'public', reader.url)), `${course}: in-app reader route must be a real file`);
+  check(reader.pageNumbers.every((page) => existsSync(path.join(root, 'public/materials/books', course, 'pages', `p${String(page).padStart(3, '0')}.webp`))), `${course}: every reader page must resolve to its original local scan`);
+  const readerHtml = await readFile(path.join(root, 'public', reader.url), 'utf8');
+  check(readerHtml.includes('كل الإجابات') && readerHtml.includes('فهرس الوحدة'), `${course}: original answer controls and unit index must remain in the reader`);
+  check(!/youtube\.com|youtu\.be|drive\.google/i.test(readerHtml), `${course}: reader must not send the learner to external video or Drive pages`);
+  const readerStyles = course === 'A2.1' ? readerHtml : await readFile(path.join(root, 'public/materials/readers', course, 'tabs_style.css'), 'utf8');
+  check(readerStyles.includes('#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}'), `${course}: teacher editing and admin controls must stay hidden from learners`);
+  const inlineScripts = [...readerHtml.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+  for (const [, attributes, code] of inlineScripts) {
+    if (/\bsrc=/i.test(attributes) || !code.trim()) continue;
+    const syntax = spawnSync(process.execPath, ['--check', '-'], { input: code, encoding: 'utf8' });
+    check(syntax.status === 0, `${course}: embedded reader script must parse (${syntax.stderr.trim()})`);
+  }
+  if (course !== 'A2.1') {
+    for (const filename of ['tabs_data.js', 'tabs_engine.js']) {
+      const code = await readFile(path.join(root, 'public/materials/readers', course, filename), 'utf8');
+      const syntax = spawnSync(process.execPath, ['--check', '-'], { input: code, encoding: 'utf8' });
+      check(syntax.status === 0, `${course}: ${filename} must parse (${syntax.stderr.trim()})`);
+    }
+  }
+}
+check(appSource.includes('function OriginalBookReader(') && appSource.includes('sandbox="allow-scripts allow-same-origin"'), 'Original reader must stay sandboxed and embedded inside the lesson dialog');
+check(appSource.includes('function originalReaderForLesson(') && appSource.includes('/materials/readers/${course}/index.html#p${firstPage}'), 'Each supported lesson must open its own book reader at the matching page inside the app');
 
 const grammarGuides = await import('../src/data/grammar.js');
 const lessonStories = await import('../src/data/stories.js');
