@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { lessonLibrary } from './data/lessons.js';
-import { buildListeningItems } from './data/listening.js';
+import bookActivities from './data/bookActivities.json';
 import { grammarGuides } from './data/grammar.js';
 import { lessonStories } from './data/stories.js';
 import { lessonSentenceBanks } from './data/sentences.js';
@@ -199,48 +199,49 @@ function HomePage({ onOpenLesson, onNavigate, completedLessons, selectedStage })
   </div>;
 }
 
-function PathPage({ onOpenLesson, onStartA1Course, selectedStage = 'A1.1', completedLessons = [] }) {
-  const courseLessons = currentLessons(selectedStage);
-  const courseProgress = Math.round(courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length / Math.max(1, courseLessons.length) * 100);
-  return <div className="path-page">
-    <div className="path-intro">
-      <div><span className="eyebrow"><GraduationCap size={15}/> المنهج من A1 لـ C1</span><h2>خريطة طريقك للطلاقة</h2><p>ترتيب المستويات ماشي مع كتب Aula internacional Plus، وبعد B2 نكمّل بكتاب Aula C1.</p></div>
-      <div className="path-sticker">🗺️</div>
-    </div>
-    <div className="path-levels">
-      {levels.filter(l => l.id === (selectedStage.startsWith('A2') ? 'A2' : 'A1')).map((l, i) => <section className={`path-level ${l.tone}`} key={l.id}>
-        <div className="path-level-head">
-          <span className="path-level-number">{i + 1}</span>
-          <div><LevelPill level={l.id}/><h3>{l.name}</h3><p>{l.summary}</p></div>
-          <span className="path-hours">{l.book}</span>
-        </div>
-        <div className={`path-topics ${l.id === 'A2' ? 'a2-topics' : ''}`}>
-          {l.topics.filter(topic => { const number = Number(String(topic.id || '').split('-')[1]); const [from, to] = courseRanges[selectedStage] || courseRanges['A1.1']; return number >= from && number <= to; }).map((topic, j) => {
-            const isStructuredUnit = typeof topic === 'object';
-            const topicKey = isStructuredUnit ? topic.es : topic;
-            const lessonAvailable = (l.id === 'A1' || l.id === 'A2') && Boolean(lessonLibrary[topic.id]);
-            const isLocked = !l.unlocked || !lessonAvailable;
-            return <button key={topicKey} onClick={() => lessonAvailable && l.unlocked && onOpenLesson(l.id, topic.id)} disabled={isLocked} className={`${isLocked ? 'topic-locked' : ''} ${isStructuredUnit ? 'book-unit' : ''}`}>
-              <span className="topic-check">{completedLessons.includes(topic.id) ? <Check size={14}/> : isLocked ? <LockKeyhole size={13}/> : <Play size={12} fill="currentColor"/>}</span>
-              {isStructuredUnit ? <span className="unit-topic"><b lang="es">{topic.es}</b><small>{topic.ar}</small></span> : <span>{topic}</span>}
-              {isLocked ? <small className="unit-coming">قريباً</small> : <ChevronLeft size={16}/>}
+function PathPage({ onOpenLesson, onOpenActivity, selectedStage = 'A1.1', completedLessons = [] }) {
+  const lessons = currentLessons(selectedStage);
+  const completeCount = lessons.filter(lesson => completedLessons.includes(lesson.id)).length;
+  const courseProgress = Math.round(completeCount / Math.max(1, lessons.length) * 100);
+  const sequence = [
+    { id: 'lesson', label: 'المحاضرة', detail: 'افتح صفحة الوحدة الأصلية والشرح', page: null, icon: BookOpen, tone: 'green' },
+    { id: 'grammar', label: 'الجرامر', detail: 'شرح القاعدة الموجودة في الدرس', page: 'grammar', icon: BookOpen, tone: 'blue' },
+    { id: 'listening', label: 'الاستماع', detail: 'اسمع تسجيلات الكتاب المرتبطة بالوحدة', page: 'listening', icon: Headphones, tone: 'peach' },
+    { id: 'games', label: 'الألعاب', detail: 'راجع كلمات الدرس بألعاب تفاعلية', page: 'games', icon: Gamepad2, tone: 'purple' },
+    { id: 'speaking', label: 'التحدث والتصحيح', detail: 'انطق، طابق، وراجع أخطاءك', page: 'speaking', icon: Mic, tone: 'yellow' },
+    { id: 'quiz', label: 'التمارين والـ Quiz', detail: 'تدرّب من تمارين الكتاب وأسئلته', page: 'quiz', icon: CircleHelp, tone: 'mint' },
+    { id: 'exam', label: 'امتحان الدرس', detail: 'اختبر نفسك في محتوى الوحدة', page: 'exam', icon: Award, tone: 'coral' },
+  ];
+  return <div className="path-page island-path-page">
+    <section className="path-intro island-path-intro"><div><span className="eyebrow"><GraduationCap size={15}/> رحلتي · {selectedStage}</span><h2>جزر التعلّم بالترتيب</h2><p>كل جزيرة تمشي معاك من المحاضرة لحد امتحانها، وبعدها تبدأ جزيرة المحاضرة التالية.</p></div><div className="path-sticker">🗺️</div></section>
+    <section className="island-path-summary"><div className="island-summary-copy"><span>تقدّمك في {selectedStage}</span><b>{completeCount} من {lessons.length} محاضرات مكتملة</b></div><div className="island-summary-progress" role="progressbar" aria-label={`تقدم ${selectedStage}`} aria-valuemin="0" aria-valuemax="100" aria-valuenow={courseProgress}><i style={{ width: `${courseProgress}%` }}/></div><strong>{courseProgress}%</strong></section>
+    <div className="learning-island-list">{lessons.map((lesson, lessonIndex) => {
+      const material = courseBookMaterials[lesson.id];
+      const sourceStage = bookActivities.stages?.[courseForLesson(lesson.id)];
+      const nativeUnit = nativeBookUnitForLesson(lesson.id);
+      const originalQuizCount = (sourceStage?.quiz?.[nativeUnit] || []).length + (sourceStage?.listen?.bank || []).filter(item => item.tunit === nativeUnit).length;
+      const grammarTitle = grammarGuides[lesson.id]?.title || lesson.grammar || 'شرح القاعدة';
+      return <article className={`learning-island ${completedLessons.includes(lesson.id) ? 'island-complete' : ''}`} key={lesson.id}>
+        <div className="island-arrival-mark"><span className="island-flag">{completedLessons.includes(lesson.id) ? '✓' : String(lessonIndex + 1).padStart(2, '0')}</span><span className="island-dots"/></div>
+        <header className="learning-island-header"><div className="island-cover">{material?.pages?.[0] ? <img src={material.pages[0].src} alt={`غلاف من ${material.book} · ${material.unit}`} loading="lazy"/> : <span>{lesson.emoji || '📘'}</span>}<b>{lessonIndex + 1}</b></div><div className="island-title-copy"><span className="eyebrow">جزيرة {lessonIndex + 1} · {selectedStage}</span><h3 lang="es" dir="ltr">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><p>{lesson.objective}</p><div className="island-meta"><span>{material?.unit || `محاضرة ${lessonIndex + 1}`}</span><span>{material?.pages?.length || 0} صفحة محاضرة</span><span>{material?.tracks?.length || 0} تسجيل كتاب</span></div></div><span className="island-completion-status">{completedLessons.includes(lesson.id) ? 'مكتملة ✓' : 'جزيرة جديدة'}</span></header>
+        <div className="island-steps" role="list" aria-label={`خطوات جزيرة ${lesson.heading}`}>
+          {sequence.map((step, stepIndex) => {
+            const Icon = step.icon;
+            const detail = step.id === 'grammar' ? grammarTitle
+              : step.id === 'listening' ? `${material?.tracks?.length || 0} تسجيلات أصلية من الكتاب`
+              : step.id === 'quiz' ? originalQuizCount ? `${originalQuizCount} سؤالًا أصليًا من الملف` : 'أنشطة الوحدة الأصلية داخل صفحات الكتاب'
+              : step.id === 'speaking' ? 'تدرّب على النطق وشوف التصحيح خطوة بخطوة'
+              : step.detail;
+            return <button className={`island-step tone-${step.tone}`} role="listitem" key={step.id} onClick={() => step.page ? onOpenActivity(step.page, lesson.id) : onOpenLesson(lesson.id)}>
+              <span className="island-step-number">{String(stepIndex + 1).padStart(2, '0')}</span><span className="island-step-icon"><Icon size={17}/></span><span className="island-step-copy"><b>{step.label}</b><small>{detail}</small></span><span className="island-step-action">{step.id === 'lesson' ? 'ابدأ' : 'افتح'} <ChevronLeft size={15}/></span>
             </button>;
           })}
         </div>
-        {l.id === 'A1' && <div className="selected-course-panel"><div><span className="eyebrow"><BookOpen size={14}/> كورس {selectedStage}</span><b>محاضرات المستوى من هنا</b><small>المحاضرة تفتح داخل الموقع، ومحتوى كل درس منفصل عن باقي الوحدات.</small></div><button className="primary-button" onClick={() => onStartA1Course(courseRanges[selectedStage]?.[0] || 0)}><Play size={14} fill="currentColor"/> ابدأ محاضرات {selectedStage}</button></div>}
-        {l.id === 'A2' && <div className="a2-course-plan">
-          <div className="a2-course-heading"><div><span className="a2-plan-label"><BookOpen size={14}/> محاضرات {selectedStage}</span><b>محتوى مستقل لكل محاضرة</b></div><span className="a2-plan-icon">🗓️</span></div>
-          <div className="a2-stage-list">{a2Stages.filter(stage => stage.id === selectedStage).map(stage => <article className="a2-stage" key={stage.id}>
-            <div className="a2-stage-top"><LevelPill level={stage.id}/><span>{stage.meetings}</span><b>{stage.units}</b></div><p>{stage.focus}</p><div className="a2-grammar"><BookOpen size={13}/><span><b>جرامر:</b> {stage.grammar}</span></div><small className="a2-checkpoint"><CheckCircle2 size={13}/>{stage.check}</small>
-          </article>)}</div>
-        </div>}
-        <div className="path-level-foot"><div className="progress-track"><i style={{width:`${courseProgress}%`}}/></div><small>{courseProgress ? `${courseProgress}% مكتمل في ${selectedStage}` : `ابدأ أول درس في ${selectedStage}`}</small></div>
-      </section>)}
-    </div>
-    <div className="curriculum-note"><Lightbulb size={18}/><span><b>طريقة الوحدة:</b> نلاحظ اللغة في سياق، نتمرّن على الجرامر والمفردات، وبعدين نستخدم اللي اتعلمناه في مهمة تواصلية، مع استماع ونطق وثقافة. المحتوى والأنشطة بالمصري وبصياغة أصلية.</span></div>
+        {lessonIndex < lessons.length - 1 && <div className="island-next-hint"><span>بعد ما تخلص، كمّل للجزيرة التالية</span><ArrowLeft size={14}/></div>}
+      </article>;
+    })}</div>
   </div>;
 }
-
 
 function WordsPage({ stage, savedWords, onSaveWord }) {
   const [filter, setFilter] = useState('الكل');
@@ -257,22 +258,35 @@ function ProgressPage({ xp, doneLessons, savedWords, selectedStage }) {
   ];
   return <div className="progress-page"><div className="progress-intro"><span className="eyebrow"><Trophy size={15}/> تقدمك المسجّل</span><h2>كل تدريب بيتحسب هنا</h2><p>الأرقام دي من الأنشطة المكتملة على جهازك.</p></div><div className="progress-summary"><div className="summary-big"><span className="summary-icon">⚡</span><b>{xp}</b><span>نقطة خبرة</span></div><div className="summary-big"><span className="summary-icon">📖</span><b>{doneLessons}</b><span>محاضرة مكتملة</span></div><div className="summary-big"><span className="summary-icon">🔖</span><b>{savedWords.length}</b><span>كلمة محفوظة</span></div><div className="summary-big"><span className="summary-icon">🎓</span><b>{selectedStage}</b><span>المستوى الحالي</span></div></div><div className="achievement-heading"><h3>أهدافك القادمة</h3><span>تتحدّث مع تقدمك</span></div><div className="achievement-list">{achievements.map(item => <div key={item.title} className="achievement-card"><div className={`achievement-art ${item.tone}`}>{item.icon}</div><div className="achievement-copy"><b>{item.title}</b><span>{item.desc}</span><div className="achievement-progress"><i style={{ width: `${item.pct}%` }}/></div></div><span className="achievement-count">{item.count}</span></div>)}</div></div>;
 }
-function originalReaderForLesson(id) {
+function courseForLesson(id) {
   const match = /^(A1|A2)-(\d+)$/.exec(id || '');
   if (!match) return null;
   const [, level, rawIndex] = match;
   const index = Number(rawIndex);
-  const course = level === 'A2' ? (index >= 1 && index <= 4 ? 'A2.1' : index >= 5 && index <= 8 ? 'A2.2' : index >= 9 && index <= 10 ? 'A2.3' : null)
+  return level === 'A2' ? (index >= 1 && index <= 4 ? 'A2.1' : index >= 5 && index <= 8 ? 'A2.2' : index >= 9 && index <= 10 ? 'A2.3' : null)
     : index <= 3 ? 'A1.1' : index <= 6 ? 'A1.2' : index <= 9 ? 'A1.3' : null;
-  const firstPage = courseBookMaterials[id]?.pages?.[0]?.page;
-  if (!course || !firstPage) return null;
-  return { course, page: firstPage, src: `/materials/readers/${course}/index.html#p${firstPage}` };
+}
+function readerUnitsForLesson(id) {
+  const match = /^(A1|A2)-(\d+)$/.exec(id || '');
+  if (!match) return [];
+  const [, level, rawIndex] = match;
+  const index = Number(rawIndex);
+  if (level === 'A1') return [`u${index + 1}`];
+  return index === 10 ? ['u10a', 'u10b'] : [`u${index}`];
+}
+function originalReaderForLesson(id) {
+  const course = courseForLesson(id);
+  const material = courseBookMaterials[id];
+  const firstPage = material?.pages?.[0]?.page;
+  const units = readerUnitsForLesson(id);
+  if (!course || !firstPage || !units.length) return null;
+  return { course, unit: material.unit, title: material.title, lessonId: id, page: firstPage, src: `/materials/readers/${course}/index.html?unit=${encodeURIComponent(units.join(','))}#p${firstPage}` };
 }
 
 function OriginalBookReader({ reader, onReturn }) {
-  return <section className="book-reader-panel" aria-label={`قارئ الكتاب ${reader.course}`}>
-    <div className="book-reader-toolbar"><div><span className="book-reader-kicker"><BookOpen size={14}/> صفحات الكتاب والتدريبات</span><b>{reader.course} · افتح فهرس الوحدة من داخل القارئ</b></div><button type="button" onClick={onReturn}>ارجع لخطوات المحاضرة <ArrowRight size={15}/></button></div>
-    <iframe title={`قارئ الكتاب التفاعلي ${reader.course}`} src={reader.src} loading="eager" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" />
+  return <section className="book-reader-panel" aria-label={`قارئ ${reader.unit}`}>
+    <div className="book-reader-toolbar"><div><span className="book-reader-kicker"><BookOpen size={14}/> ملف الكتاب الأصلي · {reader.unit}</span><b lang="es" dir="ltr">{reader.title}</b><small>صفحات وأنشطة المحاضرة دي بس.</small></div><button type="button" onClick={onReturn}>ارجع لخطوات المحاضرة <ArrowRight size={15}/></button></div>
+    <iframe title={`كتاب ${reader.unit} · ${reader.title}`} src={reader.src} loading="eager" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" />
   </section>;
 }
 
@@ -288,9 +302,11 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onS
   const current = words[step];
   const grammarGuide = grammarGuides[lessonId];
   const quiz = step >= words.length;
-  function next() { if (quiz) { if (answer === 0) onComplete(); return; } setStep(step + 1); setAnswer(null); }
+  const sourceQuiz = quiz ? nativeQuestionsForLesson(lessonId).find(item => !item.listening) : null;
+  const quizPassed = Boolean(sourceQuiz && answer === sourceQuiz.correct);
+  function next() { if (quiz) { if (quizPassed) onComplete(); return; } setStep(step + 1); setAnswer(null); }
   return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose()}}><section className={`lesson-modal ${readerOpen ? 'lesson-modal-reader' : ''}`} role="dialog" aria-modal="true" aria-labelledby={readerOpen ? 'book-reader-title' : 'lesson-title'}>
-    <div className="modal-top"><span id={readerOpen ? 'book-reader-title' : undefined}>{readerOpen ? <><BookOpen size={16}/> قارئ الكتاب · {reader?.course}</> : courseMode ? <><BookOpen size={16}/> {courseStage.id} · كورس A1 · الوحدة {courseIndex}</> : <><BookOpen size={16}/> نموذج درس · {config.heading}</>}</span><button className="icon-button" onClick={onClose} aria-label="إغلاق"><X size={19}/></button></div>
+    <div className="modal-top"><span id={readerOpen ? 'book-reader-title' : undefined}>{readerOpen ? <><BookOpen size={16}/> ملف الوحدة · {reader?.unit}</> : courseMode ? <><BookOpen size={16}/> {courseStage.id} · كورس A1 · الوحدة {courseIndex}</> : <><BookOpen size={16}/> نموذج درس · {config.heading}</>}</span><button className="icon-button" onClick={onClose} aria-label="إغلاق"><X size={19}/></button></div>
     <div className="lesson-progress"><i style={{width:`${quiz?100:(step+1)/(words.length+1)*100}%`}}/></div>
     <div className="modal-content">{readerOpen && reader ? <OriginalBookReader reader={reader} onReturn={() => setReaderOpen(false)}/> : !quiz ? <>
       <div className="lesson-step-label">{config.objective}</div>
@@ -301,19 +317,17 @@ function LessonModal({ level = 'A1', lessonId = 'A1-0', onClose, onComplete, onS
       {grammarGuide && <div className="lesson-grammar-detail"><span><BookOpen size={14}/> {grammarGuide.title}</span><p>{grammarGuide.explanation}</p>{grammarGuide.examples.slice(0, 1).map(([es, ar]) => <div key={es}><b lang="es" dir="ltr">{es}</b><small>{ar}</small></div>)}</div>}
       <div className="lesson-example"><span>💬 مثال الدرس</span><b lang="es">{config.example}</b><small>{config.translation}</small></div>
       <BookLessonMaterials lessonId={lessonId}/>
-      {reader && <button className="book-reader-launch" type="button" onClick={() => setReaderOpen(true)}><span className="book-reader-launch-icon"><BookOpen size={19}/></span><span><b>افتح صفحات الكتاب في القارئ</b><small>{reader.course} · الفهرس، صفحات الوحدة، الإجابات والصوتيات</small></span><ArrowLeft size={17}/></button>}
+      {reader && <button className="book-reader-launch" type="button" onClick={() => setReaderOpen(true)}><span className="book-reader-launch-icon"><BookOpen size={19}/></span><span><b>افتح صفحات الكتاب في القارئ</b><small>{reader.unit} · صفحات وأنشطة الوحدة الأصلية فقط</small></span><ArrowLeft size={17}/></button>}
       <button className="save-in-lesson" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'اتحفظت في قاموسك' : 'احفظ الكلمة'}</button>
     </> : <>
-      <div className="lesson-step-label">اختبار سريع · آخر خطوة</div><div className="quiz-finish-icon">🎯</div><h2 id="lesson-title">تمام! نراجع اللي اتعلمناه</h2>
-      <p className="quiz-finish-question">{config.question}</p>
-      <div className="modal-quiz-answers">{config.answers.map((a,i)=><button key={a} dir={/[A-Za-zÀ-ÿ]/.test(a) ? 'ltr' : 'rtl'} className={answer===i?(i===0?'correct':'wrong'):answer!==null&&i===0?'correct':''} onClick={()=>setAnswer(i)}>{a}{answer===i&&i===0&&<Check size={16}/>}</button>)}</div>
-      {answer!==null&&<div className={`quiz-feedback ${answer===0?'good':'try-again'}`}>{answer===0?'صح عليك! ¡Excelente! 🎉':`الإجابة الصح: ${config.answers[0]}`}</div>}
+      <div className="lesson-step-label">{sourceQuiz ? 'سؤال من تمارين الكتاب الأصلي' : 'الأنشطة الأصلية للمحاضرة'}</div><div className="quiz-finish-icon">{sourceQuiz ? '🎯' : '📖'}</div><h2 id="lesson-title">{sourceQuiz ? 'اختبر فهمك' : 'كمّل التدريب من صفحات الكتاب'}</h2>
+      {sourceQuiz ? <><p className="quiz-finish-question">{sourceQuiz.prompt}</p><div className="modal-quiz-answers">{sourceQuiz.options.map(option => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} className={`${answer === option ? (option === sourceQuiz.correct ? 'correct' : 'wrong') : ''} ${answer !== null && option === sourceQuiz.correct ? 'correct' : ''}`} onClick={() => setAnswer(option)}>{option}{answer === option && option === sourceQuiz.correct && <Check size={16}/>}</button>)}</div>{answer !== null && <div className={`quiz-feedback ${quizPassed ? 'good' : 'try-again'}`}>{quizPassed ? 'إجابة صحيحة — ممتاز!' : `راجع الإجابة الصحيحة: ${sourceQuiz.correct}`}<small>{sourceQuiz.explanation}</small></div>}</> : <><p className="quiz-finish-question">مافيش بنك أسئلة رقمي أصلي لهذه الوحدة؛ افتح ملف المحاضرة واستخدم التدريبات التفاعلية الموجودة فيه.</p><button className="primary-button" onClick={() => setReaderOpen(true)} disabled={!reader}>افتح تدريبات الوحدة الأصلية <BookOpen size={16}/></button></>}
     </>}</div>
     <div className={`modal-footer ${courseMode ? 'course-modal-footer' : ''}`}>
       {readerOpen ? <><span>صفحات الكتاب والتدريبات داخل الموقع</span><button className="primary-button" onClick={() => setReaderOpen(false)}>العودة للمحاضرة <ArrowRight size={15}/></button></> : <>
         {courseMode && <button className="course-prev-button" onClick={onCoursePrevious} disabled={courseIndex<=courseStage.startIndex}><ArrowLeft size={14}/> الدرس السابق</button>}
         <span>{isCompleted ? 'المحاضرة دي مكتملة قبل كده' : <><span className="modal-xp">⚡</span> +١٥ نقطة خبرة</>}</span>
-        <button className="primary-button" onClick={next}>{quiz ? answer===0 ? courseMode ? courseIndex===courseStage.endIndex?`إنهاء ${courseStage.id}`:'الدرس التالي' : 'خلصت الدرس' : 'اختار إجابة' : step===words.length-1?'اختبري نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
+        <button className="primary-button" onClick={quiz && !sourceQuiz ? () => setReaderOpen(true) : next} disabled={quiz && sourceQuiz && !quizPassed}>{quiz ? sourceQuiz ? quizPassed ? courseMode ? courseIndex===courseStage.endIndex?`إنهاء ${courseStage.id}`:'الدرس التالي' : 'خلصت الدرس' : 'راجع الإجابة' : 'افتح تمارين الكتاب' : step===words.length-1?'اختبر نفسك':'الكلمة اللي بعدها'} <ArrowLeft size={16}/></button>
       </>}
     </div>
   </section></div>;
@@ -417,6 +431,25 @@ function BookAudioPlayer({ track }) {
     {error && <small className="book-audio-error" role="status">{error}</small>}
   </div>;
 }
+function nativeBookUnitForLesson(id) {
+  const match = /^(A1)-(\d+)$/.exec(id || '');
+  return match ? `u${Number(match[2])}` : null;
+}
+function nativeListeningTrackForLesson(id, track) {
+  const course = courseForLesson(id);
+  const stage = bookActivities.stages?.[course];
+  if (!stage || !track?.src) return null;
+  const filename = track.src.split('/').pop();
+  return stage.listen.tracks.find(item => item.file === filename) || null;
+}
+function NativeListeningExercises({ track }) {
+  const [answers, setAnswers] = useState({});
+  useEffect(() => setAnswers({}), [track?.file]);
+  if (!track?.q?.length) return null;
+  return <section className="native-listening-exercises"><div className="native-activity-heading"><span className="eyebrow"><Headphones size={14}/> نشاط الاستماع الأصلي</span><b>{track.q.length} أسئلة · صفحة {track.page}</b></div>
+    {track.q.map((item, index) => <article className="native-listening-question" key={`${track.file}-${index}`}><h4>{item.q}</h4><div className="native-listening-options">{item.opts.map((option, choice) => <button key={option} className={`${answers[index] === choice ? (choice === item.a ? 'is-correct' : 'is-wrong') : ''} ${answers[index] !== undefined && choice === item.a ? 'is-correct' : ''}`} onClick={() => setAnswers(value => ({ ...value, [index]: choice }))} disabled={answers[index] !== undefined}>{option}</button>)}</div>{answers[index] !== undefined && <p className="native-listening-feedback">{answers[index] === item.a ? 'صحيح — ' : 'الإجابة من ملف الكتاب: '}{item.ex}</p>}</article>)}</section>;
+}
+
 function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
   const material = courseBookMaterials[lessonId];
   const [pageIndex, setPageIndex] = useState(0);
@@ -425,6 +458,7 @@ function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
   if (!material) return null;
   const page = material.pages[pageIndex] || material.pages[0];
   const track = material.tracks[trackIndex] || material.tracks[0];
+  const originalTrack = nativeListeningTrackForLesson(lessonId, track);
   function selectTrack(event) {
     const index = Number(event.target.value);
     setTrackIndex(index);
@@ -437,72 +471,47 @@ function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
     <div className="book-material-selectors"><label><span>المقطع الصوتي</span><select value={trackIndex} onChange={selectTrack}>{material.tracks.map((item, index) => <option key={`${item.id}-${item.variant}`} value={index} dir="auto">{item.title} · {item.id}{item.variant === 'alternativa' ? ' (alternativa)' : ''}</option>)}</select></label><label><span>صفحة الكتاب</span><select value={pageIndex} onChange={event => setPageIndex(Number(event.target.value))}>{material.pages.map((item, index) => <option key={item.page} value={index}>صفحة {item.page}</option>)}</select></label></div>
     {page && <figure className="book-page-preview"><img src={page.src} alt={`صفحة ${page.page} من كتاب ${material.book}`} loading="lazy"/><figcaption>صفحة {page.page} · {material.book}</figcaption></figure>}
     {track && <BookAudioPlayer key={track.src} track={track}/>}
+    {originalTrack && <><details className="native-audio-transcript"><summary>نص التسجيل ومفرداته من ملف الكتاب</summary><p lang="es" dir="ltr">{originalTrack.es}</p><p dir="rtl">{originalTrack.ar}</p>{originalTrack.keys?.length > 0 && <ul>{originalTrack.keys.map(([es, ar]) => <li key={es}><b lang="es" dir="ltr">{es}</b><span>{ar}</span></li>)}</ul>}</details><NativeListeningExercises track={originalTrack}/></>}
   </section>;
 }
-function BookListeningLibrary({ stage }) {
+function BookListeningLibrary({ stage, focusLessonId }) {
   const lessons = currentLessons(stage).filter(lesson => courseBookMaterials[lesson.id]);
-  const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
-  useEffect(() => { setLessonId(lessons[0]?.id || ''); }, [stage]);
+  const initialId = lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || '';
+  const [lessonId, setLessonId] = useState(initialId);
+  useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
   if (!lessons.length) return null;
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
   return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>استمع للمادة المرتبطة بمحاضرتك</h2><p>اختر محاضرة من {stage}؛ التسجيل والصفحات يتغيران معها.</p></div><label className="course-select"><span>المحاضرة</span><select value={lesson.id} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading.replace(/^A[12](?:\.\d)? · /, '')}</option>)}</select></label></div><BookLessonMaterials key={lesson.id} lessonId={lesson.id} mode="listening"/></section>;
 }
-function GrammarPage({ stage }) {
+function OriginalBookActivityFlow({ stage, exam = false, focusLessonId }) {
   const lessons = currentLessons(stage);
-  return <div className="grammar-page"><section className="course-page-intro grammar-intro"><span className="eyebrow"><BookOpen size={15}/> شرح مدرس بالمصري</span><h2>جرامر {stage}</h2><p>شرح القاعدة الموجودة في كل محاضرة مع أمثلة وتدريب سريع.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
+  const startId = lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || '';
+  const [lessonId, setLessonId] = useState(startId);
+  useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
+  const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
+  const reader = lesson ? originalReaderForLesson(lesson.id) : null;
+  return <div className="original-book-activity-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} تدريبات الكتاب الأصلية · {stage}</span><h2>{exam ? `مراجعة واختبار ${stage}` : `تدريب من كتاب ${stage}`}</h2><p>المستوى ده ما فيهوش بنك أسئلة رقمي موثّق منفصل؛ بدل ما نألف أسئلة، بنفتح أنشطة الكتاب الأصلية للمحاضرة المختارة.</p><label className="course-select"><span>الوحدة / المحاضرة</span><select value={lesson?.id || ''} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
+    {lesson && reader && <section className="original-book-activity-card"><div className="original-book-activity-heading"><BookOpen size={20}/><div><span>{exam ? 'محتوى الامتحان من المصدر' : 'تمرين المصدر الأصلي'}</span><h3 lang="es" dir="ltr">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><small>قارئ محدد على صفحات هذه الوحدة فقط · {courseBookMaterials[lesson.id].pages.length} صفحات في مادة المحاضرة</small></div></div><iframe title={`تدريبات الكتاب الأصلية · ${lesson.heading}`} src={reader.src} loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" /></section>}
+  </div>;
+}
+
+function GrammarPage({ stage, focusLessonId }) {
+  const allLessons = currentLessons(stage);
+  const lessons = focusLessonId ? allLessons.filter(lesson => lesson.id === focusLessonId) : allLessons;
+  return <div className="grammar-page"><section className="course-page-intro grammar-intro"><span className="eyebrow"><BookOpen size={15}/> شرح مدرس بالمصري</span><h2>{focusLessonId ? 'جرامر المحاضرة' : `جرامر ${stage}`}</h2><p>شرح القاعدة الموجودة في كل محاضرة مع أمثلة وتدريب سريع.</p><span className="active-course-label">المستوى النشط: {stage}</span></section>
     <div className="grammar-guide-list">{lessons.map((lesson, index) => { const guide = grammarGuides[lesson.id] || { title: lesson.grammar || 'قاعدة الدرس', explanation: lesson.grammar || '', examples: [[lesson.example, lesson.translation]], practice: lesson.question }; return <article className="grammar-guide" key={lesson.id}><div className="grammar-guide-head"><span className="course-lesson-number">{index + 1}</span><div><span className="level-pill">{stage}</span><h3>{guide.title}</h3><small lang="es" dir="ltr">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</small></div></div><p className="grammar-explanation">{guide.explanation}</p><div className="grammar-example-list">{guide.examples.map(([es, ar]) => <div className="grammar-example-row" key={es}><b lang="es" dir="ltr">{es}</b><span dir="rtl" lang="ar">{ar}</span><button onClick={() => speakSpanish(es)} aria-label={`اسمع ${es}`}><Volume2 size={16}/></button></div>)}</div><div className="grammar-practice"><Lightbulb size={16}/><span><b>جرّب بنفسك:</b> {guide.practice}</span></div></article>; })}</div>
   </div>;
 }
-function ListeningPage({ stage }) {
-  const lessons = currentLessons(stage);
-  const lessonIds = new Set(lessons.map(lesson => lesson.id));
-  const items = buildListeningItems(lessonLibrary).filter(item => lessonIds.has(item.id));
-  const [selectedId, setSelectedId] = useState(items[0]?.id || '');
-  const [query, setQuery] = useState('');
-  const [showArabic, setShowArabic] = useState(true);
-  const [rate, setRate] = useState(1);
-  const [playerState, setPlayerState] = useState('idle');
-  const [playerProgress, setPlayerProgress] = useState(0);
-  const [playerError, setPlayerError] = useState('');
-  const utteranceRef = useRef(null);
-  const selected = items.find(item => item.id === selectedId) || items[0];
-  const visible = items.filter(item => `${item.title} ${item.spanish} ${item.arabic}`.toLowerCase().includes(query.trim().toLowerCase()));
-  useEffect(() => { if (!items.some(item => item.id === selectedId)) setSelectedId(items[0]?.id || ''); }, [stage]);
-  useEffect(() => { setPlayerState('idle'); setPlayerProgress(0); setPlayerError(''); window.speechSynthesis?.cancel(); }, [selectedId]);
-  useEffect(() => () => window.speechSynthesis?.cancel(), []);
-  function speak() {
-    if (!selected?.spanish) return;
-    if (!('speechSynthesis' in window)) { setPlayerState('error'); setPlayerError('La síntesis de voz no está disponible en este navegador.'); return; }
-    const speech = window.speechSynthesis;
-    speech.cancel();
-    const utterance = new SpeechSynthesisUtterance(selected.spanish);
-    utterance.lang = 'es-ES'; utterance.rate = rate; utteranceRef.current = utterance;
-    const voices = speech.getVoices();
-    utterance.voice = voices.find(voice => voice.lang?.toLowerCase() === 'es-es') || voices.find(voice => voice.lang?.toLowerCase().startsWith('es')) || null;
-    utterance.onstart = () => { setPlayerState('playing'); setPlayerProgress(0); setPlayerError(''); };
-    utterance.onboundary = event => { if (selected.spanish.length) setPlayerProgress(Math.min(99, Math.round(event.charIndex / selected.spanish.length * 100))); };
-    utterance.onend = () => { setPlayerState('idle'); setPlayerProgress(100); utteranceRef.current = null; };
-    utterance.onerror = event => { if (event.error !== 'canceled' && event.error !== 'interrupted') { setPlayerError('No se pudo reproducir la voz. Inténtalo otra vez.'); setPlayerState('error'); } else setPlayerState('idle'); utteranceRef.current = null; };
-    speech.speak(utterance);
-  }
-  function togglePlayback() {
-    if (!('speechSynthesis' in window)) return;
-    if (playerState === 'playing') { window.speechSynthesis.pause(); setPlayerState('paused'); }
-    else if (playerState === 'paused') { window.speechSynthesis.resume(); setPlayerState('playing'); }
-  }
-  function stopPlayback() {
-    window.speechSynthesis?.cancel(); utteranceRef.current = null; setPlayerState('idle'); setPlayerProgress(0); setPlayerError('');
-  }
-  return <div className="listening-page"><section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage}</span><h2>اسمع الجملة، والترجمة جنبها</h2><p>اختر محاضرة من مستواك. كل سطر إسباني من الشمال لليمين ومعناه العربي مقابله.</p></div><div className="listening-summary"><b>{items.length}</b><span>عبارة تدريب</span></div></section>
-    <div className="listening-layout"><aside className="listening-library"><div className="listening-library-head"><div><h3>عبارات المحاضرات</h3><span>{visible.length} عبارة</span></div><AudioLines size={19}/></div><label className="listening-search"><Search size={16}/><input value={query} onChange={event => setQuery(event.target.value)} placeholder="ابحث في العبارات" aria-label="بحث في العبارات"/></label><div className="listening-items">{visible.map(item => <button key={item.id} className={`listening-item ${selected?.id === item.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} aria-pressed={selected?.id === item.id}><span className="listening-item-icon"><Headphones size={15}/></span><span className="listening-item-copy"><b>{item.title}</b><small lang="es" dir="ltr">{item.spanish}</small></span><span className="listening-item-level">{stage}</span></button>)}{!visible.length && <p className="listening-empty">مفيش عبارة مطابقة.</p>}</div></aside>
-      <section className="listening-player"><div className="listening-player-head"><div><span className="listening-kicker">جملة من {stage}</span><h3>{selected?.title || 'اختار محاضرة'}</h3></div></div>
-        <div className={`listening-transcript bilingual-transcript ${showArabic ? '' : 'arabic-hidden'}`} data-testid="bilingual-transcript"><div className="transcript-spanish" lang="es" dir="ltr">{selected?.spanish}</div>{showArabic && <div className="transcript-arabic" lang="ar" dir="rtl">{selected?.arabic}</div>}</div>
-        <div className="listening-controls"><button className="translation-toggle" onClick={() => setShowArabic(value => !value)}>{showArabic ? 'إخفاء الترجمة العربية' : 'إظهار الترجمة العربية'}</button><div className="speech-rates" aria-label="Velocidad de reproducción">{[0.5, 0.75, 1, 1.25].map(value => <button key={value} className={rate === value ? 'selected' : ''} onClick={() => { setRate(value); if (playerState === 'playing' || playerState === 'paused') { stopPlayback(); } }} aria-pressed={rate === value}>{value.toFixed(value === 1 ? 1 : 2).replace(/0$/, '')}×</button>)}</div></div><div className="generated-audio-player" lang="es" dir="ltr" aria-label="Reproductor de audio en español"><div className="generated-player-buttons"><button onClick={speak} disabled={!selected?.spanish}><Play size={16}/>{playerState === 'playing' || playerState === 'paused' ? 'Reiniciar' : 'Reproducir'}</button><button onClick={togglePlayback} disabled={playerState !== 'playing' && playerState !== 'paused'}><span>{playerState === 'paused' ? '▶' : 'Ⅱ'}</span>{playerState === 'paused' ? 'Continuar' : 'Pausar'}</button><button onClick={stopPlayback} disabled={playerState === 'idle' && playerProgress !== 100}><X size={15}/>Detener</button></div><div className="generated-player-track" role="progressbar" aria-label="Progreso del audio" aria-valuemin="0" aria-valuemax="100" aria-valuenow={playerProgress}><i style={{ width: `${playerProgress}%` }}/></div><span className="generated-player-state">{playerError || (playerState === 'playing' ? 'Reproduciendo' : playerState === 'paused' ? 'En pausa' : playerProgress === 100 ? 'Reproducción finalizada' : 'Listo')}</span></div>
-        <p className="listening-source-note"><Volume2 size={14}/> النطق الإسباني مُولّد من الجهاز. شغّل الصوت واختار السرعة المناسبة.</p></section></div><BookListeningLibrary stage={stage}/></div>;
+function ListeningPage({ stage, focusLessonId }) {
+  return <div className="listening-page original-listening-page">
+    <section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage} · تسجيلات الكتاب</span><h2>اسمع من ملفات المحاضرات الأصلية</h2><p>التسجيلات هنا من الكتاب نفسه، ومع كل مقطع صفحته ونصه وأسئلة الاستماع الموجودة معه.</p></div><div className="listening-summary"><Headphones size={23}/><span>صوت أصلي</span></div></section>
+    <BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>
+  </div>;
 }
-function SpeakingPage({ stage }) {
+function SpeakingPage({ stage, focusLessonId }) {
   const lessons = currentLessons(stage);
-  const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
+  const startId = lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || '';
+  const [lessonId, setLessonId] = useState(startId);
   const [transcript, setTranscript] = useState('');
   const [status, setStatus] = useState('اضغط زر الميكروفون وانطق الجملة الإسبانية.');
   const [isListening, setIsListening] = useState(false);
@@ -512,7 +521,7 @@ function SpeakingPage({ stage }) {
   const cleanSpeech = value => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f¿?¡!.,;:]/g, '').replace(/\s+/g, ' ').trim();
   const heardWords = cleanSpeech(transcript).split(' ').filter(Boolean);
   const expectedWords = cleanSpeech(lesson?.example || '').split(' ').filter(Boolean);
-  useEffect(() => { if (!lessons.some(item => item.id === lessonId)) setLessonId(lessons[0]?.id || ''); }, [stage]);
+  useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
   function startRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) { setSupported(false); setStatus('المتصفح الحالي لا يدعم التعرّف الصوتي. جرّب Chrome أو Edge.'); return; }
@@ -527,26 +536,72 @@ function SpeakingPage({ stage }) {
     {lesson && <section className="speaking-card"><div className="speaking-lesson-label">تحدّث من {lesson.heading}</div><div className="speaking-prompt" lang="es" dir="ltr">{lesson.example}</div><p className="speaking-translation" dir="rtl">{lesson.translation}</p><button className={`mic-start ${isListening ? 'recording' : ''}`} onClick={startRecognition} disabled={isListening || !supported}><Mic size={21}/>{isListening ? 'بيسجّل…' : 'ابدأ التحدث'}</button><div className="speech-feedback" role="status"><span className={transcript ? 'feedback-ready' : ''}>{status}</span>{transcript && <div className="speech-recognized"><small>مقارنة كلمة بكلمة:</small><div className="speech-word-check" lang="es" dir="ltr">{expectedWords.map((word, index) => <span key={`${word}-${index}`} className={heardWords[index] === word ? 'word-right' : 'word-wrong'}>{heardWords[index] || '—'}</span>)}{heardWords.slice(expectedWords.length).map((word, index) => <span key={`extra-${word}-${index}`} className="word-wrong">{word}</span>)}</div><b lang="es" dir="ltr">اللي اتقال: {transcript}</b></div>}</div><button className="speech-repeat" onClick={() => speakSpanish(lesson.example)}><Volume2 size={16}/> اسمع النموذج الإسباني</button></section>}
     <section className="speaking-story"><span className="eyebrow"><BookOpen size={14}/> حكاية قصيرة · {stage}</span><h3>{lesson?.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><div className="story-bilingual"><p lang="es" dir="ltr">{story.es}</p><p dir="rtl">{story.ar}</p></div><button className="speech-repeat" onClick={() => speakSpanish(story.es)}><Volume2 size={16}/> اسمع الحكاية</button></section></div>;
 }
-function LearningFlow({ stage, exam = false, onFinish }) {
+function nativeQuestionsForLesson(lessonId) {
+  const stageId = courseForLesson(lessonId);
+  const original = bookActivities.stages?.[stageId];
+  const unit = nativeBookUnitForLesson(lessonId);
+  if (!original || !unit) return [];
+  const fromQuiz = (original.quiz?.[unit] || []).map(item => ({ ...item, listening: false }));
+  const fromListening = (original.listen?.bank || []).filter(item => item.tunit === unit).map(item => ({ ...item, listening: true }));
+  return [...fromQuiz, ...fromListening].map((item, index) => {
+    const sourceTrack = item.file ? original.listen.tracks.find(track => track.file === item.file) : null;
+    const materialTrack = sourceTrack ? courseBookMaterials[lessonId]?.tracks.find(track => track.src.endsWith(`/${sourceTrack.file}`)) : null;
+    return {
+      id: `${unit}-${item.file || 'quiz'}-${index}-${item.q}`,
+      prompt: item.q,
+      options: item.opts,
+      correct: item.opts[item.a],
+      explanation: item.ex,
+      source: [item.tag, item.ref].filter(Boolean).join(' · ') || courseBookMaterials[lessonId]?.unit,
+      audio: materialTrack?.src || null,
+      listening: Boolean(item.listening),
+      spanish: sourceTrack?.es || '',
+    };
+  });
+}
+function NativeA1LearningFlow({ stage, exam = false, onFinish, focusLessonId }) {
   const lessons = currentLessons(stage);
-  const [lessonId, setLessonId] = useState('all');
-  const pool = useMemo(() => questionPool(stage, lessonId === 'all' ? null : lessonId), [stage, lessonId]);
-  const amount = exam ? 10 : Math.min(8, Math.max(5, pool.length));
+  const courseSource = bookActivities.stages?.[stage];
+  const models = exam ? (courseSource?.exams?.models || []) : [];
+  const focusUnit = nativeBookUnitForLesson(focusLessonId);
+  const initialModel = models.find(item => item.unit === focusUnit) || models[0];
+  const [lessonId, setLessonId] = useState(focusLessonId || 'all');
+  const [modelKey, setModelKey] = useState(initialModel?.k || 'A');
+  const model = models.find(item => item.k === modelKey) || models[0];
+  useEffect(() => { setLessonId(focusLessonId || 'all'); setModelKey((models.find(item => item.unit === nativeBookUnitForLesson(focusLessonId)) || models[0])?.k || 'A'); }, [stage, focusLessonId]);
+  const modelUnitLesson = exam && model?.unit ? `A1-${Number(model.unit.slice(1))}` : null;
+  const effectiveLessonId = exam ? (modelUnitLesson || 'all') : lessonId;
+  const pool = useMemo(() => effectiveLessonId === 'all'
+    ? lessons.flatMap(lesson => nativeQuestionsForLesson(lesson.id))
+    : nativeQuestionsForLesson(effectiveLessonId), [stage, effectiveLessonId]);
+  const amount = exam ? Math.min(model?.n || 40, pool.length) : Math.min(8, pool.length);
   const [questions, setQuestions] = useState(() => drawQuestions(pool, amount));
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
-  const [seconds, setSeconds] = useState(exam ? 15 * 60 : 0);
+  const [seconds, setSeconds] = useState(exam ? (model?.minutes || 60) * 60 : 0);
   const item = questions[index];
   const choices = useMemo(() => shuffled(item?.options || []), [item]);
   useEffect(() => { if (!exam || finished) return undefined; const timer = setInterval(() => setSeconds(value => { if (value <= 1) { clearInterval(timer); setFinished(true); return 0; } return value - 1; }), 1000); return () => clearInterval(timer); }, [exam, finished]);
-  function restart(nextLessonId = lessonId) { const nextPool = questionPool(stage, nextLessonId === 'all' ? null : nextLessonId); const nextAmount = exam ? 10 : Math.min(8, Math.max(5, nextPool.length)); setQuestions(drawQuestions(nextPool, nextAmount)); setIndex(0); setAnswer(null); setScore(0); setFinished(false); setSeconds(exam ? 900 : 0); }
+  function restart(nextLessonId = lessonId, nextModelKey = modelKey) {
+    const nextModel = models.find(item => item.k === nextModelKey) || models[0];
+    const modelUnit = nextModel?.unit ? `A1-${Number(nextModel.unit.slice(1))}` : null;
+    const targetLesson = exam ? (modelUnit || 'all') : nextLessonId;
+    const nextPool = targetLesson === 'all' ? lessons.flatMap(lesson => nativeQuestionsForLesson(lesson.id)) : nativeQuestionsForLesson(targetLesson);
+    const nextAmount = exam ? Math.min(nextModel?.n || 40, nextPool.length) : Math.min(8, nextPool.length);
+    setQuestions(drawQuestions(nextPool, nextAmount)); setIndex(0); setAnswer(null); setScore(0); setFinished(false); setSeconds(exam ? (nextModel?.minutes || 60) * 60 : 0);
+  }
   function next() { const total = score + (answer === item?.correct ? 1 : 0); setScore(total); if (index + 1 === questions.length) { onFinish(Math.round(total / questions.length * (exam ? 40 : 15))); setFinished(true); } else { setIndex(value => value + 1); setAnswer(null); } }
   const percentage = questions.length ? Math.round(score / questions.length * 100) : 0;
-  return <div className="learning-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'امتحان مستقل' : 'تدريب قصير'}</span><h2>{exam ? `امتحان ${stage}` : `Quiz · ${stage}`}</h2><p>{exam ? 'اختبار مرحلي مستقل من بنك الأسئلة؛ الوقت والنتيجة يظهران هنا.' : 'اختار المحاضرة أو اختبر نفسك في كل محتوى المستوى الحالي.'}</p>{!finished && <label className="course-select"><span>نطاق الأسئلة</span><select value={lessonId} onChange={event => { const nextId = event.target.value; setLessonId(nextId); restart(nextId); }}><option value="all">كل محاضرات {stage}</option>{lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.heading}</option>)}</select></label>}</section>
-    {finished ? <section className="flow-result"><div className="result-medal">{percentage >= 70 ? '🏆' : '📘'}</div><span className="eyebrow">{exam ? 'نتيجة الامتحان' : 'نتيجة التدريب'}</span><h3>{score} / {questions.length} إجابات صحيحة</h3><p>{percentage >= 70 ? 'ممتاز! راجع الأخطاء وكمل للمحاضرة التالية.' : 'راجع المحاضرة، وبعدها جرّب مرة تانية.'}</p><div className="result-progress"><i style={{ width: `${percentage}%` }} /></div><button className="primary-button" onClick={() => restart()}><RotateCcw size={16}/> ابدأ محاولة جديدة</button></section> : item && <section className="flow-question-card"><div className="flow-stats"><span>{exam ? <><Timer size={15}/> {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}</> : <><Target size={15}/> سؤال {index + 1} من {questions.length}</>}</span><span><CheckCircle2 size={15}/> النتيجة {score}</span></div><div className="flow-progress"><i style={{ width: `${(index + 1) / questions.length * 100}%` }}/></div><small className="flow-source">{item.source}</small><h3>{item.prompt}</h3>{item.spanish && <p lang="es" dir="ltr" className="flow-spanish">{item.spanish}</p>}<div className="flow-options">{choices.map((option, i) => <button key={`${item.prompt}-${option}`} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} onClick={() => answer === null && setAnswer(option)} className={`${answer === option ? (option === item.correct ? 'is-correct' : 'is-wrong') : ''} ${answer !== null && option === item.correct ? 'is-correct' : ''}`}><span>{['A','B','C','D'][i]}</span>{option}{answer === option && (option === item.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`flow-feedback ${answer === item.correct ? 'good' : 'bad'}`}>{answer === item.correct ? 'إجابة صحيحة — عاش!' : `الإجابة الصحيحة: ${item.correct}`}</div>}<button className="primary-button flow-next" disabled={answer === null} onClick={next}>{index + 1 === questions.length ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button></section>}
+  return <div className="learning-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'اختبار من ملف الكتاب' : 'تدريب من ملف الكتاب'}</span><h2>{exam ? `امتحان ${stage}` : `Quiz · ${stage}`}</h2><p>{exam ? `نموذج الكتاب: ${model?.ar || 'مراجعة المرحلة'} · ${model?.note || ''}` : 'الأسئلة مأخوذة من بنك التمارين وأسئلة الاستماع الأصلية للكتاب، بدون أمثلة مُضافة من مكتبة الدروس.'}</p>{!finished && <div className="native-learning-selectors">{!exam && <label className="course-select"><span>نطاق الأسئلة</span><select value={lessonId} onChange={event => { const nextId = event.target.value; setLessonId(nextId); restart(nextId); }}><option value="all">كل وحدات {stage}</option>{lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.heading}</option>)}</select></label>}{exam && models.length > 0 && <label className="course-select"><span>نموذج الامتحان من الكتاب</span><select value={modelKey} onChange={event => { const nextKey = event.target.value; setModelKey(nextKey); restart(lessonId, nextKey); }}>{models.map(item => <option key={item.k} value={item.k}>{item.ar} · {item.n} سؤال</option>)}</select></label>}</div>}</section>
+    {finished ? <section className="flow-result"><div className="result-medal">{percentage >= 70 ? '🏆' : '📘'}</div><span className="eyebrow">{exam ? 'نتيجة الامتحان' : 'نتيجة التدريب'}</span><h3>{score} / {questions.length} إجابات صحيحة</h3><p>{percentage >= 70 ? 'ممتاز! دي إجابتك على أسئلة الكتاب الأصلية.' : 'راجع صفحة المحاضرة والتسجيل المرتبط بالسؤال، وبعدها جرّب تاني.'}</p><div className="result-progress"><i style={{ width: `${percentage}%` }} /></div><button className="primary-button" onClick={() => restart()}><RotateCcw size={16}/> ابدأ محاولة جديدة</button></section> : item ? <section className="flow-question-card"><div className="flow-stats"><span>{exam ? <><Timer size={15}/> {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}</> : <><Target size={15}/> سؤال {index + 1} من {questions.length}</>}</span><span><CheckCircle2 size={15}/> النتيجة {score}</span></div><div className="flow-progress"><i style={{ width: `${(index + 1) / questions.length * 100}%` }}/></div><small className="flow-source">{item.source}</small><h3>{item.prompt}</h3>{item.audio && <audio className="native-question-audio" controls preload="none" src={item.audio}>المتصفح لا يدعم تشغيل الصوت.</audio>}<div className="flow-options">{choices.map((option, i) => <button key={`${item.prompt}-${option}`} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} onClick={() => answer === null && setAnswer(option)} className={`${answer === option ? (option === item.correct ? 'is-correct' : 'is-wrong') : ''} ${answer !== null && option === item.correct ? 'is-correct' : ''}`}><span>{['A','B','C','D'][i]}</span>{option}{answer === option && (option === item.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`flow-feedback ${answer === item.correct ? 'good' : 'bad'}`}>{answer === item.correct ? 'إجابة صحيحة — عاش!' : `الإجابة الصحيحة: ${item.correct}`}{item.explanation && <small>{item.explanation}</small>}</div>}<button className="primary-button flow-next" disabled={answer === null} onClick={next}>{index + 1 === questions.length ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button></section> : <section className="empty-state">مافيش أسئلة أصلية متاحة للنطاق ده. افتح المحاضرة من خطة التعلّم عشان توصل لصفحاتها وأنشطتها الأصلية.</section>}
   </div>;
+}
+function LearningFlow({ stage, exam = false, onFinish, focusLessonId }) {
+  return stage.startsWith('A1')
+    ? <NativeA1LearningFlow stage={stage} exam={exam} onFinish={onFinish} focusLessonId={focusLessonId}/>
+    : <OriginalBookActivityFlow stage={stage} exam={exam} focusLessonId={focusLessonId}/>;
 }
 function GameRun({ game, lesson, stage, onBack, onAward }) {
   const words = lesson.words;
@@ -561,7 +616,9 @@ function GameRun({ game, lesson, stage, onBack, onAward }) {
   const [seconds, setSeconds] = useState(90);
   const [feedback, setFeedback] = useState('');
   const [finished, setFinished] = useState(false);
-  const questions = useMemo(() => questionPool(stage, lesson.id), [stage, lesson.id]);
+  const questions = useMemo(() => game.id === 'listen'
+    ? nativeQuestionsForLesson(lesson.id).filter(item => item.listening)
+    : questionPool(stage, lesson.id), [stage, lesson.id, game.id]);
   const current = words[index % words.length];
   const question = questions[index % questions.length];
   const sentenceBank = [lesson.example, ...(lessonSentenceBanks[lesson.id] || [])];
@@ -579,18 +636,20 @@ function GameRun({ game, lesson, stage, onBack, onAward }) {
   function checkOrder() { const proposed = order.map(i => sentenceTokens[i]).join(' '); const norm = value => value.toLowerCase().replace(/[.,!?¿¡]/g, '').replace(/\s+/g, ' ').trim(); const isCorrect = norm(proposed) === norm(roundSentence); setSelected(isCorrect ? 'correct' : 'wrong'); setFeedback(isCorrect ? 'الجملة مظبوطة! +١٠ نقاط' : `الجملة الصحيحة: ${roundSentence}`); if (isCorrect) setScore(value => value + 10); else setLives(value => Math.max(0, value - 1)); }
   return <div className="game-run-page"><header className="game-run-top"><button className="icon-button" onClick={onBack} aria-label="العودة لصالة الألعاب"><ArrowRight size={18}/></button><div><span className="level-pill">{lesson.heading.split(' · ')[0]}</span><b>{game.title}</b></div><div className="run-stats"><span><Heart size={16} fill="currentColor"/> {lives}</span><span><Timer size={16}/> {seconds}s</span><span>⚡ {score}</span></div></header>
     {finished ? <section className="game-result"><div className="result-medal">{lives > 0 ? '🏆' : '💪'}</div><span className="eyebrow">انتهت الجولة</span><h2>{lives > 0 ? 'عاش! جولة ممتازة' : 'خلصت القلوب — جرب تاني'}</h2><p>جمعت {score} نقطة في {game.title} · {lesson.heading}</p><div className="game-result-actions"><button className="primary-button" onClick={onBack}>ارجع لصالة الألعاب</button></div></section> : <section className="game-board"><div className="game-board-heading"><span>{game.icon} {lesson.heading}</span><div className="game-run-progress"><i style={{width:`${Math.min(100, (game.id === 'match' ? matched.length : index + 1) / roundCount * 100)}%`}}/></div></div>
-      {game.id === 'match' ? <><h2>وصّل الإسباني بمعناه</h2><div className="live-match-grid"><div>{words.map(word => <div key={word.es} className={`live-match-choice ${selected === word.es ? 'selected' : ''} ${matched.includes(word.es) ? 'matched' : ''}`}><button className="live-match-text" onClick={() => { if (!matched.includes(word.es)) { setSelected(word.es); setFeedback('اختار المعنى المقابل.'); } }} disabled={matched.includes(word.es)} lang="es" dir="ltr">{word.es}</button><button className="match-sound" onClick={() => speakSpanish(word.es)} aria-label={`اسمع ${word.es}`}><Volume2 size={15}/></button></div>)}</div><div>{matchWords.map(word => <button key={word.ar} className={`live-match-choice arabic ${matched.some(es => words.find(item => item.es === es)?.ar === word.ar) ? 'matched' : ''}`} onClick={() => selectMatchArabic(word.ar)} disabled={matched.some(es => words.find(item => item.es === es)?.ar === word.ar)}>{word.ar}</button>)}</div></div></> : game.id === 'order' ? <><h2>رتّب كلمات الجملة</h2><p className="order-built" lang="es" dir="ltr">{order.map((tile, i) => <button key={`${tile}-${i}`} onClick={() => { setOrder(order.filter((_, j) => j !== i)); setUsedTiles(usedTiles.filter(value => value !== tile)); }}>{sentenceTokens[tile]}</button>)}</p><div className="order-tiles" lang="es" dir="ltr">{sentenceTokens.map((token, tile) => <button key={tile} disabled={usedTiles.includes(tile)} onClick={() => { setUsedTiles([...usedTiles, tile]); setOrder([...order, tile]); }}>{token}</button>)}</div><button className="primary-button" onClick={checkOrder} disabled={selected === 'correct'}>تحقق من الجملة <Check size={16}/></button></> : <><h2>{game.id === 'listen' ? 'اسمع واختر المعنى' : question.prompt}</h2>{game.id === 'listen' && <button className="game-listen-button" onClick={() => speakSpanish(question.spanish)}><Volume2 size={18}/> شغّل الصوت الإسباني</button>}{game.id !== 'listen' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr">{question.spanish}</p>}<div className="game-answer-grid">{choices.map((option, i) => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} disabled={selected !== null} className={`${selected && option === question.correct ? 'is-correct' : ''} ${selected === 'wrong' && answerChoice === option ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A','B','C','D'][i]}</span>{option}</button>)}</div></>}
+      {game.id === 'match' ? <><h2>وصّل الإسباني بمعناه</h2><div className="live-match-grid"><div>{words.map(word => <div key={word.es} className={`live-match-choice ${selected === word.es ? 'selected' : ''} ${matched.includes(word.es) ? 'matched' : ''}`}><button className="live-match-text" onClick={() => { if (!matched.includes(word.es)) { setSelected(word.es); setFeedback('اختار المعنى المقابل.'); } }} disabled={matched.includes(word.es)} lang="es" dir="ltr">{word.es}</button><button className="match-sound" onClick={() => speakSpanish(word.es)} aria-label={`اسمع ${word.es}`}><Volume2 size={15}/></button></div>)}</div><div>{matchWords.map(word => <button key={word.ar} className={`live-match-choice arabic ${matched.some(es => words.find(item => item.es === es)?.ar === word.ar) ? 'matched' : ''}`} onClick={() => selectMatchArabic(word.ar)} disabled={matched.some(es => words.find(item => item.es === es)?.ar === word.ar)}>{word.ar}</button>)}</div></div></> : game.id === 'order' ? <><h2>رتّب كلمات الجملة</h2><p className="order-built" lang="es" dir="ltr">{order.map((tile, i) => <button key={`${tile}-${i}`} onClick={() => { setOrder(order.filter((_, j) => j !== i)); setUsedTiles(usedTiles.filter(value => value !== tile)); }}>{sentenceTokens[tile]}</button>)}</p><div className="order-tiles" lang="es" dir="ltr">{sentenceTokens.map((token, tile) => <button key={tile} disabled={usedTiles.includes(tile)} onClick={() => { setUsedTiles([...usedTiles, tile]); setOrder([...order, tile]); }}>{token}</button>)}</div><button className="primary-button" onClick={checkOrder} disabled={selected === 'correct'}>تحقق من الجملة <Check size={16}/></button></> : <><h2>{game.id === 'listen' ? 'اسمع واختر المعنى' : question.prompt}</h2>{game.id === 'listen' && question.audio && <audio className="native-question-audio" controls preload="none" src={question.audio}>المتصفح لا يدعم تشغيل الصوت.</audio>}{game.id !== 'listen' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr">{question.spanish}</p>}<div className="game-answer-grid">{choices.map((option, i) => <button key={option} dir={/[A-Za-zÀ-ÿ]/.test(option) ? 'ltr' : 'rtl'} disabled={selected !== null} className={`${selected && option === question.correct ? 'is-correct' : ''} ${selected === 'wrong' && answerChoice === option ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A','B','C','D'][i]}</span>{option}</button>)}</div></>}
       {feedback && <div className={`game-live-feedback ${selected === 'wrong' ? 'bad' : selected === 'correct' || feedback.startsWith('تطابق') ? 'good' : ''}`}>{feedback}</div>}{game.id !== 'match' && <button className="game-next-button" onClick={next}>{game.id === 'order' ? 'الجملة التالية' : 'السؤال التالي'} <ArrowLeft size={16}/></button>}
     </section>}</div>;
 }
-function GamesPage({ stage, addXp }) {
-  const [lessonId, setLessonId] = useState(currentLessons(stage)[0]?.id || '');
+function GamesPage({ stage, addXp, focusLessonId }) {
+  const availableLessons = currentLessons(stage);
+  const startId = availableLessons.some(item => item.id === focusLessonId) ? focusLessonId : availableLessons[0]?.id || '';
+  const [lessonId, setLessonId] = useState(startId);
   const [activeGame, setActiveGame] = useState(null);
   const lessons = currentLessons(stage);
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
-  useEffect(() => { setLessonId(currentLessons(stage)[0]?.id || ''); setActiveGame(null); }, [stage]);
+  useEffect(() => { const current = currentLessons(stage); setLessonId(current.some(item => item.id === focusLessonId) ? focusLessonId : current[0]?.id || ''); setActiveGame(null); }, [stage, focusLessonId]);
   if (activeGame && lesson) return <GameRun key={`${activeGame.id}-${lesson.id}`} game={activeGame} lesson={lesson} stage={stage} onBack={() => setActiveGame(null)} onAward={addXp}/>;
-  return <div className="arcade-page"><section className="games-banner"><div><span className="eyebrow"><Gamepad2 size={15}/> صالة الألعاب · {stage}</span><h2>اختار المحاضرة، وبعدها اللعبة</h2><p>كل لعبة تفتح بنظامها الخاص وبنك أسئلة من محتوى المحاضرة.</p></div><div className="game-emoji">🕹️</div></section><div className="arcade-controls"><label className="course-select"><span>محاضرتك</span><select value={lessonId} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><span className="arcade-selected-lesson">{lesson?.objective}</span></div><div className="arcade-grid">{gameCatalog.map(game => <article className="arcade-game-card" key={game.id}><span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {lesson?.heading.split(' · ').at(-1)}</span><h3>{game.title}</h3><p>{game.description}</p><button className="primary-button" onClick={() => setActiveGame(game)}>ابدأ اللعبة <Play size={15} fill="currentColor"/></button></article>)}</div></div>;
+  return <div className="arcade-page"><section className="games-banner"><div><span className="eyebrow"><Gamepad2 size={15}/> صالة الألعاب · {stage}</span><h2>اختار المحاضرة، وبعدها اللعبة</h2><p>كل لعبة تفتح بنظامها الخاص وبنك أسئلة من محتوى المحاضرة.</p></div><div className="game-emoji">🕹️</div></section><div className="arcade-controls"><label className="course-select"><span>محاضرتك</span><select value={lessonId} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><span className="arcade-selected-lesson">{lesson?.objective}</span></div><div className="arcade-grid">{gameCatalog.filter(game => game.id !== 'listen' || stage.startsWith('A1')).map(game => <article className="arcade-game-card" key={game.id}><span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {lesson?.heading.split(' · ').at(-1)}</span><h3>{game.title}</h3><p>{game.description}</p><button className="primary-button" onClick={() => setActiveGame(game)}>ابدأ اللعبة <Play size={15} fill="currentColor"/></button></article>)}</div></div>;
 }
 function FlashcardsPage({ stage, savedWords, onSaveWord }) {
   const lessons = currentLessons(stage);
@@ -616,6 +675,7 @@ function App() {
   const [a1CourseMode, setA1CourseMode] = useState(false);
   const [a1CourseIndex, setA1CourseIndex] = useState(initial.a1CourseIndex ?? 0);
   const [selectedStage, setSelectedStage] = useState(initial.selectedStage || 'A1.1');
+  const [focusLessonId, setFocusLessonId] = useState(null);
   const [displayName, setDisplayName] = useState(initial.displayName || 'متعلم');
   const [xp, setXp] = useState(initial.completedLessons ? (initial.xp ?? 0) : 0);
   const [doneLessons, setDoneLessons] = useState(initial.completedLessons ? (initial.doneLessons ?? 0) : 0);
@@ -623,7 +683,9 @@ function App() {
   const [savedWords, setSavedWords] = useState(initial.savedWords || []);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  useEffect(() => { setFocusLessonId(null); }, [selectedStage]);
   useEffect(() => { localStorage.setItem('hola-progress', JSON.stringify({ xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName })); }, [xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName]);
+  function openIslandActivity(pageId, id) { setFocusLessonId(id); setActive(pageId); }
   function openLesson(level = selectedStage.startsWith('A2') ? 'A2' : 'A1', id = currentLessons(selectedStage)[0]?.id || 'A1-0') {
     setA1CourseMode(false); setLessonLevel(level); setLessonId(id); setLessonOpen(true);
   }
@@ -645,14 +707,14 @@ function App() {
   function updateDisplayName(name) { setDisplayName(name.slice(0, 24)); }
   function page() {
     if (active === 'profile') return <ProfilePage selectedStage={selectedStage} onSelectStage={setSelectedStage} displayName={displayName} onChangeName={updateDisplayName} xp={xp} doneLessons={doneLessons}/>;
-    if (active === 'path') return <PathPage selectedStage={selectedStage} completedLessons={completedLessons} onOpenLesson={openLesson} onStartA1Course={startA1Course}/>;
+    if (active === 'path') return <PathPage selectedStage={selectedStage} completedLessons={completedLessons} onOpenLesson={id => openLesson(selectedStage.startsWith('A2') ? 'A2' : 'A1', id)} onOpenActivity={openIslandActivity}/>;
     if (active === 'lessons') return <LessonsPage stage={selectedStage} onSelectStage={setSelectedStage} completedLessons={completedLessons} onOpenLesson={openLesson}/>;
-    if (active === 'grammar') return <GrammarPage stage={selectedStage}/>;
-    if (active === 'listening') return <ListeningPage stage={selectedStage}/>;
-    if (active === 'speaking') return <SpeakingPage stage={selectedStage}/>;
-    if (active === 'games') return <GamesPage stage={selectedStage} addXp={amount => setXp(value => value + amount)}/>;
-    if (active === 'quiz') return <LearningFlow key={`quiz-${selectedStage}`} stage={selectedStage} onFinish={amount => setXp(value => value + amount)}/>;
-    if (active === 'exam') return <LearningFlow key={`exam-${selectedStage}`} stage={selectedStage} exam onFinish={amount => setXp(value => value + amount)}/>;
+    if (active === 'grammar') return <GrammarPage stage={selectedStage} focusLessonId={focusLessonId}/>;
+    if (active === 'listening') return <ListeningPage stage={selectedStage} focusLessonId={focusLessonId}/>;
+    if (active === 'speaking') return <SpeakingPage stage={selectedStage} focusLessonId={focusLessonId}/>;
+    if (active === 'games') return <GamesPage stage={selectedStage} focusLessonId={focusLessonId} addXp={amount => setXp(value => value + amount)}/>;
+    if (active === 'quiz') return <LearningFlow key={`quiz-${selectedStage}-${focusLessonId || 'all'}`} stage={selectedStage} focusLessonId={focusLessonId} onFinish={amount => setXp(value => value + amount)}/>;
+    if (active === 'exam') return <LearningFlow key={`exam-${selectedStage}-${focusLessonId || 'all'}`} stage={selectedStage} focusLessonId={focusLessonId} exam onFinish={amount => setXp(value => value + amount)}/>;
     if (active === 'flashcards') return <FlashcardsPage key={selectedStage} stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
     if (active === 'words') return <WordsPage stage={selectedStage} savedWords={savedWords} onSaveWord={toggleWord}/>;
     if (active === 'progress') return <ProgressPage xp={xp} doneLessons={doneLessons} savedWords={savedWords} selectedStage={selectedStage}/>;

@@ -657,6 +657,14 @@ window.onerror = function(msg, url, line){
 
 // Explicit page manifest; grammar pages222–245 are included directly.
 const PAGES = [98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,219,220,221,222,223,224,225,226,227,228,229,230,1022,1023,1024,1032];
+const __lessonUnitKeys = new Set(new URLSearchParams(location.search).get('unit')?.split(',').filter(Boolean) || []);
+if (__lessonUnitKeys.size) {
+  UNITS.splice(0, UNITS.length, ...UNITS.filter(unit => __lessonUnitKeys.has(unit.k)));
+  const __lessonPages = new Set();
+  UNITS.forEach(unit => { for (let page = unit.lo; page <= unit.hi; page += 1) __lessonPages.add(page); });
+  PAGES.splice(0, PAGES.length, ...PAGES.filter(page => __lessonPages.has(page)));
+}
+
 const COURSE_CROPS = {};
 let COURSE_REF_RETURN = null;
 const GRAMMAR_PAGES = [219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230];

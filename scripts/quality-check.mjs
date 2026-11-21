@@ -45,17 +45,19 @@ const localDataSource = await readFile(path.join(root, 'src/data/lessons.js'), '
 check(!/drive\.google\.com|transcripts_v17/i.test(localDataSource), 'Local translation source must not link to the Drive Spanish transcript');
 const appSource = await readFile(path.join(root, 'src/App.jsx'), 'utf8');
 check(!/اسألي|تسألي|اتكلمي|وصّفي|اطلبي|تطلبي|مستعدة|فاهمة/u.test(JSON.stringify(lessonLibrary)), 'Lesson objectives and prompts must address the learner in masculine wording');
-check(appSource.includes('data-testid="bilingual-transcript"'), 'Listening UI must expose a stable bilingual transcript test hook');
-check(appSource.includes("showArabic ? '' : 'arabic-hidden'"), 'Listening UI must collapse to one column when Arabic is hidden');
-const styleSource = await readFile(path.join(root, 'src/styles.css'), 'utf8');
-check(styleSource.includes('.bilingual-transcript{direction:ltr}') && styleSource.includes('.story-bilingual,.grammar-example-row,.live-match-grid{direction:ltr}'), 'Mixed-script sentence layouts must place Spanish content from left to right');
+const listeningSource = appSource.slice(appSource.indexOf('function ListeningPage('), appSource.indexOf('function SpeakingPage('));
+check(listeningSource.includes('<BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>'), 'Listening must open the selected lesson recording library');
+check(!/SpeechSynthesisUtterance|buildListeningItems\(lessonLibrary\)/.test(listeningSource), 'Listening must not substitute synthesized lesson-library examples for book recordings');
+check(appSource.includes('function NativeListeningExercises(') && appSource.includes('track.q.map'), 'Original listening activities must use the questions bundled with each source recording');
+check(appSource.includes('nativeListeningTrackForLesson') && appSource.includes('originalTrack.es'), 'Original recording transcript and vocabulary must come from the imported reader data');
 check(appSource.includes('onClick={() => onSaveWord(current.es)}'), 'Saving a lesson word must update the shared vocabulary list');
-check(appSource.includes('{selected?.spanish}') && appSource.includes('{selected?.arabic}'), 'Listening UI must render each Spanish sentence alongside its Arabic translation');
-check(appSource.includes('setShowArabic(value => !value)'), 'Listening UI must let learners show or hide Arabic translations');
-check(appSource.includes('setRate(value)'), 'Listening UI must expose selectable speech rates');
-check(appSource.includes('buildListeningItems(lessonLibrary).filter(item => lessonIds.has(item.id))'), 'Listening UI must present bilingual lesson sentences, not isolated vocabulary pairs');
-check(appSource.includes('const questions = useMemo(() => questionPool(stage, lesson.id), [stage, lesson.id])'), 'Game question order must stay stable while a learner answers');
-check(appSource.includes('const pool = useMemo(() => questionPool(stage, lessonId === \'all\' ? null : lessonId), [stage, lessonId])'), 'Quiz options must stay stable while a learner answers');
+check(appSource.includes('<BookAudioPlayer key={track.src} track={track}/>'), 'Listening playback must use the local book audio file');
+check(appSource.includes('src={question.audio}') && appSource.includes('nativeQuestionsForLesson(lesson.id).filter(item => item.listening)'), 'Listening game must play actual track audio and use original listening questions');
+check(appSource.includes('nativeQuestionsForLesson(lesson.id).filter(item => item.listening)'), 'Listening game question source must stay attached to the original lesson');
+check(appSource.includes('function nativeQuestionsForLesson(lessonId)') && appSource.includes('original.quiz?.[unit]'), 'Quiz pools must be sourced from each original book unit');
+check(appSource.includes('original.listen?.bank') && appSource.includes('item.tunit === unit'), 'Listening questions in quizzes must retain their source unit');
+check(appSource.includes('model?.n || 40') && appSource.includes('model?.minutes || 60'), 'Exam timing and length must come from the original exam model metadata');
+check(appSource.includes('function OriginalBookActivityFlow(') && appSource.includes('ما فيهوش بنك أسئلة رقمي موثّق منفصل'), 'Stages without a structured digital bank must open original book exercises instead of fabricated quiz data');
 check(appSource.includes('onClick={() => restart()}'), 'Restart button must restart with the currently selected scope');
 check(!appSource.includes('window.location.reload()'), 'Game flow must return to the arcade without reloading the entire app');
 check(appSource.includes('window.SpeechRecognition || window.webkitSpeechRecognition'), 'Speaking UI must use the browser microphone recognition API');
@@ -72,7 +74,7 @@ check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home m
 check(appSource.includes('selectedStage, displayName') && appSource.includes("useState(initial.selectedStage || 'A1.1')"), 'Profile stage selection must persist locally');
 check(!/drive\.google\.com/i.test(appSource), 'Learner-facing pages must not send students to Google Drive');
 check(appSource.includes('function BookLessonMaterials(') && appSource.includes('<BookLessonMaterials lessonId={lessonId}/>'), 'Each mapped lesson must open its own original book pages and audio in-app');
-check(appSource.includes('<BookListeningLibrary stage={stage}/>'), 'Listening page must expose only original audio mapped to the selected course stage');
+check(appSource.includes('<BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>'), 'Listening page must expose only original audio mapped to the selected course stage');
 check(appSource.includes('onClick={() => changeRate(value)}') && appSource.includes('Versión alternativa'), 'Original audio player must provide speed choices and explicit alternate-track labels');
 check(!/window\.open\(|target=["']_blank/i.test(appSource), 'Course material playback must stay inside the application');
 check(Object.keys(courseBookMaterials).length === 20, 'Imported book resources must map all 20 A1 and A2.1–A2.3 lessons');
@@ -120,8 +122,16 @@ for (const [course, [pageCount, audioTracks, quizQuestions]] of Object.entries(e
   }
 }
 check(appSource.includes('function OriginalBookReader(') && appSource.includes('sandbox="allow-scripts allow-same-origin"'), 'Original reader must stay sandboxed and embedded inside the lesson dialog');
-check(appSource.includes('function originalReaderForLesson(') && appSource.includes('/materials/readers/${course}/index.html#p${firstPage}'), 'Each supported lesson must open its own book reader at the matching page inside the app');
+check(appSource.includes('function PathPage(') && appSource.includes('const sequence = [') && appSource.includes('island-steps'), 'Learning path must render lesson-by-lesson islands with their own ordered activity sequence');
+const islandSteps = ['lesson', 'grammar', 'listening', 'games', 'speaking', 'quiz', 'exam'];
+const islandDefinition = appSource.slice(appSource.indexOf('const sequence = ['), appSource.indexOf('];', appSource.indexOf('const sequence = [')));
+check(islandSteps.every((step, index) => islandDefinition.indexOf(`id: '${step}'`) >= 0 && (index === 0 || islandDefinition.indexOf(`id: '${step}'`) > islandDefinition.indexOf(`id: '${islandSteps[index - 1]}'`))), 'Every island must follow lesson → grammar → listening → games → speaking → quiz → exam order');
+check(appSource.includes('function originalReaderForLesson(') && appSource.includes('/materials/readers/${course}/index.html?unit='), 'Each lesson must open its reader restricted to its unit, not the whole stage');
+check(appSource.includes('readerUnitsForLesson') && appSource.includes('encodeURIComponent(units.join(','))'), 'A lesson reader URL must include only the mapped unit key(s)');
 check(appSource.includes("index >= 5 && index <= 8 ? 'A2.2'") && appSource.includes("index >= 9 && index <= 10 ? 'A2.3'"), 'A2 lessons 5–10 must open the restored A2.2 and A2.3 in-app readers');
+const importerSource = await readFile(path.join(root, 'scripts/import-book-readers.py'), 'utf8');
+check(importerSource.includes('def add_lesson_unit_filter') && importerSource.includes('UNITS.filter(unit => __lessonUnitKeys.has(unit.k))'), 'Reader import must preserve unit-only filtering in future imports');
+for (const stage of Object.keys(expectedReaders)) { const html = await readFile(path.join(root, `public/materials/readers/${stage}/index.html`), 'utf8'); check(html.includes('__lessonUnitKeys') && html.includes('PAGES.splice'), `${stage}: reader must filter page navigation to one lesson when a unit is requested`); }
 
 const grammarGuides = await import('../src/data/grammar.js');
 const lessonStories = await import('../src/data/stories.js');

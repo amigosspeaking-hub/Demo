@@ -343,6 +343,18 @@ def install_a2_assets(reader_id: str, archive: ZipFile, source_root: str, html: 
     print(f"{reader_id}: installed {len(required_pages)} referenced scans and {len(audio_names)} local recordings")
 
 
+def add_lesson_unit_filter(html: str) -> str:
+    marker = "const __lessonUnitKeys = new Set(new URLSearchParams(location.search).get('unit')?.split(',').filter(Boolean) || []);"
+    if marker in html:
+        return html
+    pattern = re.compile(r"const PAGES\s*=\s*\[[^\]]*\]\s*;")
+    match = pattern.search(html)
+    if not match:
+        raise ValueError("Reader is missing its PAGES declaration")
+    filter_code = "\n" + marker + "\nif (__lessonUnitKeys.size) {\n  UNITS.splice(0, UNITS.length, ...UNITS.filter(unit => __lessonUnitKeys.has(unit.k)));\n  const __lessonPages = new Set();\n  UNITS.forEach(unit => { for (let page = unit.lo; page <= unit.hi; page += 1) __lessonPages.add(page); });\n  PAGES.splice(0, PAGES.length, ...PAGES.filter(page => __lessonPages.has(page)));\n}\n"
+    return html[:match.end()] + filter_code + html[match.end():]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Import original in-app book readers from inspected ZIPs")
     parser.add_argument("--only", nargs="+", choices=CONFIGS, help="Import selected readers and preserve other manifest entries")
@@ -516,6 +528,7 @@ def main() -> None:
                 html = html.replace("audio/", f"/materials/books/{reader_id}/audio/")
             html = re.sub(r"href=[\"'](?:https?:)?//[^\"']+[\"']", 'href="#"', html, flags=re.I)
             html = html.replace("</head>", f"<style>{STUDENT_CLEANUP_CSS}</style></head>", 1)
+            html = add_lesson_unit_filter(html)
             html = "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
             (target / "index.html").write_text(html, encoding="utf-8")
 

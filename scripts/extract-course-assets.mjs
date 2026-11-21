@@ -20,7 +20,53 @@ const materials = [
   { id: 'A2.3', itemIds: ['A2-9', 'A2-10'] },
 ];
 
+function extractJsonDeclaration(source, name) {
+  const declaration = new RegExp(`\\b(?:const|let|var)\\s+${name}\\s*=\\s*`).exec(source);
+  if (!declaration) throw new Error(`Missing source declaration: ${name}`);
+  const start = declaration.index + declaration[0].length;
+  let depth = 0;
+  let quote = null;
+  let escaped = false;
+  for (let index = start; index < source.length; index += 1) {
+    const char = source[index];
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === quote) quote = null;
+      continue;
+    }
+    if (char === '\"' || char === "'") quote = char;
+    else if (char === '{' || char === '[') depth += 1;
+    else if (char === '}' || char === ']') {
+      depth -= 1;
+      if (depth === 0) return JSON.parse(source.slice(start, index + 1).replace(/,\s*([}\]])/g, '$1'));
+    }
+  }
+  throw new Error(`Unclosed source declaration: ${name}`);
+}
+
 const outputs = new Map();
+const nativeBookStages = {};
+for (const stage of ['A1.1', 'A1.2', 'A1.3']) {
+  const sourcePath = `public/materials/readers/${stage}/tabs_data.js`;
+  const source = await readFile(path.join(root, sourcePath), 'utf8');
+  const original = extractJsonDeclaration(source, 'XD');
+  nativeBookStages[stage] = {
+    source: sourcePath,
+    version: original.version,
+    units: original.units,
+    quiz: original.quiz,
+    listen: original.listen,
+    exams: original.exams,
+  };
+}
+outputs.set('src/data/bookActivities.json', {
+  schemaVersion: 1,
+  sourceType: 'original local reader activity data; no generated or guessed questions',
+  coverageNote: 'Structured question banks are available in the original A1 reader files. Other stages open their original reader exercises instead of substituting questions.',
+  stages: nativeBookStages,
+});
+
 outputs.set('scripts/listening-translations.json', {
   schemaVersion: 1,
   source: 'src/data/lessons.js',
