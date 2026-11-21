@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "material": "A2.1",
+  "source": "src/data/lessons.js",
+  "itemCount": 4,
+  "activities": [
+    {
+      "id": "A2-1",
+      "title": "El español y tú",
+      "level": "A2",
+      "exampleSpanish": "Estudio español desde hace seis meses.",
+      "translationArabic": "أنا بتعلم الإسباني بقالي ست شهور.",
+      "words": [
+        {
+          "es": "aprender",
+          "ar": "يتعلّم",
+          "say": "أبريندير"
+        },
+        {
+          "es": "me cuesta",
+          "ar": "بيصعب عليّا",
+          "say": "مي كويستا"
+        },
+        {
+          "es": "desde hace",
+          "ar": "بقالي / منذ مدة",
+          "say": "ديسدي أسي"
+        }
+      ]
+    },
+    {
+      "id": "A2-2",
+      "title": "Una vida de película",
+      "level": "A2",
+      "exampleSpanish": "Isabel Coixet dirigió una película.",
+      "translationArabic": "إيزابيل كويشيت أخرجت فيلم.",
+      "words": [
+        {
+          "es": "nació",
+          "ar": "اتولد / اتولدت",
+          "say": "ناثيو"
+        },
+        {
+          "es": "dirigió",
+          "ar": "أخرج / أخرجت فيلم",
+          "say": "ديريخيو"
+        },
+        {
+          "es": "en 2010",
+          "ar": "في سنة ٢٠١٠",
+          "say": "إن دوس ميل دييث"
+        }
+      ]
+    },
+    {
+      "id": "A2-3",
+      "title": "Yo soy así",
+      "level": "A2",
+      "exampleSpanish": "Mi hermana se parece a mi madre.",
+      "translationArabic": "أختي شبه أمي.",
+      "words": [
+        {
+          "es": "lleva gafas",
+          "ar": "لابس / لابسة نضارة",
+          "say": "ييفا غافاس"
+        },
+        {
+          "es": "se parece a",
+          "ar": "شبه",
+          "say": "سي باريثي آ"
+        },
+        {
+          "es": "mi primo",
+          "ar": "ابن عمي / خالي",
+          "say": "مي بريمو"
+        }
+      ]
+    },
+    {
+      "id": "A2-4",
+      "title": "Hogar, dulce hogar",
+      "level": "A2",
+      "exampleSpanish": "La lámpara está al lado de la televisión.",
+      "translationArabic": "الأباجورة جنب التلفزيون.",
+      "words": [
+        {
+          "es": "el salón",
+          "ar": "غرفة المعيشة",
+          "say": "إل سالون"
+        },
+        {
+          "es": "al lado de",
+          "ar": "جنب",
+          "say": "آل لادو دي"
+        },
+        {
+          "es": "encima de",
+          "ar": "فوق",
+          "say": "إنثيما دي"
+        }
+      ]
+    }
+  ]
+}

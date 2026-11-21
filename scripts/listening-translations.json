@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "source": "src/data/lessons.js",
+  "sourceType": "local lesson examples; speech is synthesized by the browser",
+  "note": "These are the locally available sentence examples, not a recovered recording transcript archive.",
+  "itemCount": 20,
+  "items": [
+    {
+      "id": "A1-0",
+      "level": "A1",
+      "title": "En el aula",
+      "spanish": "¿Cómo se dice “book” en español?",
+      "arabic": "بنقول إيه «كتاب» بالإسباني؟"
+    },
+    {
+      "id": "A1-1",
+      "level": "A1",
+      "title": "Nosotros y nosotras",
+      "spanish": "Me llamo Sara y soy de Egipto.",
+      "arabic": "اسمي سارة وأنا من مصر."
+    },
+    {
+      "id": "A1-2",
+      "level": "A1",
+      "title": "Quiero aprender español",
+      "spanish": "Quiero aprender español para viajar.",
+      "arabic": "عايز أتعلم إسباني عشان أسافر."
+    },
+    {
+      "id": "A1-3",
+      "level": "A1",
+      "title": "¿Dónde está Santiago?",
+      "spanish": "Santiago está en Chile.",
+      "arabic": "سانتياغو في تشيلي."
+    },
+    {
+      "id": "A1-4",
+      "level": "A1",
+      "title": "¿Cuál prefieres?",
+      "spanish": "Prefiero esta camisa azul.",
+      "arabic": "بفضّل القميص الأزرق ده."
+    },
+    {
+      "id": "A1-5",
+      "level": "A1",
+      "title": "Tus amigos son mis amigos",
+      "spanish": "A mi amiga le gusta la música.",
+      "arabic": "صاحبتي بتحب الموسيقى."
+    },
+    {
+      "id": "A1-6",
+      "level": "A1",
+      "title": "Día a día",
+      "spanish": "Me levanto a las siete.",
+      "arabic": "بصحى الساعة سبعة."
+    },
+    {
+      "id": "A1-7",
+      "level": "A1",
+      "title": "¡A comer!",
+      "spanish": "Un café con leche, por favor.",
+      "arabic": "قهوة بلبن، لو سمحت."
+    },
+    {
+      "id": "A1-8",
+      "level": "A1",
+      "title": "El barrio ideal",
+      "spanish": "La farmacia está al lado del banco.",
+      "arabic": "الصيدلية جنب البنك."
+    },
+    {
+      "id": "A1-9",
+      "level": "A1",
+      "title": "¿Sabes conducir?",
+      "spanish": "¿Sabes conducir? Sí, sé conducir.",
+      "arabic": "بتعرف تسوق؟ آه، بعرف أسوق."
+    },
+    {
+      "id": "A2-1",
+      "level": "A2",
+      "title": "El español y tú",
+      "spanish": "Estudio español desde hace seis meses.",
+      "arabic": "أنا بتعلم الإسباني بقالي ست شهور."
+    },
+    {
+      "id": "A2-2",
+      "level": "A2",
+      "title": "Una vida de película",
+      "spanish": "Isabel Coixet dirigió una película.",
+      "arabic": "إيزابيل كويشيت أخرجت فيلم."
+    },
+    {
+      "id": "A2-3",
+      "level": "A2",
+      "title": "Yo soy así",
+      "spanish": "Mi hermana se parece a mi madre.",
+      "arabic": "أختي شبه أمي."
+    },
+    {
+      "id": "A2-4",
+      "level": "A2",
+      "title": "Hogar, dulce hogar",
+      "spanish": "La lámpara está al lado de la televisión.",
+      "arabic": "الأباجورة جنب التلفزيون."
+    },
+    {
+      "id": "A2-5",
+      "level": "A2",
+      "title": "¿Cómo va todo?",
+      "spanish": "¿Me prestas tu bolígrafo, por favor?",
+      "arabic": "ممكن تسلفني قلمك، لو سمحت؟"
+    },
+    {
+      "id": "A2-6",
+      "level": "A2",
+      "title": "Guía del ocio",
+      "spanish": "Te recomiendo visitar el museo.",
+      "arabic": "برشّحلك تزور المتحف."
+    },
+    {
+      "id": "A2-7",
+      "level": "A2",
+      "title": "¿Comes de todo?",
+      "spanish": "Primero se corta la cebolla.",
+      "arabic": "أول حاجة بنقطع البصل."
+    },
+    {
+      "id": "A2-8",
+      "level": "A2",
+      "title": "Estamos muy bien",
+      "spanish": "Descansa y bebe mucha agua.",
+      "arabic": "ارتاح واشرب مية كتير."
+    },
+    {
+      "id": "A2-9",
+      "level": "A2",
+      "title": "Antes y ahora",
+      "spanish": "Antes vivía en Alejandría y ahora vivo en Giza.",
+      "arabic": "زمان كنت عايش في إسكندرية، ودلوقتي ساكن في الجيزة."
+    },
+    {
+      "id": "A2-10",
+      "level": "A2",
+      "title": "Momentos especiales",
+      "spanish": "Estaba celebrando cuando recibí la noticia.",
+      "arabic": "كنت بحتفل لما جالي الخبر."
+    }
+  ]
+}

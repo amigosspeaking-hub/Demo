@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "material": "A1.1",
+  "source": "src/data/lessons.js",
+  "itemCount": 4,
+  "activities": [
+    {
+      "id": "A1-0",
+      "title": "En el aula",
+      "level": "A1",
+      "exampleSpanish": "¿Cómo se dice “book” en español?",
+      "translationArabic": "بنقول إيه «كتاب» بالإسباني؟",
+      "words": [
+        {
+          "es": "¿Cómo se dice…?",
+          "ar": "إزاي بنقول…؟",
+          "say": "كومو سي ديثي"
+        },
+        {
+          "es": "No entiendo",
+          "ar": "مش فاهم / فاهمة",
+          "say": "نو إنتييندو"
+        },
+        {
+          "es": "¿Qué significa?",
+          "ar": "يعني إيه؟",
+          "say": "كي سيجنيفكا"
+        }
+      ]
+    },
+    {
+      "id": "A1-1",
+      "title": "Nosotros y nosotras",
+      "level": "A1",
+      "exampleSpanish": "Me llamo Sara y soy de Egipto.",
+      "translationArabic": "اسمي سارة وأنا من مصر.",
+      "words": [
+        {
+          "es": "Me llamo",
+          "ar": "اسمي",
+          "say": "مي يامو"
+        },
+        {
+          "es": "Soy de Egipto",
+          "ar": "أنا من مصر",
+          "say": "سوي دي إخيبتو"
+        },
+        {
+          "es": "¿A qué te dedicas?",
+          "ar": "بتشتغل إيه؟",
+          "say": "آ كي تي ديديكاس"
+        }
+      ]
+    },
+    {
+      "id": "A1-2",
+      "title": "Quiero aprender español",
+      "level": "A1",
+      "exampleSpanish": "Quiero aprender español para viajar.",
+      "translationArabic": "عايز أتعلم إسباني عشان أسافر.",
+      "words": [
+        {
+          "es": "Quiero aprender",
+          "ar": "عايز / عايزة أتعلم",
+          "say": "كييرو أبريندير"
+        },
+        {
+          "es": "Hablo árabe",
+          "ar": "بتكلم عربي",
+          "say": "أابلو آرابي"
+        },
+        {
+          "es": "porque",
+          "ar": "عشان / لأن",
+          "say": "بوركي"
+        }
+      ]
+    },
+    {
+      "id": "A1-3",
+      "title": "¿Dónde está Santiago?",
+      "level": "A1",
+      "exampleSpanish": "Santiago está en Chile.",
+      "translationArabic": "سانتياغو في تشيلي.",
+      "words": [
+        {
+          "es": "¿Dónde está…?",
+          "ar": "… فين؟",
+          "say": "دوندي إستا"
+        },
+        {
+          "es": "Hay",
+          "ar": "فيه / يوجد",
+          "say": "آي"
+        },
+        {
+          "es": "Hace calor",
+          "ar": "الدنيا حر",
+          "say": "آسي كالور"
+        }
+      ]
+    }
+  ]
+}

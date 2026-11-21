@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "material": "A1.2",
+  "source": "src/data/lessons.js",
+  "itemCount": 3,
+  "activities": [
+    {
+      "id": "A1-4",
+      "title": "¿Cuál prefieres?",
+      "level": "A1",
+      "exampleSpanish": "Prefiero esta camisa azul.",
+      "translationArabic": "بفضّل القميص الأزرق ده.",
+      "words": [
+        {
+          "es": "¿Cuál prefieres?",
+          "ar": "أنهي واحد تفضّل؟",
+          "say": "كوال بريفييريس"
+        },
+        {
+          "es": "Prefiero este",
+          "ar": "بفضّل ده",
+          "say": "بريفييرو إيستي"
+        },
+        {
+          "es": "¿Cuánto cuesta?",
+          "ar": "بكام؟",
+          "say": "كوانتو كويستا"
+        }
+      ]
+    },
+    {
+      "id": "A1-5",
+      "title": "Tus amigos son mis amigos",
+      "level": "A1",
+      "exampleSpanish": "A mi amiga le gusta la música.",
+      "translationArabic": "صاحبتي بتحب الموسيقى.",
+      "words": [
+        {
+          "es": "mi familia",
+          "ar": "عيلتي",
+          "say": "مي فاميليا"
+        },
+        {
+          "es": "me gusta",
+          "ar": "بحب / بيعجبني",
+          "say": "مي جوستا"
+        },
+        {
+          "es": "mi mejor amiga",
+          "ar": "أقرب صاحبة ليا",
+          "say": "مي ميخور أميجا"
+        }
+      ]
+    },
+    {
+      "id": "A1-6",
+      "title": "Día a día",
+      "level": "A1",
+      "exampleSpanish": "Me levanto a las siete.",
+      "translationArabic": "بصحى الساعة سبعة.",
+      "words": [
+        {
+          "es": "me levanto",
+          "ar": "بصحى / بقوم من السرير",
+          "say": "مي ليفانتو"
+        },
+        {
+          "es": "desayuno",
+          "ar": "بفطر",
+          "say": "ديسايونو"
+        },
+        {
+          "es": "¿A qué hora…?",
+          "ar": "الساعة كام…؟",
+          "say": "آ كي أورا"
+        }
+      ]
+    }
+  ]
+}

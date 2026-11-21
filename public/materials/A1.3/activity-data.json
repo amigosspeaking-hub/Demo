@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "material": "A1.3",
+  "source": "src/data/lessons.js",
+  "itemCount": 3,
+  "activities": [
+    {
+      "id": "A1-7",
+      "title": "¡A comer!",
+      "level": "A1",
+      "exampleSpanish": "Un café con leche, por favor.",
+      "translationArabic": "قهوة بلبن، لو سمحت.",
+      "words": [
+        {
+          "es": "Quisiera…",
+          "ar": "لو سمحت، عايز…",
+          "say": "كيسييرا"
+        },
+        {
+          "es": "la cuenta",
+          "ar": "الحساب",
+          "say": "لا كوينتا"
+        },
+        {
+          "es": "sin azúcar",
+          "ar": "من غير سكر",
+          "say": "سين أثوكار"
+        }
+      ]
+    },
+    {
+      "id": "A1-8",
+      "title": "El barrio ideal",
+      "level": "A1",
+      "exampleSpanish": "La farmacia está al lado del banco.",
+      "translationArabic": "الصيدلية جنب البنك.",
+      "words": [
+        {
+          "es": "el barrio",
+          "ar": "الحيّ",
+          "say": "إل باريو"
+        },
+        {
+          "es": "al lado de",
+          "ar": "جنب",
+          "say": "آل لادو دي"
+        },
+        {
+          "es": "¿Hay una farmacia?",
+          "ar": "في صيدلية؟",
+          "say": "آي أونا فارماسيا"
+        }
+      ]
+    },
+    {
+      "id": "A1-9",
+      "title": "¿Sabes conducir?",
+      "level": "A1",
+      "exampleSpanish": "¿Sabes conducir? Sí, sé conducir.",
+      "translationArabic": "بتعرف تسوق؟ آه، بعرف أسوق.",
+      "words": [
+        {
+          "es": "sé cocinar",
+          "ar": "بعرف أطبخ",
+          "say": "سي كوسينار"
+        },
+        {
+          "es": "puedo",
+          "ar": "أقدر",
+          "say": "بويذو"
+        },
+        {
+          "es": "alguna vez",
+          "ar": "في مرة / قبل كده",
+          "say": "ألغونا بيز"
+        }
+      ]
+    }
+  ]
+}
