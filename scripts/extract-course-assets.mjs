@@ -55,6 +55,7 @@ for (const stage of ['A1.1', 'A1.2', 'A1.3']) {
     source: sourcePath,
     version: original.version,
     units: original.units,
+    flash: original.flash,
     quiz: original.quiz,
     listen: original.listen,
     exams: original.exams,

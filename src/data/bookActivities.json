@@ -33,6 +33,372 @@
           "es": "Audios"
         }
       ],
+      "flash": {
+        "u0": {
+          "words": [
+            {
+              "es": "hola",
+              "ar": "أهلًا / سلام",
+              "ex": "Hola, ¿qué tal?"
+            },
+            {
+              "es": "buenos días",
+              "ar": "صباح الخير",
+              "ex": "Buenos días, profesora."
+            },
+            {
+              "es": "buenas tardes",
+              "ar": "مساء الخير",
+              "ex": "Buenas tardes a todos."
+            },
+            {
+              "es": "buenas noches",
+              "ar": "ليلة سعيدة / مساء الخير ليلًا",
+              "ex": "Buenas noches, hasta mañana."
+            },
+            {
+              "es": "¡adiós!",
+              "ar": "مع السلامة",
+              "ex": "¡Adiós, hasta pronto!"
+            },
+            {
+              "es": "¡hasta luego!",
+              "ar": "أشوفك بعدين",
+              "ex": "Me voy. ¡Hasta luego!"
+            },
+            {
+              "es": "gracias",
+              "ar": "شكرًا",
+              "ex": "Muchas gracias por tu ayuda."
+            },
+            {
+              "es": "de nada",
+              "ar": "العفو",
+              "ex": "—Gracias. —De nada."
+            },
+            {
+              "es": "¿cómo te llamas?",
+              "ar": "اسمك إيه؟",
+              "ex": "¿Cómo te llamas? —Me llamo Sara."
+            },
+            {
+              "es": "me llamo…",
+              "ar": "اسمي…",
+              "ex": "Me llamo Ahmed."
+            },
+            {
+              "es": "la ciudad",
+              "ar": "المدينة",
+              "ex": "Zaragoza es una ciudad de España."
+            },
+            {
+              "es": "el país",
+              "ar": "البلد / الدولة",
+              "ex": "Cuba es un país del Caribe."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "Hola, ¿qué tal?",
+              "ar": "أهلًا، عامل إيه؟",
+              "ex": ""
+            },
+            {
+              "es": "Muy bien, gracias.",
+              "ar": "تمام الحمد لله، شكرًا.",
+              "ex": ""
+            },
+            {
+              "es": "¿Cómo se escribe?",
+              "ar": "بتتهجى إزاي؟",
+              "ex": ""
+            },
+            {
+              "es": "¿Cómo está usted?",
+              "ar": "حضرتك عامل إيه؟ (رسمي)",
+              "ex": ""
+            },
+            {
+              "es": "¡Hasta pronto!",
+              "ar": "أشوفك قريب!",
+              "ex": ""
+            }
+          ]
+        },
+        "u1": {
+          "words": [
+            {
+              "es": "soy de…",
+              "ar": "أنا من…",
+              "ex": "Soy de Egipto."
+            },
+            {
+              "es": "la profesión",
+              "ar": "المهنة",
+              "ex": "¿Cuál es tu profesión?"
+            },
+            {
+              "es": "el médico / la médica",
+              "ar": "الطبيب / الطبيبة",
+              "ex": "Mi hermana es médica."
+            },
+            {
+              "es": "el profesor / la profesora",
+              "ar": "المدرّس / المدرّسة",
+              "ex": "Trabajo de profesor."
+            },
+            {
+              "es": "el estudiante",
+              "ar": "الطالب",
+              "ex": "Soy estudiante de español."
+            },
+            {
+              "es": "la nacionalidad",
+              "ar": "الجنسية",
+              "ex": "¿Cuál es tu nacionalidad?"
+            },
+            {
+              "es": "alemán / alemana",
+              "ar": "ألماني / ألمانية",
+              "ex": "Anne Wagner es alemana."
+            },
+            {
+              "es": "el correo electrónico",
+              "ar": "الإيميل",
+              "ex": "Mi correo electrónico es…"
+            },
+            {
+              "es": "el móvil",
+              "ar": "الموبايل",
+              "ex": "¿Tienes móvil?"
+            },
+            {
+              "es": "los años",
+              "ar": "السنين / العمر",
+              "ex": "Tengo 27 años."
+            },
+            {
+              "es": "trabajar en…",
+              "ar": "يشتغل في…",
+              "ex": "Trabaja en un hospital."
+            },
+            {
+              "es": "el apellido",
+              "ar": "اسم العيلة",
+              "ex": "¿Y tu apellido?"
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿A qué te dedicas?",
+              "ar": "بتشتغل إيه؟",
+              "ex": ""
+            },
+            {
+              "es": "¿Cuántos años tienes?",
+              "ar": "عندك كام سنة؟",
+              "ex": ""
+            },
+            {
+              "es": "Soy diseñadora gráfica.",
+              "ar": "أنا مصممة جرافيك.",
+              "ex": ""
+            },
+            {
+              "es": "¿De dónde eres?",
+              "ar": "إنت منين؟",
+              "ex": ""
+            },
+            {
+              "es": "Encantado / Encantada.",
+              "ar": "فرصة سعيدة / تشرفنا.",
+              "ex": ""
+            }
+          ]
+        },
+        "u2": {
+          "words": [
+            {
+              "es": "quiero aprender",
+              "ar": "عايز أتعلم",
+              "ex": "Quiero aprender español."
+            },
+            {
+              "es": "hablar",
+              "ar": "يتكلم",
+              "ex": "Hablo español e inglés."
+            },
+            {
+              "es": "comprender",
+              "ar": "يفهم",
+              "ex": "Comprendo la pregunta."
+            },
+            {
+              "es": "vivir",
+              "ar": "يعيش / يسكن",
+              "ex": "Vivo en El Cairo."
+            },
+            {
+              "es": "el idioma",
+              "ar": "اللغة",
+              "ex": "Estudio dos idiomas."
+            },
+            {
+              "es": "la música",
+              "ar": "الموسيقى",
+              "ex": "Escucho música en español."
+            },
+            {
+              "es": "el teatro",
+              "ar": "المسرح",
+              "ex": "El teatro está en el centro."
+            },
+            {
+              "es": "la casa",
+              "ar": "البيت",
+              "ex": "Estudio en casa."
+            },
+            {
+              "es": "porque",
+              "ar": "عشان / لأن",
+              "ex": "Estudio porque quiero viajar."
+            },
+            {
+              "es": "para",
+              "ar": "عشان (الغرض)",
+              "ex": "Estudio para trabajar."
+            },
+            {
+              "es": "el ejercicio",
+              "ar": "التمرين",
+              "ex": "Hago ejercicios en casa."
+            },
+            {
+              "es": "la serie",
+              "ar": "المسلسل",
+              "ex": "Veo series en español."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "Quiero viajar por España.",
+              "ar": "عايز أسافر في إسبانيا.",
+              "ex": ""
+            },
+            {
+              "es": "Hablo un poco de francés.",
+              "ar": "بتكلم فرنساوي شوية.",
+              "ex": ""
+            },
+            {
+              "es": "¿Por qué estudias español?",
+              "ar": "بتتعلم إسباني ليه؟",
+              "ex": ""
+            },
+            {
+              "es": "Trabajo en inglés.",
+              "ar": "بشتغل بالإنجليزي.",
+              "ex": ""
+            },
+            {
+              "es": "Hago teatro en español.",
+              "ar": "بعمل مسرح بالإسباني.",
+              "ex": ""
+            }
+          ]
+        },
+        "u3": {
+          "words": [
+            {
+              "es": "la capital",
+              "ar": "العاصمة",
+              "ex": "Santiago es la capital de Chile."
+            },
+            {
+              "es": "la población",
+              "ar": "عدد السكان",
+              "ex": "La población es de 7 millones."
+            },
+            {
+              "es": "la moneda",
+              "ar": "العملة",
+              "ex": "La moneda es el euro."
+            },
+            {
+              "es": "el clima",
+              "ar": "المناخ / الطقس",
+              "ex": "El clima es templado."
+            },
+            {
+              "es": "la isla",
+              "ar": "الجزيرة",
+              "ex": "Mallorca es una isla."
+            },
+            {
+              "es": "el desierto",
+              "ar": "الصحراء",
+              "ex": "Atacama es un desierto."
+            },
+            {
+              "es": "la montaña",
+              "ar": "الجبل",
+              "ex": "Es una montaña muy alta."
+            },
+            {
+              "es": "el río",
+              "ar": "النهر",
+              "ex": "El Nilo es un río largo."
+            },
+            {
+              "es": "hay",
+              "ar": "يوجد",
+              "ex": "Hay un museo en la ciudad."
+            },
+            {
+              "es": "está en…",
+              "ar": "موجود في… (الموقع)",
+              "ex": "La ciudad está en el norte."
+            },
+            {
+              "es": "más … que",
+              "ar": "أكثر … من",
+              "ex": "Es más grande que la otra."
+            },
+            {
+              "es": "hace frío",
+              "ar": "الجو بارد",
+              "ex": "En invierno hace frío."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿Dónde está Santiago?",
+              "ar": "سانتياجو فين؟",
+              "ex": ""
+            },
+            {
+              "es": "Es la ciudad más poblada.",
+              "ar": "دي أكتر مدينة مزدحمة بالسكان.",
+              "ex": ""
+            },
+            {
+              "es": "En mi país hay playas.",
+              "ar": "في بلدي فيه شواطئ.",
+              "ex": ""
+            },
+            {
+              "es": "El clima es muy seco.",
+              "ar": "المناخ جاف جدًا.",
+              "ex": ""
+            },
+            {
+              "es": "¿Qué tiempo hace?",
+              "ar": "الطقس عامل إزاي؟",
+              "ex": ""
+            }
+          ]
+        }
+      },
       "quiz": {
         "u0": [
           {
@@ -2699,6 +3065,281 @@
           "es": "Audios"
         }
       ],
+      "flash": {
+        "u4": {
+          "words": [
+            {
+              "es": "la camiseta",
+              "ar": "التيشيرت",
+              "ex": "Quiero esta camiseta de rayas."
+            },
+            {
+              "es": "la camisa",
+              "ar": "القميص",
+              "ex": "La camisa azul cuesta 35 euros."
+            },
+            {
+              "es": "la falda",
+              "ar": "الجيبة / التنورة",
+              "ex": "Prefiero la falda rosa."
+            },
+            {
+              "es": "los zapatos",
+              "ar": "الحذاء",
+              "ex": "Estos zapatos son muy cómodos."
+            },
+            {
+              "es": "la talla",
+              "ar": "المقاس",
+              "ex": "Tengo la talla M."
+            },
+            {
+              "es": "cuesta…",
+              "ar": "سعره…",
+              "ex": "Cuesta solo 2 euros."
+            },
+            {
+              "es": "barato/a",
+              "ar": "رخيص",
+              "ex": "Es súper barata."
+            },
+            {
+              "es": "caro/a",
+              "ar": "غالي",
+              "ex": "¡Qué cara la negra!"
+            },
+            {
+              "es": "los probadores",
+              "ar": "غرف القياس",
+              "ex": "Los probadores están al fondo."
+            },
+            {
+              "es": "de segunda mano",
+              "ar": "مستعمل",
+              "ex": "Venden ropa de segunda mano."
+            },
+            {
+              "es": "este/esta",
+              "ar": "ده / دي (القريب)",
+              "ex": "Esta, la más grande."
+            },
+            {
+              "es": "prefiero…",
+              "ar": "بفضّل…",
+              "ex": "Yo prefiero la rosa."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿Cuánto cuesta?",
+              "ar": "بكام؟ / سعره كام؟",
+              "ex": ""
+            },
+            {
+              "es": "Solo estamos mirando.",
+              "ar": "إحنا بنتفرج بس.",
+              "ex": ""
+            },
+            {
+              "es": "¿Tenéis esta camiseta en la talla M?",
+              "ar": "عندكم التيشيرت ده مقاس M؟",
+              "ex": ""
+            },
+            {
+              "es": "Te queda muy bien.",
+              "ar": "جاية عليك حلوة أوي.",
+              "ex": ""
+            },
+            {
+              "es": "Creo que la compro.",
+              "ar": "أظن هشتريها.",
+              "ex": ""
+            }
+          ]
+        },
+        "u5": {
+          "words": [
+            {
+              "es": "el padre / la madre",
+              "ar": "الأب / الأم",
+              "ex": "Mi madre es taxista."
+            },
+            {
+              "es": "el hermano / la hermana",
+              "ar": "الأخ / الأخت",
+              "ex": "Tengo dos hermanos."
+            },
+            {
+              "es": "el abuelo / la abuela",
+              "ar": "الجد / الجدة",
+              "ex": "Mis abuelos viven en el pueblo."
+            },
+            {
+              "es": "el tío / la tía",
+              "ar": "العم أو الخال / العمة أو الخالة",
+              "ex": "La hija de mi tía es mi prima."
+            },
+            {
+              "es": "el marido / la mujer",
+              "ar": "الزوج / الزوجة",
+              "ex": "Su marido es estadounidense."
+            },
+            {
+              "es": "el nieto / la nieta",
+              "ar": "الحفيد / الحفيدة",
+              "ex": "El hijo de mi hijo es mi nieto."
+            },
+            {
+              "es": "alto/a · bajo/a",
+              "ar": "طويل / قصير (القامة)",
+              "ex": "Es alto y moreno."
+            },
+            {
+              "es": "el pelo rizado",
+              "ar": "الشعر الكيرلي",
+              "ex": "Tiene el pelo negro y rizado."
+            },
+            {
+              "es": "llevar gafas",
+              "ar": "لابس نضارة",
+              "ex": "Ella lleva gafas."
+            },
+            {
+              "es": "joven · mayor",
+              "ar": "شاب · كبير في السن",
+              "ex": "Es un chico joven."
+            },
+            {
+              "es": "mi / tu / su",
+              "ar": "بتاعي / بتاعك / بتاعه (ملكية)",
+              "ex": "Es mi casa. ¿Y tu coche?"
+            },
+            {
+              "es": "me encanta…",
+              "ar": "بعشق… / بحب جدًا",
+              "ex": "Me encanta esquiar."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿Cómo es tu hermano?",
+              "ar": "أخوك شكله / طبعه عامل إزاي؟",
+              "ex": ""
+            },
+            {
+              "es": "Tiene los ojos verdes.",
+              "ar": "عينيه خضرا.",
+              "ex": ""
+            },
+            {
+              "es": "A mí también.",
+              "ar": "وأنا كمان. (موافقة إيجابية)",
+              "ex": ""
+            },
+            {
+              "es": "A mí tampoco.",
+              "ar": "ولا أنا. (موافقة سلبية)",
+              "ex": ""
+            },
+            {
+              "es": "Es muy casera.",
+              "ar": "هي بتحب قعدة البيت جدًا.",
+              "ex": ""
+            }
+          ]
+        },
+        "u6": {
+          "words": [
+            {
+              "es": "levantarse",
+              "ar": "يقوم من النوم",
+              "ex": "Me levanto a las siete."
+            },
+            {
+              "es": "ducharse",
+              "ar": "ياخد دش",
+              "ex": "Se ducha a las ocho y diez."
+            },
+            {
+              "es": "vestirse",
+              "ar": "يلبس هدومه",
+              "ex": "Se viste a las ocho y veinte."
+            },
+            {
+              "es": "acostarse",
+              "ar": "ينام / يروح السرير",
+              "ex": "Me acuesto a las diez y media."
+            },
+            {
+              "es": "desayunar",
+              "ar": "يفطر",
+              "ex": "Después desayuno y me voy."
+            },
+            {
+              "es": "almorzar",
+              "ar": "يتغدى",
+              "ex": "Almorzamos de doce a una."
+            },
+            {
+              "es": "cenar",
+              "ar": "يتعشى",
+              "ex": "Normalmente ceno a las siete y media."
+            },
+            {
+              "es": "¿qué hora es?",
+              "ar": "الساعة كام؟",
+              "ex": "Son las nueve menos cinco."
+            },
+            {
+              "es": "y media / y cuarto",
+              "ar": "ونص / وربع",
+              "ex": "Son las tres y cuarto."
+            },
+            {
+              "es": "siempre / nunca",
+              "ar": "دايمًا / أبدًا",
+              "ex": "Nunca se acuesta antes de la 1."
+            },
+            {
+              "es": "normalmente",
+              "ar": "عادةً",
+              "ex": "Normalmente ceno en casa."
+            },
+            {
+              "es": "a veces",
+              "ar": "أحيانًا",
+              "ex": "A veces voy al gimnasio."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿A qué hora te levantas?",
+              "ar": "بتصحى الساعة كام؟",
+              "ex": ""
+            },
+            {
+              "es": "Me levanto a las cinco y media.",
+              "ar": "بقوم الساعة خمسة ونص.",
+              "ex": ""
+            },
+            {
+              "es": "Trabajo en un colegio.",
+              "ar": "بشتغل في مدرسة.",
+              "ex": ""
+            },
+            {
+              "es": "¿Y te acuestas muy tarde?",
+              "ar": "وبتنام متأخر؟",
+              "ex": ""
+            },
+            {
+              "es": "Primero me ducho y luego desayuno.",
+              "ar": "أول حاجة بستحمى وبعدين بفطر.",
+              "ex": ""
+            }
+          ]
+        }
+      },
       "quiz": {
         "u4": [
           {
@@ -4982,6 +5623,266 @@
           "es": "Audios"
         }
       ],
+      "flash": {
+        "u7": {
+          "words": [
+            {
+              "es": "la sopa del día",
+              "ar": "شوربة اليوم",
+              "ex": "¿De qué es la sopa del día?"
+            },
+            {
+              "es": "el salmón al horno",
+              "ar": "سالمون في الفرن",
+              "ex": "De segundo, salmón al horno con patatas."
+            },
+            {
+              "es": "la ensalada",
+              "ar": "السلطة",
+              "ex": "La ensalada lleva lechuga, tomate y atún."
+            },
+            {
+              "es": "el atún",
+              "ar": "التونة",
+              "ex": "Una ensalada de atún, por favor."
+            },
+            {
+              "es": "la hamburguesa vegana",
+              "ar": "برجر نباتي",
+              "ex": "Yo, la hamburguesa vegana."
+            },
+            {
+              "es": "el flan",
+              "ar": "الفلان / كريم كراميل",
+              "ex": "De postre, el flan de la casa."
+            },
+            {
+              "es": "el vino tinto",
+              "ar": "نبيذ أحمر",
+              "ex": "Para beber, vino tinto y agua."
+            },
+            {
+              "es": "el agua con gas",
+              "ar": "مياه غازية",
+              "ex": "Para beber, un agua con gas."
+            },
+            {
+              "es": "el gazpacho",
+              "ar": "جازباتشو (شوربة طماطم باردة)",
+              "ex": "El gazpacho solo lo tenemos en verano."
+            },
+            {
+              "es": "la cuenta",
+              "ar": "الفاتورة / الحساب",
+              "ex": "¿Me trae la cuenta, por favor?"
+            },
+            {
+              "es": "sin azúcar",
+              "ar": "من غير سكر",
+              "ex": "Tomo el café con leche, pero sin azúcar."
+            },
+            {
+              "es": "de primero / de segundo",
+              "ar": "طبق أول / طبق رئيسي",
+              "ex": "De primero, la sopa; de segundo, el salmón."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿Ya saben lo que van a tomar?",
+              "ar": "قررتوا هتطلبوا إيه؟"
+            },
+            {
+              "es": "¿Qué hay de postre?",
+              "ar": "إيه الحلو اللي عندكم؟"
+            },
+            {
+              "es": "Perdone, ¿me trae un poco de pan también?",
+              "ar": "لو سمحت، تجيبلي عيش كمان؟"
+            },
+            {
+              "es": "No me gustan mucho los refrescos: tienen mucho azúcar.",
+              "ar": "مش بحب المشروبات الغازية: سكرها كتير."
+            },
+            {
+              "es": "Mis preferidos son los tacos al pastor.",
+              "ar": "المفضلين عندي تاكو «ال باستور»."
+            }
+          ]
+        },
+        "u8": {
+          "words": [
+            {
+              "es": "el barrio",
+              "ar": "الحي",
+              "ex": "Mi barrio es tranquilo y céntrico."
+            },
+            {
+              "es": "la farmacia",
+              "ar": "الصيدلية",
+              "ex": "¿Hay alguna farmacia por aquí cerca?"
+            },
+            {
+              "es": "el supermercado",
+              "ar": "السوبر ماركت",
+              "ex": "Hay uno justo en la esquina."
+            },
+            {
+              "es": "la esquina",
+              "ar": "الناصية / ركن الشارع",
+              "ex": "El banco está en la esquina."
+            },
+            {
+              "es": "la plaza",
+              "ar": "الميدان",
+              "ex": "Está antes de llegar a una plaza."
+            },
+            {
+              "es": "la estación de metro",
+              "ar": "محطة المترو",
+              "ex": "No hay ninguna estación cerca."
+            },
+            {
+              "es": "cerca de",
+              "ar": "قريب من",
+              "ex": "La casa está cerca de la playa."
+            },
+            {
+              "es": "lejos de",
+              "ar": "بعيد عن",
+              "ex": "Está un poco lejos de aquí."
+            },
+            {
+              "es": "al final de la calle",
+              "ar": "في آخر الشارع",
+              "ex": "Sigue todo recto: está al final de la calle."
+            },
+            {
+              "es": "todo recto",
+              "ar": "على طول (مباشرة)",
+              "ex": "Sigue todo recto y gira a la derecha."
+            },
+            {
+              "es": "girar a la derecha",
+              "ar": "يلف يمين",
+              "ex": "Gira en la segunda a la derecha."
+            },
+            {
+              "es": "bien comunicado",
+              "ar": "مواصلاته كويسة",
+              "ex": "Quiero un barrio céntrico y bien comunicado."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "¿Hay algún supermercado por aquí?",
+              "ar": "فيه سوبر ماركت هنا قريب؟"
+            },
+            {
+              "es": "Está a unos diez minutos de aquí.",
+              "ar": "على بعد حوالي عشر دقايق من هنا."
+            },
+            {
+              "es": "No, cerca no hay ninguna.",
+              "ar": "لا، مفيش ولا واحدة قريبة."
+            },
+            {
+              "es": "Te recomiendo el barrio de Triana: tiene bares con terrazas al lado del río.",
+              "ar": "أنصحك بحي تريانا: فيه بارات بتراتسات على النهر."
+            },
+            {
+              "es": "En el centro la renta es carísima.",
+              "ar": "الإيجار في وسط البلد غالي جدًا."
+            }
+          ]
+        },
+        "u9": {
+          "words": [
+            {
+              "es": "saber",
+              "ar": "يعرف / يجيد (مهارة)",
+              "ex": "Sandra sabe tocar el piano."
+            },
+            {
+              "es": "poder",
+              "ar": "يقدر / يستطيع",
+              "ex": "¿Puedes ir a buscar a Andrés?"
+            },
+            {
+              "es": "puntual",
+              "ar": "ملتزم بالمواعيد",
+              "ex": "Una persona puntual nunca llega tarde."
+            },
+            {
+              "es": "despistado/a",
+              "ar": "سرحان / بينسى",
+              "ex": "Es un poco despistado: olvida las llaves."
+            },
+            {
+              "es": "generoso/a",
+              "ar": "كريم / سخي",
+              "ex": "Piensa en los demás: es muy generosa."
+            },
+            {
+              "es": "la experiencia",
+              "ar": "الخبرة",
+              "ex": "Tiene mucha experiencia como conductor."
+            },
+            {
+              "es": "el currículum",
+              "ar": "السيرة الذاتية",
+              "ex": "Puedes enviar el currículum a esta empresa."
+            },
+            {
+              "es": "conducir",
+              "ar": "يسوق (عربية)",
+              "ex": "¿Sabes conducir?"
+            },
+            {
+              "es": "el premio",
+              "ar": "الجايزة",
+              "ex": "Ha ganado muchos premios."
+            },
+            {
+              "es": "mudarse de piso",
+              "ar": "ينقل لشقة تانية",
+              "ex": "Me he mudado 20 veces de piso."
+            },
+            {
+              "es": "el compañero de piso",
+              "ar": "زميل السكن",
+              "ex": "Busco un nuevo compañero de piso."
+            },
+            {
+              "es": "las aficiones",
+              "ar": "الهوايات",
+              "ex": "Tenemos las mismas aficiones."
+            }
+          ],
+          "sentences": [
+            {
+              "es": "Nunca he viajado solo.",
+              "ar": "عمري ما سافرت لوحدي."
+            },
+            {
+              "es": "He ganado un premio una vez.",
+              "ar": "كسبت جايزة مرة واحدة."
+            },
+            {
+              "es": "¿Has hecho alguna de estas cosas?",
+              "ar": "عملت أي حاجة من الحاجات دي؟"
+            },
+            {
+              "es": "Creo que voy a elegir a Erik.",
+              "ar": "أظن إني هختار Erik."
+            },
+            {
+              "es": "En una semana he estado en cinco continentes.",
+              "ar": "في أسبوع واحد زرت خمس قارات."
+            }
+          ]
+        }
+      },
       "quiz": {
         "u7": [
           {

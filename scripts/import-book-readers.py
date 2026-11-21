@@ -55,7 +55,7 @@ CONFIGS = {
         "data": None,
     },
 }
-STUDENT_CLEANUP_CSS = "#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}"
+STUDENT_CLEANUP_CSS = "#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}#tabs .tab.xtab{display:none!important;}"
 IMAGE_ARCHIVES = {
     "A1.1": ["A1.1_v14_PARTE1_LIBRO.zip"],
     "A1.2": ["A1.2_TABS_V1_parte1.zip"],

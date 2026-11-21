@@ -7,7 +7,7 @@ import { lessonSentenceBanks } from './data/sentences.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
 import './components/direct-reader.css';
 import {
-  ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
+  ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, CalendarDays, Check, CheckCircle2, ChevronLeft,
   CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Lightbulb, Pause,
   LockKeyhole, MoreHorizontal, Play, Search, Settings2,
   Sparkles, Target, Trophy, Volume2, X, Zap, Heart, Mic, RotateCcw, Timer, Shuffle
@@ -67,11 +67,13 @@ const navGroups = [
     { id: 'grammar', label: 'الجرامر', icon: BookOpen },
     { id: 'speaking', label: 'التحدث', icon: Mic },
     { id: 'games', label: 'الألعاب', icon: Gamepad2 },
-    { id: 'quiz', label: 'اختبار سريع', icon: CircleHelp },
-    { id: 'exam', label: 'الامتحانات', icon: Award },
+  ] },
+  { label: 'مراجعة الكتاب', items: [
+    { id: 'flashcards', label: 'بطاقات المراجعة', icon: Bookmark },
+    { id: 'quiz', label: 'كويزات الكتاب', icon: CircleHelp },
+    { id: 'exam', label: 'امتحانات الكتاب', icon: Award },
   ] },
   { label: 'مكتبتي', items: [
-    { id: 'flashcards', label: 'بطاقات المراجعة', icon: Bookmark },
     { id: 'words', label: 'كلماتي', icon: Bookmark },
     { id: 'progress', label: 'إنجازاتي', icon: Trophy },
   ] },
@@ -154,6 +156,28 @@ function LessonCard({ lesson, stage, index, completed, onOpen }) {
   </article>;
 }
 
+function sentenceOfTheDay(selectedStage) {
+  const stages = bookActivities.stages || {};
+  const collect = stageId => {
+    const source = stages[stageId];
+    if (!source?.flash) return [];
+    return (source.units || []).filter(unit => unit.k !== 'ls').flatMap(unit =>
+      (source.flash[unit.k]?.sentences || []).map(sentence => ({
+        ...sentence,
+        stage: stageId,
+        unit: unit.ar,
+        title: unit.es,
+      })),
+    );
+  };
+  const stageOrder = [selectedStage, ...Object.keys(stages).filter(stageId => stageId !== selectedStage).sort()];
+  const pool = stageOrder.flatMap(collect);
+  if (!pool.length) return null;
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  return pool[((dayNumber % pool.length) + pool.length) % pool.length];
+}
+
 function HomePage({ onOpenLesson, onNavigate, completedLessons, selectedStage }) {
   const courseLessons = currentLessons(selectedStage);
   const completedCount = courseLessons.filter(lesson => completedLessons.includes(lesson.id)).length;
@@ -161,6 +185,7 @@ function HomePage({ onOpenLesson, onNavigate, completedLessons, selectedStage })
   const nextLesson = courseLessons.find(lesson => !completedLessons.includes(lesson.id)) || courseLessons[0];
   const nextPage = courseBookMaterials[nextLesson?.id]?.pages?.[0];
   const allComplete = courseLessons.length > 0 && completedCount === courseLessons.length;
+  const dailySentence = sentenceOfTheDay(selectedStage);
 
   return <div className="home-dashboard">
     <section className="home-welcome" aria-labelledby="home-welcome-title">
@@ -183,6 +208,16 @@ function HomePage({ onOpenLesson, onNavigate, completedLessons, selectedStage })
         <small>{courseProgress}% من المرحلة مكتمل</small>
       </div>
     </section>
+
+    {dailySentence && <section className="sentence-of-day-card" aria-labelledby="sentence-of-day-title">
+      <div className="sentence-of-day-emblem"><CalendarDays size={22}/><span>01</span></div>
+      <div className="sentence-of-day-copy"><span className="eyebrow">جملة جديدة كل يوم · من الكتاب الأصلي</span><h2 id="sentence-of-day-title">جملة اليوم</h2>
+        <p className="sentence-of-day-spanish" lang="es" dir="ltr">{dailySentence.es}</p>
+        <p className="sentence-of-day-arabic" dir="rtl">{dailySentence.ar}</p>
+        <small>من {dailySentence.stage} · {dailySentence.unit} · {dailySentence.title}</small>
+      </div>
+      <button className="sentence-of-day-listen" type="button" onClick={() => speakSpanish(dailySentence.es)}><Volume2 size={18}/> اسمع الجملة</button>
+    </section>}
 
     <section className="home-lessons-section" aria-labelledby="home-lessons-title">
       <div className="home-section-heading"><div><span className="eyebrow"><BookOpen size={14}/> خطة المرحلة</span><h2 id="home-lessons-title">محاضرات {selectedStage}</h2><p>الكتاب والصوتيات والتمارين المرتبطة بكل محاضرة في مكان واحد.</p></div><button className="text-link" onClick={() => onNavigate('lessons')}>عرض المحاضرات <ChevronLeft size={16}/></button></div>
@@ -667,17 +702,54 @@ function GamesPage({ stage, addXp, focusLessonId }) {
 function FlashcardsPage({ stage, savedWords, onSaveWord }) {
   const lessons = currentLessons(stage);
   const [lessonId, setLessonId] = useState(lessons[0]?.id || '');
+  const [cardKind, setCardKind] = useState('words');
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [savedOnly, setSavedOnly] = useState(false);
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
-  const words = (lesson?.words || []).filter(word => !savedOnly || savedWords.includes(word.es));
-  const current = words[index];
+  const sourceStageId = lesson ? courseForLesson(lesson.id) : null;
+  const sourceStage = bookActivities.stages?.[sourceStageId];
+  const sourceUnitId = lesson ? nativeBookUnitForLesson(lesson.id) : null;
+  const unit = sourceStage?.units?.find(item => item.k === sourceUnitId);
+  const deck = sourceStage?.flash?.[sourceUnitId];
+  const allCards = cardKind === 'sentences' ? (deck?.sentences || []) : (deck?.words || []);
+  const cards = allCards.filter(item => !savedOnly || savedWords.includes(item.es));
+  const current = cards[index];
+  const hasNativeCards = Boolean(deck?.words?.length || deck?.sentences?.length);
   useEffect(() => { setLessonId(currentLessons(stage)[0]?.id || ''); setIndex(0); setFlipped(false); }, [stage]);
-  useEffect(() => { setIndex(0); setFlipped(false); }, [lessonId, savedOnly]);
-  function step(amount) { setIndex(value => (value + amount + words.length) % words.length); setFlipped(false); }
-  return <div className="flashcards-page"><section className="course-page-intro"><span className="eyebrow"><Bookmark size={15}/> بنك الكلمات · {stage}</span><h2>Flashcards</h2><p>اقلب البطاقة لمشاهدة المعنى، احفظها في «كلماتي»، وراجعها بأي ترتيب.</p><label className="course-select"><span>المحاضرة</span><select value={lessonId} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><div className="flashcard-filter"><button className={!savedOnly ? 'selected' : ''} onClick={() => setSavedOnly(false)}>كل كلمات المحاضرة</button><button className={savedOnly ? 'selected' : ''} onClick={() => setSavedOnly(true)}>المحفوظة فقط ({(lesson?.words || []).filter(word => savedWords.includes(word.es)).length})</button></div></section>
-    {current ? <><div className="flashcard-progress">بطاقة {index + 1} من {words.length}<button onClick={() => { setIndex(Math.floor(Math.random() * words.length)); setFlipped(false); }}><Shuffle size={15}/> اخلط</button></div><button className={`flashcard ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(value => !value)} aria-label="اقلب البطاقة"><span className="flashcard-side-label">{flipped ? 'المعنى والمثال' : 'الإسبانية'}</span>{!flipped ? <><b lang="es" dir="ltr">{current.es}</b><small>اضغط لقلب البطاقة</small></> : <><b className="flashcard-arabic" dir="rtl">{current.ar}</b><span className="flashcard-example" lang="es" dir="ltr">{lesson?.example}</span><small className="flashcard-example-ar">{lesson?.translation}</small></>}</button><div className="flashcard-controls"><button className="secondary-button" onClick={() => step(-1)}><ArrowRight size={16}/> السابق</button><button className="secondary-button" onClick={() => speakSpanish(current.es)}><Volume2 size={16}/> اسمع</button><button className="secondary-button" onClick={() => onSaveWord(current.es)}><Bookmark size={16} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'محفوظة' : 'احفظ الكلمة'}</button><button className="primary-button" onClick={() => step(1)}>التالي <ArrowLeft size={16}/></button></div></> : <div className="empty-state flashcard-empty">مافيش كلمات محفوظة للمحاضرة دي. احفظ كلمات من المحاضرة أو ارجع لكل الكلمات.</div>}</div>;
+  useEffect(() => { setIndex(0); setFlipped(false); }, [lessonId, cardKind, savedOnly]);
+  function step(amount) { setIndex(value => (value + amount + cards.length) % cards.length); setFlipped(false); }
+  const savedCount = allCards.filter(item => savedWords.includes(item.es)).length;
+  return <div className="flashcards-page native-flashcards-page">
+    <section className="course-page-intro native-flashcards-intro">
+      <span className="eyebrow"><Bookmark size={15}/> مفردات وجمل من ملفات الكتاب الأصلية</span>
+      <h2>بطاقات المراجعة</h2>
+      <p>الكلمات والجمل مترجمة من مصدر الكتاب نفسه، ومقسّمة حسب الوحدة.</p>
+      <div className="native-flashcard-selectors">
+        <label className="course-select"><span>المرحلة</span><select value={stage} disabled><option>{stage}</option></select></label>
+        <label className="course-select"><span>الوحدة</span><select value={lesson?.id || ''} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading.replace(/^A[12](?:\.\d)? · /, '')}</option>)}</select></label>
+      </div>
+      <div className="flashcard-filter native-flashcard-tabs" role="tablist" aria-label="نوع بطاقات المراجعة">
+        <button type="button" role="tab" aria-selected={cardKind === 'words'} className={cardKind === 'words' ? 'selected' : ''} onClick={() => setCardKind('words')}>الكلمات ({deck?.words?.length || 0})</button>
+        <button type="button" role="tab" aria-selected={cardKind === 'sentences'} className={cardKind === 'sentences' ? 'selected' : ''} onClick={() => setCardKind('sentences')}>الجمل ({deck?.sentences?.length || 0})</button>
+        <button type="button" className={savedOnly ? 'selected' : ''} aria-pressed={savedOnly} onClick={() => setSavedOnly(value => !value)}>المحفوظة ({savedCount})</button>
+      </div>
+    </section>
+    {current ? <>
+      <div className="flashcard-progress">بطاقة {index + 1} من {cards.length}<button type="button" onClick={() => { setIndex(Math.floor(Math.random() * cards.length)); setFlipped(false); }}><Shuffle size={17}/> اخلط البطاقات</button></div>
+      <button type="button" className={`flashcard native-source-flashcard ${flipped ? 'flipped' : ''}`} onClick={() => setFlipped(value => !value)} aria-label="اقلب البطاقة">
+        <span className="flashcard-side-label">{flipped ? 'المعنى بالعربي' : cardKind === 'words' ? 'من مفردات الوحدة' : 'جملة من الكتاب'}</span>
+        {!flipped ? <><b lang="es" dir="ltr">{current.es}</b><small>اضغط على البطاقة لإظهار المعنى</small></> : <><b className="flashcard-arabic" dir="rtl">{current.ar}</b>{current.ex && <span className="flashcard-example" lang="es" dir="ltr">{current.ex}</span>}<small className="flashcard-example-ar">{unit?.es} · {unit?.ar}</small></>}
+      </button>
+      <div className="flashcard-controls native-flashcard-controls">
+        <button className="secondary-button" type="button" onClick={() => step(-1)}><ArrowRight size={18}/> السابقة</button>
+        <button className="secondary-button" type="button" onClick={() => speakSpanish(current.es)}><Volume2 size={18}/> اسمع</button>
+        <button className="secondary-button" type="button" onClick={() => onSaveWord(current.es)}><Bookmark size={18} fill={savedWords.includes(current.es) ? 'currentColor' : 'none'}/>{savedWords.includes(current.es) ? 'محفوظة' : 'احفظها'}</button>
+        <button className="primary-button" type="button" onClick={() => step(1)}>التالية <ArrowLeft size={18}/></button>
+      </div>
+      <p className="native-flashcard-source">{sourceStageId} · {unit?.ar} · {unit?.es}</p>
+    </> : <section className="empty-state flashcard-empty native-flashcard-empty">{!hasNativeCards ? `مافيش بيانات Flashcards أصلية مستخرجة لمرحلة ${stage} لحد دلوقتي. هنفتح البطاقات من بيانات الكتاب الموثقة فقط، من غير ما نبدّلها بأمثلة مؤلفة.` : 'مفيش بطاقات محفوظة في الاختيار ده. غيّر الفلتر أو احفظ بطاقة من الوحدة.'}</section>}
+  </div>;
 }
 function App() {
   const initial = useMemo(readSaved, []);

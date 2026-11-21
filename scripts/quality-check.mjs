@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { lessonLibrary } from '../src/data/lessons.js';
+import bookActivities from '../src/data/bookActivities.json' with { type: 'json' };
 import { courseBookMaterials } from '../src/data/courseMaterials.js';
 import { buildListeningItems, transcriptText } from '../src/data/listening.js';
 
@@ -71,6 +72,23 @@ check(appSource.includes('function LessonCard(') && appSource.includes('lesson-c
 check(appSource.includes('const mobileNavItems = [') && appSource.includes("{ id: 'games', label: 'الألعاب'"), 'Mobile navigation must keep a small set of primary destinations');
 check(appSource.includes('<span>المزيد</span>') && appSource.includes('aria-expanded={mobileMenuOpen}'), 'Secondary sections must remain accessible through the expandable More menu');
 check(!homeSource.includes('addXp(') && !homeSource.includes('gracias'), 'Home must not award repeatable XP or show unrelated fixed-level content');
+check(homeSource.includes('sentenceOfTheDay(selectedStage)') && homeSource.includes('sentence-of-day-card'), 'Home must show a daily sentence card');
+check(appSource.includes('function sentenceOfTheDay(') && appSource.includes('bookActivities.stages') && appSource.includes('Date.UTC'), 'Daily sentence must rotate by local calendar day using original book content');
+const flashcardsSource = appSource.slice(appSource.indexOf('function FlashcardsPage('), appSource.indexOf('function App('));
+check(flashcardsSource.includes('sourceStage?.flash?.[sourceUnitId]') && flashcardsSource.includes("deck?.sentences || []") && flashcardsSource.includes("deck?.words || []"), 'Flashcards must use the extracted source-book words and sentences');
+check(!flashcardsSource.includes('lesson?.words'), 'Flashcards must not fall back to lesson-library examples');
+for (const [stageId, minimumCards] of [['A1.1', 60], ['A1.2', 45], ['A1.3', 45]]) {
+  const flash = bookActivities.stages?.[stageId]?.flash || {};
+  const cardCount = Object.values(flash).reduce((total, deck) => total + (deck.words?.length || 0) + (deck.sentences?.length || 0), 0);
+  check(cardCount >= minimumCards, `${stageId}: extracted original flashcards must include words and sentences`);
+}
+const readerImportSource = await readFile(path.join(root, 'scripts/import-book-readers.py'), 'utf8');
+check(readerImportSource.includes('#tabs .tab.xtab{display:none!important;}'), 'Book reader imports must hide the embedded extra activity tabs');
+for (const reader of ['A1.1', 'A1.2', 'A1.3']) {
+  const readerHtml = await readFile(path.join(root, `public/materials/readers/${reader}/index.html`), 'utf8');
+  check(readerHtml.includes('#tabs .tab.xtab{display:none!important;}'), `${reader}: embedded extra activity tabs must be hidden`);
+}
+
 check(appSource.includes('selectedStage, displayName') && appSource.includes("useState(initial.selectedStage || 'A1.1')"), 'Profile stage selection must persist locally');
 check(!/drive\.google\.com/i.test(appSource), 'Learner-facing pages must not send students to Google Drive');
 check(appSource.includes('function BookLessonMaterials(') && appSource.includes('<BookLessonMaterials lessonId={lessonId}/>'), 'Each mapped lesson must open its own original book pages and audio in-app');
