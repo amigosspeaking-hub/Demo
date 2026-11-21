@@ -1,0 +1,35 @@
+.direct-book-reader {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #f5f6f1;
+}
+.direct-book-reader iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.direct-book-reader-close {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: max(14px, env(safe-area-inset-right));
+  inset-block-end: max(14px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1px solid #ffffff85;
+  border-radius: 999px;
+  background: #294b3ddd;
+  color: #fff;
+  box-shadow: 0 3px 16px #15251d45;
+  font-size: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+}
+.direct-book-reader-close:hover { background: #203d31; }

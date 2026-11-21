@@ -5,6 +5,7 @@ import { grammarGuides } from './data/grammar.js';
 import { lessonStories } from './data/stories.js';
 import { lessonSentenceBanks } from './data/sentences.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
+import './components/direct-reader.css';
 import {
   ArrowLeft, ArrowRight, AudioLines, Award, BookOpen, Bookmark, Check, CheckCircle2, ChevronLeft,
   CircleHelp, Clock3, Gamepad2, GraduationCap, Headphones, House, Lightbulb, Pause,
@@ -287,6 +288,18 @@ function OriginalBookReader({ reader, onReturn }) {
   return <section className="book-reader-panel" aria-label={`قارئ ${reader.unit}`}>
     <div className="book-reader-toolbar"><div><span className="book-reader-kicker"><BookOpen size={14}/> ملف الكتاب الأصلي · {reader.unit}</span><b lang="es" dir="ltr">{reader.title}</b><small>صفحات وأنشطة المحاضرة دي بس.</small></div><button type="button" onClick={onReturn}>ارجع لخطوات المحاضرة <ArrowRight size={15}/></button></div>
     <iframe title={`كتاب ${reader.unit} · ${reader.title}`} src={reader.src} loading="eager" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" />
+  </section>;
+}
+
+function DirectOriginalBookReader({ reader, onClose }) {
+  useEffect(() => {
+    const onKeyDown = event => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+  return <section className="direct-book-reader" aria-label={`قارئ الكتاب الأصلي ${reader.unit}`}>
+    <iframe title={`كتاب ${reader.unit} · ${reader.title}`} src={reader.src} loading="eager" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" />
+    <button className="direct-book-reader-close" type="button" onClick={onClose} aria-label="العودة إلى التطبيق"><ArrowRight size={17}/><span>العودة</span></button>
   </section>;
 }
 
@@ -670,6 +683,7 @@ function App() {
   const initial = useMemo(readSaved, []);
   const [active, setActive] = useState('home');
   const [lessonOpen, setLessonOpen] = useState(false);
+  const [directReader, setDirectReader] = useState(null);
   const [lessonLevel, setLessonLevel] = useState('A1');
   const [lessonId, setLessonId] = useState('A1-0');
   const [a1CourseMode, setA1CourseMode] = useState(false);
@@ -687,7 +701,10 @@ function App() {
   useEffect(() => { localStorage.setItem('hola-progress', JSON.stringify({ xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName })); }, [xp, doneLessons, completedLessons, savedWords, a1CourseIndex, selectedStage, displayName]);
   function openIslandActivity(pageId, id) { setFocusLessonId(id); setActive(pageId); }
   function openLesson(level = selectedStage.startsWith('A2') ? 'A2' : 'A1', id = currentLessons(selectedStage)[0]?.id || 'A1-0') {
-    setA1CourseMode(false); setLessonLevel(level); setLessonId(id); setLessonOpen(true);
+    setA1CourseMode(false); setLessonLevel(level); setLessonId(id);
+    const reader = originalReaderForLesson(id);
+    if (reader) { setLessonOpen(false); setDirectReader(reader); }
+    else setLessonOpen(true);
   }
   function startA1Course(index = courseRanges[selectedStage]?.[0] || 0) {
     const safeIndex = Math.max(0, Math.min(9, index));
@@ -731,6 +748,7 @@ function App() {
     {mobileMenuOpen && <div className="mobile-drawer" onClick={() => setMobileMenuOpen(false)}><button className="drawer-close" onClick={() => setMobileMenuOpen(false)} aria-label="إغلاق القائمة"><X/></button><div className="mobile-drawer-panel" onClick={event => event.stopPropagation()}><Sidebar {...sidebarProps}/></div></div>}
     <nav className="mobile-nav" aria-label="التنقل السريع">{mobileNavItems.map(({ id, label, icon: Icon }) => <button key={id} className={active === id ? 'active' : ''} onClick={() => { setActive(id); setMobileMenuOpen(false); }}><Icon size={20}/><span>{label}</span></button>)}<button className={!mobileNavItems.some(item => item.id === active) ? 'active' : ''} onClick={() => setMobileMenuOpen(true)} aria-expanded={mobileMenuOpen}><MoreHorizontal size={20}/><span>المزيد</span></button></nav>
     {lessonOpen && <LessonModal level={lessonLevel} lessonId={lessonId} savedWords={savedWords} isCompleted={completedLessons.includes(lessonId)} onSaveWord={toggleWord} courseMode={a1CourseMode} courseIndex={a1CourseIndex} onCoursePrevious={() => goToA1CourseLesson(Math.max(courseRanges[selectedStage][0], a1CourseIndex - 1))} onClose={() => { setLessonOpen(false); setA1CourseMode(false); }} onComplete={completeLesson}/>}
+    {directReader && <DirectOriginalBookReader reader={directReader} onClose={() => setDirectReader(null)}/>}
   </div>;
 }
 export default App;
