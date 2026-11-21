@@ -116,3 +116,112 @@
   .native-flashcard-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
   .native-flashcard-controls button { justify-content: center; }
 }
+
+/* Rebuilt navigation: the study areas are distinct, touch-friendly destinations. */
+.sidebar {
+  width: 286px;
+  padding: 24px 15px 18px;
+  border-inline-end: 1px solid #e4ebe2;
+  background: linear-gradient(180deg,#f6f9f4 0%,#fbfaf6 52%,#f7f8f3 100%);
+}
+.main-area { margin-inline-start: 286px; }
+.sidebar .brand { padding: 0 9px 22px; }
+.side-nav { gap: 10px; padding: 2px 1px 8px; }
+.side-nav-group {
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid #e8eee6;
+  border-radius: 17px;
+  background: #ffffffd9;
+  box-shadow: 0 5px 15px #3d594309;
+}
+.side-label {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 10px 6px;
+  color: #718575;
+  font-size: 13px !important;
+  font-weight: 800;
+}
+.side-nav .nav-link {
+  min-height: 48px;
+  gap: 11px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #586a5d;
+  font-size: 15px !important;
+  font-weight: 650;
+  transition: background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.side-nav .nav-link:hover { transform: translateX(-2px); border-color: #e5ede2; background: #f5f8f2; }
+.side-nav .nav-link svg {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border-radius: 10px;
+  background: #f0f4ee;
+  color: #5d8067;
+  transition: background .18s ease,color .18s ease;
+}
+.side-nav .nav-link.active {
+  border-color: #2e5f43;
+  background: linear-gradient(120deg,#32664a,#284f3a);
+  color: #fff;
+  box-shadow: 0 7px 17px #2e5f4324;
+}
+.side-nav .nav-link.active svg { background: #ffffff1c; color: #fff; }
+.side-nav .nav-link.active { box-shadow: inset -3px 0 0 #f0c86e,0 7px 17px #2e5f4324; }
+.profile-mini { padding: 13px 8px 0; border-top-color: #e1e9df; }
+
+.listening-station {
+  display: grid;
+  gap: 18px;
+  padding: clamp(17px,2.4vw,26px);
+  border: 1px solid #e3ebe1;
+  border-radius: 21px;
+  background: linear-gradient(145deg,#fff 0%,#f9fbf7 100%);
+  box-shadow: 0 12px 30px #354b3510;
+}
+.listening-station-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.listening-station-head h3 { margin: 5px 0 2px; color: #2f513a; font: 700 21px 'DM Sans','IBM Plex Sans Arabic',sans-serif; }
+.listening-station-head p { margin: 0; color: #78877a; font-size: 14px; }
+.listening-station-badge { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border: 1px solid #dce9d8; border-radius: 13px; background: #f2f8ef; color: #4d7957; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.listening-track-picker { display: grid; gap: 7px; color: #526b56; font-weight: 700; }
+.listening-track-picker select { width: 100%; min-height: 48px; padding: 10px 13px; border: 1px solid #dfe8dc; border-radius: 12px; background: #fff; color: #374c3a; }
+.listening-station .book-audio-player { padding: 17px; border: 1px solid #e9eee7; border-radius: 16px; background: #fff; }
+.listening-source-note { margin: 0; padding: 14px 16px; border-radius: 12px; background: #f5f7f2; color: #677469; }
+
+.no-page-activity-flow { gap: 18px; }
+.activity-source-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(24px,4vw,42px);
+  border: 1px solid #e5ebe3;
+  border-radius: 22px;
+  background: radial-gradient(circle at 50% 0%,#f1f8ed,transparent 48%),#fff;
+  box-shadow: 0 14px 35px #344b340d;
+  text-align: center;
+}
+.activity-source-empty-icon { display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid #e1e9dc; border-radius: 18px; background: #f2f7ef; color: #5e8363; }
+.activity-source-empty h3 { margin: 0; color: #354d3a; }
+.activity-source-empty p { max-width: 570px; margin: 0; color: #748176; }
+.activity-source-status { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid #e4ebdf; border-radius: 999px; background: #fbfcf9; color: #66816a; font-size: 14px; font-weight: 700; }
+
+@media (max-width: 900px) {
+  .sidebar { width: 248px; padding-inline: 11px; }
+  .main-area { margin-inline-start: 248px; }
+  .side-nav-group { padding: 6px; }
+  .side-nav .nav-link { min-height: 46px; }
+}
+@media (max-width: 650px) {
+  .sidebar { display: none; }
+  .main-area { margin-inline-start: 0; }
+  .listening-station-head { align-items: flex-start; flex-direction: column; }
+  .listening-station-badge { align-self: flex-start; }
+  .activity-source-empty { border-radius: 17px; }
+}

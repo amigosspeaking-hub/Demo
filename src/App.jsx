@@ -490,12 +490,28 @@ function nativeListeningTrackForLesson(id, track) {
   const filename = track.src.split('/').pop();
   return stage.listen.tracks.find(item => item.file === filename) || null;
 }
-function NativeListeningExercises({ track }) {
+function NativeListeningExercises({ track, showPageReference = true }) {
   const [answers, setAnswers] = useState({});
   useEffect(() => setAnswers({}), [track?.file]);
   if (!track?.q?.length) return null;
-  return <section className="native-listening-exercises"><div className="native-activity-heading"><span className="eyebrow"><Headphones size={14}/> نشاط الاستماع الأصلي</span><b>{track.q.length} أسئلة · صفحة {track.page}</b></div>
+  return <section className="native-listening-exercises"><div className="native-activity-heading"><span className="eyebrow"><Headphones size={14}/> نشاط الاستماع الأصلي</span><b>{track.q.length} أسئلة{showPageReference && track.page ? ` · صفحة ${track.page}` : ''}</b></div>
     {track.q.map((item, index) => <article className="native-listening-question" key={`${track.file}-${index}`}><h4>{item.q}</h4><div className="native-listening-options">{item.opts.map((option, choice) => <button key={option} className={`${answers[index] === choice ? (choice === item.a ? 'is-correct' : 'is-wrong') : ''} ${answers[index] !== undefined && choice === item.a ? 'is-correct' : ''}`} onClick={() => setAnswers(value => ({ ...value, [index]: choice }))} disabled={answers[index] !== undefined}>{option}</button>)}</div>{answers[index] !== undefined && <p className="native-listening-feedback">{answers[index] === item.a ? 'صحيح — ' : 'الإجابة من ملف الكتاب: '}{item.ex}</p>}</article>)}</section>;
+}
+
+function OriginalListeningStation({ lessonId }) {
+  const material = courseBookMaterials[lessonId];
+  const [trackIndex, setTrackIndex] = useState(0);
+  useEffect(() => setTrackIndex(0), [lessonId]);
+  if (!material?.tracks?.length) return <div className="empty-state">مفيش تسجيلات أصلية متاحة للمحاضرة دي.</div>;
+  const track = material.tracks[trackIndex] || material.tracks[0];
+  const sourceTrack = nativeListeningTrackForLesson(lessonId, track);
+  return <section className="listening-station">
+    <header className="listening-station-head"><div><span className="eyebrow"><AudioLines size={16}/> تسجيلات محلية أصلية</span><h3 lang="es" dir="ltr">{material.title}</h3><p>{material.unit} · {material.tracks.length} تسجيل{material.tracks.length === 1 ? '' : 'ات'} متاح</p></div><span className="listening-station-badge"><Headphones size={17}/> صوت الكتاب</span></header>
+    <label className="listening-track-picker"><span>اختار التسجيل</span><select value={trackIndex} onChange={event => setTrackIndex(Number(event.target.value))}>{material.tracks.map((item, index) => <option key={`${item.id}-${item.variant}-${item.src}`} value={index}>{item.title} · {item.id}{item.variant === 'alternativa' ? ' · نسخة بديلة' : ''}</option>)}</select></label>
+    <BookAudioPlayer key={track.src} track={track}/>
+    {sourceTrack ? <><details className="native-audio-transcript"><summary>نص التسجيل ومفرداته الأصلية</summary><p lang="es" dir="ltr">{sourceTrack.es}</p><p dir="rtl">{sourceTrack.ar}</p>{sourceTrack.keys?.length > 0 && <ul>{sourceTrack.keys.map(([es, ar]) => <li key={es}><b lang="es" dir="ltr">{es}</b><span>{ar}</span></li>)}</ul>}</details><NativeListeningExercises track={sourceTrack} showPageReference={false}/></>
+      : <p className="listening-source-note">التسجيل من ملفات الكتاب الأصلية. لا تتوفر له أسئلة رقمية موثقة، لذلك لن نضيف أسئلة من عندنا.</p>}
+  </section>;
 }
 
 function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
@@ -529,7 +545,7 @@ function BookListeningLibrary({ stage, focusLessonId }) {
   useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
   if (!lessons.length) return null;
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
-  return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>استمع للمادة المرتبطة بمحاضرتك</h2><p>اختر محاضرة من {stage}؛ التسجيل والصفحات يتغيران معها.</p></div><label className="course-select"><span>المحاضرة</span><select value={lesson.id} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading.replace(/^A[12](?:\.\d)? · /, '')}</option>)}</select></label></div><BookLessonMaterials key={lesson.id} lessonId={lesson.id} mode="listening"/></section>;
+  return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>استمع للمادة المرتبطة بمحاضرتك</h2><p>اختار محاضرة من {stage}، ثم اسمع التسجيل وراجع أسئلته الأصلية.</p></div><label className="course-select"><span>المحاضرة</span><select value={lesson.id} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading.replace(/^A[12](?:\.\d)? · /, '')}</option>)}</select></label></div><OriginalListeningStation key={lesson.id} lessonId={lesson.id}/></section>;
 }
 function OriginalBookActivityFlow({ stage, exam = false, focusLessonId }) {
   const lessons = currentLessons(stage);
@@ -537,9 +553,9 @@ function OriginalBookActivityFlow({ stage, exam = false, focusLessonId }) {
   const [lessonId, setLessonId] = useState(startId);
   useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
-  const reader = lesson ? originalReaderForLesson(lesson.id) : null;
-  return <div className="original-book-activity-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} تدريبات الكتاب الأصلية · {stage}</span><h2>{exam ? `مراجعة واختبار ${stage}` : `تدريب من كتاب ${stage}`}</h2><p>المستوى ده ما فيهوش بنك أسئلة رقمي موثّق منفصل؛ بدل ما نألف أسئلة، بنفتح أنشطة الكتاب الأصلية للمحاضرة المختارة.</p><label className="course-select"><span>الوحدة / المحاضرة</span><select value={lesson?.id || ''} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
-    {lesson && reader && <section className="original-book-activity-card"><div className="original-book-activity-heading"><BookOpen size={20}/><div><span>{exam ? 'محتوى الامتحان من المصدر' : 'تمرين المصدر الأصلي'}</span><h3 lang="es" dir="ltr">{lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><small>قارئ محدد على صفحات هذه الوحدة فقط · {courseBookMaterials[lesson.id].pages.length} صفحات في مادة المحاضرة</small></div></div><iframe title={`تدريبات الكتاب الأصلية · ${lesson.heading}`} src={reader.src} loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin" allow="autoplay" /></section>}
+  return <div className="original-book-activity-flow no-page-activity-flow">
+    <section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'الامتحان' : 'الكويز'} · {stage}</span><h2>{exam ? `امتحان ${stage}` : `كويز ${stage}`}</h2><p>مساحة تدريب مستقلة، من غير صور صفحات أو قارئ كتاب داخل التبويب.</p><label className="course-select"><span>المحاضرة</span><select value={lesson?.id || ''} onChange={event => setLessonId(event.target.value)}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label></section>
+    <section className="activity-source-empty" aria-live="polite"><div className="activity-source-empty-icon">{exam ? <Award size={26}/> : <CircleHelp size={26}/>}</div><span className="eyebrow">{lesson?.heading.replace(/^A[12](?:\.\d)? · /, '')}</span><h3>{exam ? 'نموذج الامتحان غير متاح رقميًا' : 'بنك الأسئلة غير متاح رقميًا'}</h3><p>للمستوى {stage} مفيش بيانات أسئلة أصلية موثّقة داخل المشروع. مش هنعرض صفحات الكتاب هنا، ومش هنعوّضها بأسئلة مؤلّفة.</p><span className="activity-source-status"><CheckCircle2 size={16}/> محتوى موثّق فقط · من غير أسئلة بديلة</span></section>
   </div>;
 }
 
@@ -552,7 +568,7 @@ function GrammarPage({ stage, focusLessonId }) {
 }
 function ListeningPage({ stage, focusLessonId }) {
   return <div className="listening-page original-listening-page">
-    <section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage} · تسجيلات الكتاب</span><h2>اسمع من ملفات المحاضرات الأصلية</h2><p>التسجيلات هنا من الكتاب نفسه، ومع كل مقطع صفحته ونصه وأسئلة الاستماع الموجودة معه.</p></div><div className="listening-summary"><Headphones size={23}/><span>صوت أصلي</span></div></section>
+    <section className="listening-intro"><div><span className="eyebrow"><Headphones size={15}/> استماع {stage} · تسجيلات الكتاب</span><h2>اسمع من ملفات المحاضرات الأصلية</h2><p>التسجيلات هنا ملفات أصلية مستقلة؛ اسمع، افتح التفريغ النصي، وجاوب الأسئلة المرتبطة بالتسجيل. مفيش صور صفحات داخل التبويب.</p></div><div className="listening-summary"><Headphones size={23}/><span>صوت أصلي</span></div></section>
     <BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>
   </div>;
 }

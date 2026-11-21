@@ -58,7 +58,11 @@ check(appSource.includes('nativeQuestionsForLesson(lesson.id).filter(item => ite
 check(appSource.includes('function nativeQuestionsForLesson(lessonId)') && appSource.includes('original.quiz?.[unit]'), 'Quiz pools must be sourced from each original book unit');
 check(appSource.includes('original.listen?.bank') && appSource.includes('item.tunit === unit'), 'Listening questions in quizzes must retain their source unit');
 check(appSource.includes('model?.n || 40') && appSource.includes('model?.minutes || 60'), 'Exam timing and length must come from the original exam model metadata');
-check(appSource.includes('function OriginalBookActivityFlow(') && appSource.includes('ما فيهوش بنك أسئلة رقمي موثّق منفصل'), 'Stages without a structured digital bank must open original book exercises instead of fabricated quiz data');
+const fallbackActivitySource = appSource.slice(appSource.indexOf('function OriginalBookActivityFlow('), appSource.indexOf('function GrammarPage('));
+check(fallbackActivitySource.includes('مش هنعوّضها بأسئلة مؤلّفة') && !fallbackActivitySource.includes('<iframe') && !fallbackActivitySource.includes('reader.src'), 'Stages without a verified digital bank must show an honest empty state, not book pages or invented questions');
+const listeningStationSource = appSource.slice(appSource.indexOf('function OriginalListeningStation('), appSource.indexOf('function BookLessonMaterials('));
+check(listeningStationSource.includes('<BookAudioPlayer') && listeningStationSource.includes('<NativeListeningExercises') && !listeningStationSource.includes('book-page-preview') && !listeningStationSource.includes('.pages'), 'Listening station must offer original audio and exercises without embedding textbook pages');
+check(listeningSource.includes('مفيش صور صفحات داخل التبويب'), 'Listening page must explicitly remain free of scanned book pages');
 check(appSource.includes('onClick={() => restart()}'), 'Restart button must restart with the currently selected scope');
 check(!appSource.includes('window.location.reload()'), 'Game flow must return to the arcade without reloading the entire app');
 check(appSource.includes('window.SpeechRecognition || window.webkitSpeechRecognition'), 'Speaking UI must use the browser microphone recognition API');
