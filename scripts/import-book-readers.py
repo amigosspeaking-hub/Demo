@@ -55,7 +55,7 @@ CONFIGS = {
         "data": None,
     },
 }
-STUDENT_CLEANUP_CSS = "#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}#tabs .tab.xtab{display:none!important;}"
+STUDENT_CLEANUP_CSS = "#editBtn,#openAdmin,#adminPanel,#editTray{display:none!important;}#tabs,.tabs{display:none!important;}"
 IMAGE_ARCHIVES = {
     "A1.1": ["A1.1_v14_PARTE1_LIBRO.zip"],
     "A1.2": ["A1.2_TABS_V1_parte1.zip"],
@@ -105,6 +105,26 @@ def replace_literal(source: str, name: str, value: object) -> str:
     _, start, end = read_literal(source, name)
     rendered = json.dumps(value, ensure_ascii=False, separators=(",", ":"))
     return source[:start] + rendered + source[end:]
+
+
+def strip_alt_digital_from_index(html: str) -> str:
+    """Remove print-book production labels from learner-facing index metadata only."""
+    try:
+        index, _, _ = read_literal(html, "IDX")
+    except ValueError:
+        return html
+
+    def clean(value: object) -> object:
+        if isinstance(value, dict):
+            return {key: clean(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [clean(item) for item in value]
+        if isinstance(value, str):
+            value = re.sub(r"\bALT\s*\|\s*DIGITAL\b\s*", "", value, flags=re.I)
+            return re.sub(r"[ \t]{2,}", " ", value).strip()
+        return value
+
+    return replace_literal(html, "IDX", clean(index))
 
 
 def is_external(value: object) -> bool:
@@ -390,6 +410,7 @@ def main() -> None:
         with ZipFile(archive_path) as archive:
             source_root = config["root"]
             html = archive.read(source_root + "index.html").decode("utf-8")
+            html = strip_alt_digital_from_index(html)
             a1_page_numbers: set[int] = set()
             a1_page_asset_names: dict[int, str] = {}
             a1_shared_audio: set[str] = set()
