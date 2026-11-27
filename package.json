@@ -10,7 +10,8 @@
     "extract:course-assets": "node scripts/extract-course-assets.mjs",
     "readers:import": "python3 scripts/import-book-readers.py",
     "quality:check": "node scripts/quality-check.mjs",
-    "materials:check": "node scripts/book-materials-check.mjs"
+    "materials:check": "node scripts/book-materials-check.mjs",
+    "team:check": "node scripts/team/run-team.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
