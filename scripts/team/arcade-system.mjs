@@ -8,6 +8,7 @@ import { lessonStories } from '../../src/data/stories.js';
 import { lessonSentenceBanks } from '../../src/data/sentences.js';
 import { courseBookMaterials } from '../../src/data/courseMaterials.js';
 import bookActivities from '../../src/data/bookActivities.json' with { type: 'json' };
+import { arcadeScoring, buildChoiceDeck } from '../../src/data/arcadeEngine.js';
 
 let checks = 0;
 const check = (condition, message) => { checks += 1; assert.ok(condition, message); };
@@ -24,7 +25,22 @@ for (const id of expectedGames) {
 for (const id of expectedModes) check(modeCatalog.includes(`id: '${id}'`), `Arcade round mode ${id} must remain registered`);
 check(modeCatalog.includes('timed: false') && modeCatalog.includes('seconds: 90') && modeCatalog.includes('seconds: 45') && modeCatalog.includes('multiplier: 2'), 'Practice, challenge, and sprint must retain distinct pacing and scoring settings');
 check(app.includes("hola-arcade-records") && app.includes('finishReported.current') && app.includes('onFinish?.('), 'Arcade records must persist and a completed run must be reported once');
+check(Object.keys(arcadeScoring).sort().join(',') === [...expectedGames].sort().join(','), 'Every game must own a specific scoring rule');
+check(new Set(Object.values(arcadeScoring).map(rule => rule.base)).size === expectedGames.length && app.includes('const scoring = arcadeScoring[game.id]'), 'Game scoring must differ and the active game must apply its own rule');
+check(app.includes('buildChoiceDeck(roundBank.filter') && app.includes('موضع الإجابة الصحيحة بيتغيّر'), 'Choice games must use the randomized answer-position deck');
+check(app.includes('onEnded={() => setAudioPlayed(true)}') && app.includes('!audioPlayed'), 'Listening questions must require audio playback before enabling choices');
 check(app.includes('const translations = [') && app.includes('const questions = [') && app.includes('return questions.map(item =>') && app.includes('translations.filter(value => value !== item.correct)'), 'Each lesson quiz must construct distractors within its own lesson-bank scope');
+const syntheticQuestions = Array.from({ length: 20 }, (_, index) => ({ correct: `صح ${index}`, options: [`صح ${index}`, 'خيار أ', 'خيار ب', 'خيار ج'] }));
+const answerDeck = buildChoiceDeck(syntheticQuestions);
+const answerSlots = answerDeck.map((choices, index) => {
+  check(choices.length === 4 && new Set(choices).size === 4, `Randomized choice ${index + 1} must contain four distinct options`);
+  check(choices.filter(option => option === syntheticQuestions[index].correct).length === 1, `Randomized choice ${index + 1} must include the correct answer exactly once`);
+  return choices.indexOf(syntheticQuestions[index].correct);
+});
+check(answerSlots.every((slot, index) => index === 0 || slot !== answerSlots[index - 1]), 'Correct answer positions must never repeat on adjacent questions');
+for (let index = 0; index < answerSlots.length; index += 4) {
+  check(new Set(answerSlots.slice(index, index + 4)).size === 4, `Questions ${index + 1}-${index + 4} must balance correct answers across A/B/C/D`);
+}
 
 let totals = { pairs: 0, quiz: 0, story: 0, order: 0, originalListening: 0 };
 for (const [id, lesson] of Object.entries(lessonLibrary)) {
@@ -76,6 +92,7 @@ for (const [id, lesson] of Object.entries(lessonLibrary)) {
     const unit = `u${unitIndex}`;
     const listeningQuestions = (bookActivities.stages?.[course]?.listen?.bank || []).filter(item => item.tunit === unit);
     check(listeningQuestions.length > 0, `${id}: original listening game must have source-book questions and must not fabricate them`);
+    check(listeningQuestions.every(item => item.opts?.length === 4 && new Set(item.opts).size === 4 && item.opts[item.a]), `${id}: original listening choices must have four distinct options and a valid source answer`);
     check((courseBookMaterials[id]?.tracks || []).length > 0, `${id}: original listening question must have a mapped local audio track`);
     totals.originalListening += listeningQuestions.length;
   }

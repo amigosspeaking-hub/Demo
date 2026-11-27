@@ -8,6 +8,7 @@ import { lessonSentenceBanks } from './data/sentences.js';
 import { compareSpanishReading } from './data/speechPractice.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
 import { listeningArabicTranscripts } from './data/listeningArabic.js';
+import { arcadeScoring, buildChoiceDeck } from './data/arcadeEngine.js';
 import { isSpanishText, transcriptSegments } from './data/listeningTranscriptUtils.js';
 import './components/direct-reader.css';
 import {
@@ -422,11 +423,11 @@ const courseRanges = {
 };
 const courseOptions = Object.keys(courseRanges);
 const gameCatalog = [
-  { id: 'match', title: 'وصّل المعنى', description: 'كوّن أزواجًا بين مفردات الوحدة ومعانيها.', instructions: 'اختار التعبير الإسباني، وبعده معناه بالعربي. جرّب تفتكر من غير ما تسمع النطق.', icon: '🧩' },
-  { id: 'quiz', title: 'تحدّي الأسئلة', description: 'اختبر المفردات والقواعد وفهم قصة الوحدة.', instructions: 'اقرأ السؤال واختار إجابة واحدة. هتشوف التصحيح والتفسير بعد كل إجابة.', icon: '🎯' },
-  { id: 'listen', title: 'استماع الكتاب', description: 'اسمع التسجيل الأصلي وجاوب أسئلة الكتاب.', instructions: 'شغّل التسجيل الأصلي، اسمعه كويس، وبعدها اختار المعنى الصحيح.', icon: '🎧' },
-  { id: 'storyListen', title: 'استمع للقصة', description: 'اسمع جملة من القصة بصوت إسباني آلي واختار معناها.', instructions: 'اضغط «اسمع الجملة» قبل ما تجاوب. ده نطق آلي للقصة، مش تسجيل الكتاب الأصلي.', icon: '🗣️' },
-  { id: 'order', title: 'ابنِ الجملة', description: 'رتّب الكلمات عشان تكوّن جمل الوحدة كاملة.', instructions: 'اضغط الكلمات بالترتيب. تقدر تضغط أي كلمة في الجملة عشان ترجعها.', icon: '🔤' },
+  { id: 'match', title: 'وصّل المعنى', description: 'كوّن أزواجًا بين مفردات الوحدة ومعانيها.', instructions: 'اختار التعبير الإسباني، وبعده معناه بالعربي. كل زوج صح يثبت مكانه؛ الغلط يقطع السلسلة ويخصم قلبًا في التحدي.', icon: '🧩' },
+  { id: 'quiz', title: 'تحدّي الأسئلة', description: 'اختبر المفردات والقواعد وفهم قصة الوحدة.', instructions: 'اقرأ السؤال واختار إجابة واحدة. موضع الإجابة الصحيحة بيتغيّر، والتفسير يظهر بعد إجابتك.', icon: '🎯' },
+  { id: 'listen', title: 'استماع الكتاب', description: 'اسمع التسجيل الأصلي وجاوب أسئلة الكتاب.', instructions: 'لازم تشغّل التسجيل الأصلي للآخر قبل ما تختار؛ دي أسئلة الكتاب نفسها، مش أسئلة مُنشأة.', icon: '🎧' },
+  { id: 'storyListen', title: 'استمع للقصة', description: 'اسمع جملة من القصة بصوت إسباني آلي واختار معناها.', instructions: 'ابدأ تشغيل الجملة الإسبانية الآلية قبل الإجابة. ده نطق آلي للقصة، مش تسجيل الكتاب الأصلي.', icon: '🗣️' },
+  { id: 'order', title: 'ابنِ الجملة', description: 'رتّب الكلمات عشان تكوّن جمل الوحدة كاملة.', instructions: 'رتّب الكلمات، تحقّق من الجملة، وصحّحها بنفسك لو فيه خطأ؛ مفيش اختيار من متعدد هنا.', icon: '🔤' },
 ];
 const arcadeModes = [
   { id: 'practice', title: 'تدريب', description: 'براحتك · من غير مؤقّت أو خصم قلوب', icon: '🌱', timed: false, lives: null, seconds: 0, multiplier: 1, rounds: { match: 5, standard: 6 } },
@@ -1086,6 +1087,7 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   const [bestStreak, setBestStreak] = useState(0);
   const [seconds, setSeconds] = useState(mode.seconds);
   const [feedback, setFeedback] = useState(null);
+  const [audioPlayed, setAudioPlayed] = useState(false);
   const [finished, setFinished] = useState(false);
   const [roundSeed, setRoundSeed] = useState(0);
   const finishReported = useRef(false);
@@ -1096,7 +1098,8 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   const question = item && typeof item === 'object' ? item : null;
   const matchWords = useMemo(() => game.id === 'match' ? shuffled(roundBank) : [], [game.id, roundBank]);
   const sentenceTokens = useMemo(() => typeof item === 'string' ? shuffled(item.trim().split(/\s+/u)) : [], [item, roundSeed]);
-  const choices = useMemo(() => question ? shuffled([...new Set([question.correct, ...(question.options || [])])]).slice(0, 4) : [], [question]);
+  const choiceDeck = useMemo(() => buildChoiceDeck(roundBank.filter(item => item && typeof item === 'object')), [roundBank]);
+  const choices = question ? choiceDeck[index] || [] : [];
   const progressValue = game.id === 'match' ? matched.length : index + 1;
   const accuracy = roundCount ? Math.round(correctCount / roundCount * 100) : 0;
   const rewardXp = Math.min(12, Math.floor(score / 10));
@@ -1115,8 +1118,9 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   }, [finished]);
   function awardCorrect() {
     const nextStreak = streak + 1;
-    const bonus = nextStreak % 3 === 0 ? 5 : 0;
-    const points = Math.round((10 + bonus) * mode.multiplier);
+    const scoring = arcadeScoring[game.id];
+    const bonus = nextStreak % scoring.streakEvery === 0 ? scoring.streakBonus : 0;
+    const points = Math.round((scoring.base + bonus) * mode.multiplier);
     setScore(value => value + points);
     setCorrectCount(value => value + 1);
     setStreak(nextStreak);
@@ -1131,7 +1135,7 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
     if (remaining === 0) { setFeedback({ text: 'خلصت المحاولات.', tone: 'bad' }); setFinished(true); }
   }
   function mark(option) {
-    if (selected !== null || !question) return;
+    if (selected !== null || !question || (['listen', 'storyListen'].includes(game.id) && !audioPlayed)) return;
     setSelected(option);
     if (option === question.correct) {
       const points = awardCorrect();
@@ -1175,12 +1179,12 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
     if (game.id !== 'order' && selected === null) return;
     if (index + 1 >= roundBank.length) { setFinished(true); return; }
     setIndex(value => value + 1);
-    setSelected(null); setUsedTiles([]); setOrder([]); setFeedback(null);
+    setSelected(null); setUsedTiles([]); setOrder([]); setAudioPlayed(false); setFeedback(null);
   }
   function restartRound() {
     finishReported.current = false;
     setRoundSeed(value => value + 1); setIndex(0); setSelected(null); setSelectedMatch(null);
-    setMatched([]); setUsedTiles([]); setOrder([]); setLives(mode.lives ?? 0); setScore(0); setCorrectCount(0);
+    setMatched([]); setUsedTiles([]); setOrder([]); setAudioPlayed(false); setLives(mode.lives ?? 0); setScore(0); setCorrectCount(0);
     setStreak(0); setBestStreak(0); setSeconds(mode.seconds); setFeedback(null); setFinished(false);
   }
   const percent = roundCount ? Math.min(100, progressValue / roundCount * 100) : 0;
@@ -1202,7 +1206,7 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
       <div className="game-result-actions"><button className="secondary-button" onClick={restartRound}><RotateCcw size={16}/> العب تاني</button><button className="primary-button" onClick={onBack}>ارجع للألعاب <ArrowLeft size={16}/></button></div>
     </section> : !roundBank.length ? <section className="game-board"><h2>البنك مش متاح للجولة دي</h2><p>اختار لعبة أو وحدة تانية.</p><button className="primary-button" onClick={onBack}>العودة للألعاب</button></section> : <section className="game-board arcade-game-board">
       <div className="game-board-heading"><span>{game.icon} <bdi lang="es" dir="ltr">{lesson.heading.split(' · ').at(-1)}</bdi> · {game.id === 'match' ? `${matched.length} / ${roundCount} أزواج` : `سؤال ${index + 1} من ${roundCount}`}</span><div className="game-run-progress" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax={roundCount} aria-valuenow={progressValue}><i style={{ width: `${percent}%` }}/></div></div>
-      <p className="game-instructions">{game.instructions}</p>
+      <p className="game-instructions">{game.instructions}</p><p className="game-scoring-rule"><Sparkles size={14}/><span>نظام نقاط اللعبة: {arcadeScoring[game.id].label}. الوضع الحالي يطبّق مضاعف {mode.multiplier}×.</span></p>
       {game.id === 'match' ? <>
         <h2>اختار الإسباني ومعناه</h2>
         <div className="live-match-grid"><div>{matchWords.map(pair => <div key={pair.es} className={`live-match-choice ${selectedMatch === pair.es ? 'selected' : ''} ${matched.includes(pair.es) ? 'matched' : ''}`}><button className="live-match-text" onClick={() => { if (!matched.includes(pair.es)) { setSelectedMatch(pair.es); setFeedback({ text: 'دلوقتي اختار المعنى بالعربي.', tone: 'neutral' }); } }} disabled={matched.includes(pair.es)} lang="es" dir="ltr">{pair.es}</button><button className="match-sound" onClick={() => speakSpanish(pair.es)} aria-label={`اسمع ${pair.es}`}><Volume2 size={15}/></button></div>)}</div><div>{matchWords.map(pair => <button key={`${pair.es}-ar`} className={`live-match-choice arabic ${matched.includes(pair.es) ? 'matched' : ''}`} onClick={() => selectMatchArabic(pair.ar)} disabled={matched.includes(pair.es)}>{pair.ar}</button>)}</div></div>
@@ -1214,10 +1218,10 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
       </> : question ? <>
         <small className="arcade-question-source">{question.source || game.title}</small>
         <h2>{game.id === 'listen' ? 'اسمع التسجيل واختار المعنى' : game.id === 'storyListen' ? 'اسمع الجملة واختار معناها' : <GamePromptText text={question.prompt}/>}</h2>
-        {game.id === 'listen' && question.audio && <audio className="game-original-audio" controls preload="none" src={question.audio}>المتصفح لا يدعم تشغيل الصوت.</audio>}
-        {game.id === 'storyListen' && <button type="button" className="game-listen-button" onClick={() => speakSpanish(question.spanish)}><Volume2 size={18}/> اسمع الجملة بالإسباني</button>}
+        {game.id === 'listen' && question.audio && <audio className="game-original-audio" controls preload="none" src={question.audio} onEnded={() => setAudioPlayed(true)} onError={() => { setAudioPlayed(true); setFeedback({ text: 'التسجيل مش قادر يشتغل دلوقتي؛ تقدر تجاوب من السؤال المعروض.', tone: 'bad' }); }}>المتصفح لا يدعم تشغيل الصوت.</audio>}
+        {game.id === 'storyListen' && <button type="button" className="game-listen-button" onClick={() => { const started = speakSpanish(question.spanish); setAudioPlayed(started); setFeedback(started ? { text: 'اسمع الجملة كويس، وبعدها اختار معناها.', tone: 'neutral' } : { text: 'الصوت الآلي مش متاح في المتصفح؛ تقدر تقرأ الجملة وتجاوب.', tone: 'bad' }); }}><Volume2 size={18}/> اسمع الجملة بالإسباني</button>}
         {game.id === 'quiz' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr"><BidiText>{question.spanish}</BidiText></p>}
-        <div className="game-answer-grid">{choices.map((option, choiceIndex) => <button key={`${index}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} disabled={selected !== null} className={`${selected !== null && option === question.correct ? 'is-correct' : ''} ${selected === option && option !== question.correct ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A', 'B', 'C', 'D'][choiceIndex]}</span><GamePromptText text={option}/>{selected === option && (option === question.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>
+        <div className="game-answer-grid">{choices.map((option, choiceIndex) => <button key={`${index}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} disabled={selected !== null || (['listen', 'storyListen'].includes(game.id) && !audioPlayed)} className={`${selected !== null && option === question.correct ? 'is-correct' : ''} ${selected === option && option !== question.correct ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A', 'B', 'C', 'D'][choiceIndex]}</span><GamePromptText text={option}/>{selected === option && (option === question.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>
       </> : null}
       {feedback && <div className={`game-live-feedback ${feedback.tone || ''}`} role="status"><span>{feedback.text}</span>{feedback.detail && <small><GamePromptText text={feedback.detail}/></small>}</div>}
       {showChoices && <button className="game-next-button" disabled={selected === null} onClick={next}>{lives === 0 && mode.lives !== null ? 'اعرض النتيجة' : index + 1 === roundCount ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button>}
@@ -1262,7 +1266,7 @@ function GamesPage({ stage, addXp, focusLessonId }) {
         const record = records[key];
         const bankLabel = game.id === 'match' ? 'أزواج' : game.id === 'order' ? 'جمل' : 'سؤال';
         return <article className={`arcade-game-card ${!bank.length ? 'unavailable' : ''}`} key={game.id}>
-          <span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {mode.icon} {mode.title}</span><h3>{game.title}</h3><p>{game.description}</p>
+          <span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {mode.icon} {mode.title}</span><h3>{game.title}</h3><p>{game.description}</p><small className="arcade-card-rule"><Sparkles size={13}/>{arcadeScoring[game.id].label}</small>
           <div className="arcade-game-meta"><span><Target size={14}/> بنك {bank.length} {bankLabel}</span><span>{rounds} في الجولة</span></div>
           <div className="arcade-game-record">{record ? <><span>أفضل نتيجة <b>{record.bestScore}</b> · أفضل دقة <b>{record.bestAccuracy ?? 0}٪</b></span><small>{record.plays} جولات · أعلى سلسلة {record.bestStreak ?? 0}</small></> : <span>لسه ما لعبتش اللعبة دي</span>}</div>
           <button className="primary-button" disabled={!bank.length} onClick={() => setActiveGame(game)}>{bank.length ? 'ابدأ الجولة' : 'مش متاحة للوحدة'} <Play size={15} fill="currentColor"/></button>
