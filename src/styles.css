@@ -1703,6 +1703,7 @@ button:disabled{cursor:not-allowed}
 .game-answer-grid button:disabled:not(.is-correct):not(.is-wrong){cursor:not-allowed;opacity:.65;}
 .arcade-question-source{display:block;margin:17px 0 5px;color:#89968c;font-size:12px;text-align:center;}
 .arcade-game-board>h2{max-width:760px;line-height:1.6;}
+.game-listen-task{max-width:700px;margin:-8px auto 13px;color:#758278;font-size:12px;line-height:1.7;text-align:center;}
 .game-original-audio{display:block;width:min(620px,100%);margin:0 auto 15px;}
 .game-board .game-listen-button{min-height:46px;justify-content:center;margin:0 auto 14px;padding:10px 15px;font-size:13px;}
 .game-answer-grid{max-width:700px;gap:10px;}

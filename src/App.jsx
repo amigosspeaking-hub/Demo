@@ -425,7 +425,7 @@ const courseOptions = Object.keys(courseRanges);
 const gameCatalog = [
   { id: 'match', title: 'وصّل المعنى', description: 'كوّن أزواجًا بين مفردات الوحدة ومعانيها.', instructions: 'اختار التعبير الإسباني، وبعده معناه بالعربي. كل زوج صح يثبت مكانه؛ الغلط يقطع السلسلة ويخصم قلبًا في التحدي.', icon: '🧩' },
   { id: 'quiz', title: 'تحدّي الأسئلة', description: 'اختبر المفردات والقواعد وفهم قصة الوحدة.', instructions: 'اقرأ السؤال واختار إجابة واحدة. موضع الإجابة الصحيحة بيتغيّر، والتفسير يظهر بعد إجابتك.', icon: '🎯' },
-  { id: 'listen', title: 'استماع الكتاب', description: 'اسمع التسجيل الأصلي وجاوب أسئلة الكتاب.', instructions: 'لازم تشغّل التسجيل الأصلي للآخر قبل ما تختار؛ دي أسئلة الكتاب نفسها، مش أسئلة مُنشأة.', icon: '🎧' },
+  { id: 'listen', title: 'استماع الكتاب', description: 'اسمع التسجيل الأصلي وجاوب أسئلة الكتاب.', instructions: 'اقرأ السؤال المحدد قبل التسجيل؛ المطلوب يختلف من مقطع لآخر. اسمع التسجيل الأصلي للآخر، ثم اختار الإجابة.', icon: '🎧' },
   { id: 'storyListen', title: 'استمع للقصة', description: 'اسمع جملة من القصة بصوت إسباني آلي واختار معناها.', instructions: 'ابدأ تشغيل الجملة الإسبانية الآلية قبل الإجابة. ده نطق آلي للقصة، مش تسجيل الكتاب الأصلي.', icon: '🗣️' },
   { id: 'order', title: 'ابنِ الجملة', description: 'رتّب الكلمات عشان تكوّن جمل الوحدة كاملة.', instructions: 'رتّب الكلمات، تحقّق من الجملة، وصحّحها بنفسك لو فيه خطأ؛ مفيش اختيار من متعدد هنا.', icon: '🔤' },
 ];
@@ -496,7 +496,7 @@ function arcadeBankFor(gameId, stage, lesson) {
   if (!lesson) return [];
   if (gameId === 'match') return matchBankForLesson(lesson);
   if (gameId === 'quiz') return questionPool(stage, lesson.id);
-  if (gameId === 'listen') return nativeQuestionsForLesson(lesson.id).filter(item => item.listening);
+  if (gameId === 'listen') return nativeQuestionsForLesson(lesson.id).filter(item => item.listening && item.audio);
   if (gameId === 'storyListen') return storyListeningBank(lesson);
   if (gameId === 'order') return orderBankForLesson(lesson);
   return [];
@@ -1010,6 +1010,7 @@ function nativeQuestionsForLesson(lessonId) {
   return [...fromQuiz, ...fromListening].map((item, index) => {
     const sourceTrack = item.file ? original.listen.tracks.find(track => track.file === item.file) : null;
     const materialTrack = sourceTrack ? courseBookMaterials[lessonId]?.tracks.find(track => track.src.endsWith(`/${sourceTrack.file}`)) : null;
+    const stageAudio = sourceTrack?.file ? `/materials/books/${stageId}/audio/${sourceTrack.file}` : null;
     return {
       id: `${unit}-${item.file || 'quiz'}-${index}-${item.q}`,
       prompt: item.q,
@@ -1017,7 +1018,7 @@ function nativeQuestionsForLesson(lessonId) {
       correct: item.opts[item.a],
       explanation: item.ex,
       source: [item.tag, item.ref].filter(Boolean).join(' · ') || courseBookMaterials[lessonId]?.unit,
-      audio: materialTrack?.src || null,
+      audio: materialTrack?.src || stageAudio,
       listening: Boolean(item.listening),
       spanish: sourceTrack?.es || '',
     };
@@ -1217,7 +1218,9 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
         <button className="primary-button game-check-order" onClick={checkOrder} disabled={selected === 'correct' || !order.length}>تحقّق من الترتيب <Check size={16}/></button>
       </> : question ? <>
         <small className="arcade-question-source">{question.source || game.title}</small>
-        <h2>{game.id === 'listen' ? 'اسمع التسجيل واختار المعنى' : game.id === 'storyListen' ? 'اسمع الجملة واختار معناها' : <GamePromptText text={question.prompt}/>}</h2>
+        <h2><GamePromptText text={question.prompt}/></h2>
+        {game.id === 'listen' && <p className="game-listen-task">اسمع التسجيل الأصلي، واقرأ السؤال ده، وبعدها اختار الإجابة.</p>}
+        {game.id === 'storyListen' && <p className="game-listen-task">اسمع الجملة الإسبانية، ثم جاوب عن السؤال.</p>}
         {game.id === 'listen' && question.audio && <audio className="game-original-audio" controls preload="none" src={question.audio} onEnded={() => setAudioPlayed(true)} onError={() => { setAudioPlayed(true); setFeedback({ text: 'التسجيل مش قادر يشتغل دلوقتي؛ تقدر تجاوب من السؤال المعروض.', tone: 'bad' }); }}>المتصفح لا يدعم تشغيل الصوت.</audio>}
         {game.id === 'storyListen' && <button type="button" className="game-listen-button" onClick={() => { const started = speakSpanish(question.spanish); setAudioPlayed(started); setFeedback(started ? { text: 'اسمع الجملة كويس، وبعدها اختار معناها.', tone: 'neutral' } : { text: 'الصوت الآلي مش متاح في المتصفح؛ تقدر تقرأ الجملة وتجاوب.', tone: 'bad' }); }}><Volume2 size={18}/> اسمع الجملة بالإسباني</button>}
         {game.id === 'quiz' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr"><BidiText>{question.spanish}</BidiText></p>}

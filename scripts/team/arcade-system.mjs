@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import { lessonLibrary } from '../../src/data/lessons.js';
 import { grammarGuides } from '../../src/data/grammar.js';
 import { grammarDetails } from '../../src/data/grammarDetails.js';
@@ -29,6 +29,10 @@ check(Object.keys(arcadeScoring).sort().join(',') === [...expectedGames].sort().
 check(new Set(Object.values(arcadeScoring).map(rule => rule.base)).size === expectedGames.length && app.includes('const scoring = arcadeScoring[game.id]'), 'Game scoring must differ and the active game must apply its own rule');
 check(app.includes('buildChoiceDeck(roundBank.filter') && app.includes('موضع الإجابة الصحيحة بيتغيّر'), 'Choice games must use the randomized answer-position deck');
 check(app.includes('onEnded={() => setAudioPlayed(true)}') && app.includes('!audioPlayed'), 'Listening questions must require audio playback before enabling choices');
+check(app.includes('audio: materialTrack?.src || stageAudio') && app.includes('item.listening && item.audio'), 'Original listening must resolve source tracks by book stage and omit items without playable audio');
+const gameRunSource = app.slice(app.indexOf('function GameRun('), app.indexOf('function GamesPage('));
+check(gameRunSource.includes('<h2><GamePromptText text={question.prompt}/></h2>') && !gameRunSource.includes('اسمع التسجيل واختار المعنى'), 'Every listening question must display its actual question stem instead of a generic heading');
+check(app.includes('اقرأ السؤال المحدد قبل التسجيل') && app.includes('game-listen-task'), 'Original listening game must explain that each recording has a specific question');
 check(app.includes('const translations = [') && app.includes('const questions = [') && app.includes('return questions.map(item =>') && app.includes('translations.filter(value => value !== item.correct)'), 'Each lesson quiz must construct distractors within its own lesson-bank scope');
 const syntheticQuestions = Array.from({ length: 20 }, (_, index) => ({ correct: `صح ${index}`, options: [`صح ${index}`, 'خيار أ', 'خيار ب', 'خيار ج'] }));
 const answerDeck = buildChoiceDeck(syntheticQuestions);
@@ -92,12 +96,24 @@ for (const [id, lesson] of Object.entries(lessonLibrary)) {
     const unit = `u${unitIndex}`;
     const listeningQuestions = (bookActivities.stages?.[course]?.listen?.bank || []).filter(item => item.tunit === unit);
     check(listeningQuestions.length > 0, `${id}: original listening game must have source-book questions and must not fabricate them`);
+    check(listeningQuestions.every(item => item.q?.trim().length >= 8 && item.ex?.trim() && item.file && item.ref === `Pista ${item.trk}`), `${id}: every original listening item must have a real prompt, feedback, track ID, and audio filename`);
     check(listeningQuestions.every(item => item.opts?.length === 4 && new Set(item.opts).size === 4 && item.opts[item.a]), `${id}: original listening choices must have four distinct options and a valid source answer`);
-    check((courseBookMaterials[id]?.tracks || []).length > 0, `${id}: original listening question must have a mapped local audio track`);
+    check((courseBookMaterials[id]?.tracks || []).length > 0, `${id}: the lesson must have verified book audio assets`);
+    for (const item of listeningQuestions) {
+      const sourceTrack = bookActivities.stages?.[course]?.listen?.tracks?.find(track => track.file === item.file);
+      check(Boolean(sourceTrack), `${id} ${item.ref}: question must resolve to its exact source-book track`);
+      const sourceQuestion = sourceTrack?.q?.find(question => question.q === item.q);
+      check(Boolean(sourceQuestion) && JSON.stringify(sourceQuestion.opts) === JSON.stringify(item.opts) && sourceQuestion.a === item.a && sourceQuestion.ex === item.ex, `${id} ${item.ref}: prompt, choices, correct answer, and explanation must exactly match the source activity`);
+      let audioExists = false;
+      try { await access(new URL(`../../public/materials/books/${course}/audio/${item.file}`, import.meta.url)); audioExists = true; } catch { /* report missing source audio below */ }
+      check(audioExists, `${id} ${item.ref}: mapped source audio file must exist locally`);
+    }
+    if (id === 'A1-0') check(listeningQuestions.some(item => item.q.includes('Kenia') && item.opts[item.a] === 'ca' && item.ex.includes('ca de Kenia')), 'The alphabet listening item must identify the heard “ca de Kenia” answer explicitly');
     totals.originalListening += listeningQuestions.length;
   }
 }
 
 console.log(`Arcade engine passed: ${checks} checks across ${Object.keys(lessonLibrary).length} lessons.`);
 console.log(`Validated banks: ${totals.pairs} match pairs · ${totals.quiz} quiz prompts · ${totals.story} story-listen prompts · ${totals.order} sentence-order prompts · ${totals.originalListening} original A1 listening questions.`);
+console.log(`Original listening audit: all ${totals.originalListening} stems, choices, answer keys, explanations, track mappings, and local audio files match their source records.`);
 console.log('A2 book audio/pages are not mislabeled as imported exercise banks; original-listening game remains limited to source-verified A1 questions.');
