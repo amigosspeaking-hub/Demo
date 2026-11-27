@@ -9,6 +9,7 @@ const jobs = [
   { name: 'Course coverage scout', command: node, args: ['scripts/team/course-coverage.mjs'] },
   { name: 'Bilingual lesson integrity', command: node, args: ['scripts/team/lesson-integrity.mjs'] },
   { name: 'Sections and responsive system', command: node, args: ['scripts/team/section-system.mjs'] },
+  { name: 'Arcade systems auditor', command: node, args: ['scripts/team/arcade-system.mjs'] },
   { name: 'Book asset auditor', command: 'npm', args: ['run', 'materials:check'] },
   { name: 'Quality and content QA', command: 'npm', args: ['run', 'quality:check'] },
   { name: 'Production build', command: 'npm', args: ['run', 'build'] },

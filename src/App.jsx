@@ -453,13 +453,14 @@ function questionPool(stage, onlyLessonId) {
     ];
     const grammarQuestions = (grammarGuides[lesson.id]?.examples || []).map(([es, ar], index) => ({ prompt: `اختار معنى المثال: ${es}`, correct: ar, spanish: es, source: `أمثلة القاعدة · ${lesson.heading}`, explanation: grammarGuides[lesson.id]?.title }));
     const storyQuestions = (lessonStories[lesson.id]?.sentences || []).map((sentence, index) => ({ prompt: `اختار معنى جملة القصة ${index + 1}:`, correct: sentence.ar, spanish: sentence.es, source: `قصة الوحدة · ${lessonStories[lesson.id]?.title}`, explanation: sentence.es }));
-    return [
+    const questions = [
       ...lesson.words.map(word => ({ prompt: `يعني إيه «${word.es}»؟`, correct: word.ar, spanish: word.es, source: `مفردات · ${lesson.heading}` })),
       { prompt: lesson.question, correct: lesson.answers[0], spanish: lesson.example, source: `سؤال الدرس · ${lesson.heading}`, explanation: lesson.grammar },
       ...grammarQuestions,
       ...storyQuestions,
     ];
-  }).map(item => ({ ...item, options: [...new Set([item.correct, ...shuffled(translations.filter(value => value !== item.correct))])].slice(0, 4) }));
+    return questions.map(item => ({ ...item, options: [...new Set([item.correct, ...shuffled(translations.filter(value => value !== item.correct))])].slice(0, 4) }));
+  });
 }
 function matchBankForLesson(lesson) {
   if (!lesson) return [];
@@ -667,11 +668,12 @@ function BookLessonMaterials({ lessonId, mode = 'lesson' }) {
     </>}
   </section>;
 }
-function ListeningLessonPicker({ lessons, value, onChange }) {
+function SpanishLessonPicker({ lessons, value, onChange, label = 'المحاضرة', ariaLabel = 'اختيار المحاضرة', className = '', disabled = false }) {
   const [open, setOpen] = useState(false);
   const pickerRef = useRef(null);
   const selected = lessons.find(item => item.id === value) || lessons[0];
   const titleOf = lesson => lesson.heading.replace(/^A[12](?:\.\d)? · /, '');
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useEffect(() => {
     if (!open) return undefined;
     const closeOutside = event => { if (!pickerRef.current?.contains(event.target)) setOpen(false); };
@@ -680,12 +682,12 @@ function ListeningLessonPicker({ lessons, value, onChange }) {
     document.addEventListener('keydown', closeOnEscape);
     return () => { document.removeEventListener('pointerdown', closeOutside); document.removeEventListener('keydown', closeOnEscape); };
   }, [open]);
-  return <div className="listening-lesson-picker" ref={pickerRef}>
-    <span className="listening-lesson-picker-label">المحاضرة</span>
-    <button type="button" className="listening-lesson-trigger" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(state => !state)}>
+  return <div className={`listening-lesson-picker ${className}`.trim()} ref={pickerRef}>
+    <span className="listening-lesson-picker-label">{label}</span>
+    <button type="button" className="listening-lesson-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(state => !state)} disabled={disabled}>
       <span className="listening-lesson-current" lang="es" dir="ltr">{titleOf(selected)}</span><ChevronDown size={18}/>
     </button>
-    {open && <div className="listening-lesson-menu" role="listbox" aria-label="اختيار المحاضرة">{lessons.map(lesson => <button type="button" role="option" aria-selected={selected?.id === lesson.id} key={lesson.id} onClick={() => { onChange(lesson.id); setOpen(false); }}><span lang="es" dir="ltr">{titleOf(lesson)}</span>{selected?.id === lesson.id && <Check size={16}/>}</button>)}</div>}
+    {open && !disabled && <div className="listening-lesson-menu" role="listbox" aria-label={ariaLabel}>{lessons.map(lesson => <button type="button" role="option" aria-selected={selected?.id === lesson.id} key={lesson.id} onClick={() => { onChange(lesson.id); setOpen(false); }}><span lang="es" dir="ltr">{titleOf(lesson)}</span>{selected?.id === lesson.id && <Check size={16}/>}</button>)}</div>}
   </div>;
 }
 function BookListeningLibrary({ stage, focusLessonId }) {
@@ -695,7 +697,7 @@ function BookListeningLibrary({ stage, focusLessonId }) {
   useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); }, [stage, focusLessonId]);
   if (!lessons.length) return null;
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
-  return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>اختار درسًا وابدأ الاستماع</h2><p>كل تسجيل معه تحكّم واضح، وتفريغ أو أسئلة حسب البيانات الأصلية المتاحة.</p></div><ListeningLessonPicker lessons={lessons} value={lesson.id} onChange={setLessonId}/></div><OriginalListeningStation key={lesson.id} lessonId={lesson.id}/></section>;
+  return <section className="book-listening-library"><div className="book-listening-library-head"><div><span className="eyebrow"><Headphones size={15}/> تسجيلات الكتاب</span><h2>اختار درسًا وابدأ الاستماع</h2><p>كل تسجيل معه تحكّم واضح، وتفريغ أو أسئلة حسب البيانات الأصلية المتاحة.</p></div><SpanishLessonPicker lessons={lessons} value={lesson.id} onChange={setLessonId}/></div><OriginalListeningStation key={lesson.id} lessonId={lesson.id}/></section>;
 }
 function OriginalBookActivityFlow({ stage, exam = false, focusLessonId, onNavigate }) {
   const lessons = currentLessons(stage);
@@ -962,7 +964,7 @@ function SpeakingPage({ stage, focusLessonId }) {
       <span className="eyebrow"><BookOpen size={15}/> قراءة وتحدّث · {stage}</span>
       <h2>قصة الوحدة بالإسباني</h2>
       <p>اسمع القصة كاملة، وبعدها اقرأها بصوتك. هقارن الكلمات اللي التقطها المتصفح بالنص وأوضح لك اللي محتاج مراجعة.</p>
-      <label className="course-select"><span>اختار الوحدة</span><select aria-label="اختار الوحدة" value={lessonId} onChange={event => selectLesson(event.target.value)} disabled={isListening}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label>
+      <SpanishLessonPicker lessons={lessons} value={lessonId} onChange={selectLesson} label="اختار الوحدة" ariaLabel="اختيار وحدة القصة" className="speaking-lesson-picker" disabled={isListening}/>
     </section>
     {lesson && <section className="speaking-story speaking-story-reader" aria-labelledby="speaking-story-title">
       <header className="speaking-story-header">
@@ -1073,7 +1075,6 @@ function GamePromptText({ text = '' }) {
 function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
-  const [answerChoice, setAnswerChoice] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [matched, setMatched] = useState([]);
   const [usedTiles, setUsedTiles] = useState([]);
@@ -1131,7 +1132,6 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   }
   function mark(option) {
     if (selected !== null || !question) return;
-    setAnswerChoice(option);
     setSelected(option);
     if (option === question.correct) {
       const points = awardCorrect();
@@ -1175,11 +1175,11 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
     if (game.id !== 'order' && selected === null) return;
     if (index + 1 >= roundBank.length) { setFinished(true); return; }
     setIndex(value => value + 1);
-    setSelected(null); setAnswerChoice(null); setUsedTiles([]); setOrder([]); setFeedback(null);
+    setSelected(null); setUsedTiles([]); setOrder([]); setFeedback(null);
   }
   function restartRound() {
     finishReported.current = false;
-    setRoundSeed(value => value + 1); setIndex(0); setSelected(null); setAnswerChoice(null); setSelectedMatch(null);
+    setRoundSeed(value => value + 1); setIndex(0); setSelected(null); setSelectedMatch(null);
     setMatched([]); setUsedTiles([]); setOrder([]); setLives(mode.lives ?? 0); setScore(0); setCorrectCount(0);
     setStreak(0); setBestStreak(0); setSeconds(mode.seconds); setFeedback(null); setFinished(false);
   }
@@ -1188,7 +1188,7 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
   return <div className="game-run-page">
     <header className="game-run-top">
       <button className="icon-button" onClick={onBack} aria-label="العودة لصالة الألعاب"><ArrowRight size={18}/></button>
-      <div className="game-run-title"><span className="level-pill">{stage}</span><b>{game.title} · {lesson.heading.split(' · ').at(-1)}</b><small>{mode.icon} {mode.title}{record?.bestScore ? ` · أفضل نتيجة ${record.bestScore}` : ''}</small></div>
+      <div className="game-run-title"><span className="level-pill">{stage}</span><b>{game.title} · <bdi lang="es" dir="ltr">{lesson.heading.split(' · ').at(-1)}</bdi></b><small>{mode.icon} {mode.title}{record?.plays ? ` · أفضل ${record.bestScore} نقطة · دقة ${record.bestAccuracy ?? 0}٪` : ''}</small></div>
       <div className="run-stats">{mode.lives !== null && <span><Heart size={16} fill="currentColor"/> {lives}</span>}{mode.timed && <span><Timer size={16}/> {seconds}s</span>}<span>⚡ {score}</span><span>🔥 {streak}</span></div>
     </header>
     {finished ? <section className="game-result arcade-result">
@@ -1197,11 +1197,11 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
       <h2>{accuracy >= 80 ? 'أداء ممتاز!' : accuracy >= 45 ? 'جولة حلوة — كمّل!' : 'كل محاولة بتعلّمك'}</h2>
       <div className="arcade-result-score"><b>{score}</b><span>نقطة</span></div>
       <div className="arcade-result-stats"><div><b>{correctCount} / {roundCount}</b><span>إجابات مظبوطة</span></div><div><b>{accuracy}%</b><span>دقة الجولة</span></div><div><b>{bestStreak}</b><span>أطول سلسلة</span></div></div>
-      <p>{game.title} · {lesson.heading}</p>
+      <p>{game.title} · <bdi lang="es" dir="ltr">{lesson.heading.split(' · ').at(-1)}</bdi></p>
       {rewardXp > 0 && <span className="arcade-xp-earned"><Zap size={16}/> كسبت {rewardXp} XP</span>}
       <div className="game-result-actions"><button className="secondary-button" onClick={restartRound}><RotateCcw size={16}/> العب تاني</button><button className="primary-button" onClick={onBack}>ارجع للألعاب <ArrowLeft size={16}/></button></div>
     </section> : !roundBank.length ? <section className="game-board"><h2>البنك مش متاح للجولة دي</h2><p>اختار لعبة أو وحدة تانية.</p><button className="primary-button" onClick={onBack}>العودة للألعاب</button></section> : <section className="game-board arcade-game-board">
-      <div className="game-board-heading"><span>{game.icon} {lesson.heading} · {game.id === 'match' ? `${matched.length} / ${roundCount} أزواج` : `سؤال ${index + 1} من ${roundCount}`}</span><div className="game-run-progress" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax={roundCount} aria-valuenow={progressValue}><i style={{ width: `${percent}%` }}/></div></div>
+      <div className="game-board-heading"><span>{game.icon} <bdi lang="es" dir="ltr">{lesson.heading.split(' · ').at(-1)}</bdi> · {game.id === 'match' ? `${matched.length} / ${roundCount} أزواج` : `سؤال ${index + 1} من ${roundCount}`}</span><div className="game-run-progress" role="progressbar" aria-label="تقدم الجولة" aria-valuemin="0" aria-valuemax={roundCount} aria-valuenow={progressValue}><i style={{ width: `${percent}%` }}/></div></div>
       <p className="game-instructions">{game.instructions}</p>
       {game.id === 'match' ? <>
         <h2>اختار الإسباني ومعناه</h2>
@@ -1251,10 +1251,10 @@ function GamesPage({ stage, addXp, focusLessonId }) {
   }
   return <div className="arcade-page">
     <section className="games-banner"><div><span className="eyebrow"><Gamepad2 size={15}/> صالة الألعاب · {stage}</span><h2>اختار لعبتك ووحدتك</h2><p>مفردات وقواعد وقصص الوحدة، وكل لعبة ليها تحدّي ونظام نقاط خاص.</p></div><div className="game-emoji">🕹️</div></section>
-    <section className="arcade-controls-panel"><div className="arcade-controls"><label className="course-select"><span>الوحدة</span><select aria-label="اختار الوحدة" value={lessonId} onChange={event => { setLessonId(event.target.value); setActiveGame(null); }}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label><span className="arcade-selected-lesson">{lesson?.objective}</span></div>
+    <section className="arcade-controls-panel"><div className="arcade-controls"><SpanishLessonPicker lessons={lessons} value={lessonId} onChange={nextId => { setLessonId(nextId); setActiveGame(null); }} label="الوحدة" ariaLabel="اختيار وحدة الألعاب" className="arcade-lesson-picker"/><span className="arcade-selected-lesson">{lesson?.objective}</span></div>
       <div className="arcade-mode-picker" role="group" aria-label="اختار نظام الجولة"><span className="arcade-section-label">نظام الجولة</span><div>{arcadeModes.map(item => <button type="button" key={item.id} className={modeId === item.id ? 'selected' : ''} aria-pressed={modeId === item.id} onClick={() => setModeId(item.id)}><span>{item.icon}</span><b>{item.title}</b><small>{item.description}</small></button>)}</div></div>
     </section>
-    <section className="arcade-games-section"><header className="arcade-games-heading"><div><span className="eyebrow">{lesson?.heading.split(' · ').at(-1)}</span><h3>اختار لعبة</h3></div><small>{gameCatalog.filter(game => game.id !== 'listen' || stage.startsWith('A1')).length} ألعاب متاحة · {mode.title}</small></header>
+    <section className="arcade-games-section"><header className="arcade-games-heading"><div><span className="eyebrow" lang="es" dir="ltr">{lesson?.heading.split(' · ').at(-1)}</span><h3>اختار لعبة</h3></div><small>{gameCatalog.filter(game => game.id !== 'listen' || stage.startsWith('A1')).length} ألعاب متاحة · {mode.title}</small></header>
       <div className="arcade-grid">{gameCatalog.filter(game => game.id !== 'listen' || stage.startsWith('A1')).map(game => {
         const bank = arcadeBankFor(game.id, stage, lesson);
         const rounds = Math.min(arcadeRoundLimit(game.id, mode), bank.length);
@@ -1264,7 +1264,7 @@ function GamesPage({ stage, addXp, focusLessonId }) {
         return <article className={`arcade-game-card ${!bank.length ? 'unavailable' : ''}`} key={game.id}>
           <span className="arcade-game-icon">{game.icon}</span><span className="game-kicker">{stage} · {mode.icon} {mode.title}</span><h3>{game.title}</h3><p>{game.description}</p>
           <div className="arcade-game-meta"><span><Target size={14}/> بنك {bank.length} {bankLabel}</span><span>{rounds} في الجولة</span></div>
-          <div className="arcade-game-record">{record ? `أفضل نتيجة ${record.bestScore} · ${record.plays} جولات` : 'لسه ما لعبتش اللعبة دي'}</div>
+          <div className="arcade-game-record">{record ? <><span>أفضل نتيجة <b>{record.bestScore}</b> · أفضل دقة <b>{record.bestAccuracy ?? 0}٪</b></span><small>{record.plays} جولات · أعلى سلسلة {record.bestStreak ?? 0}</small></> : <span>لسه ما لعبتش اللعبة دي</span>}</div>
           <button className="primary-button" disabled={!bank.length} onClick={() => setActiveGame(game)}>{bank.length ? 'ابدأ الجولة' : 'مش متاحة للوحدة'} <Play size={15} fill="currentColor"/></button>
         </article>;
       })}</div>
