@@ -1751,3 +1751,50 @@ button:disabled{cursor:not-allowed}
   .arcade-result-stats>div>b{font-size:15px;}
   .arcade-result-stats>div>span{font-size:10px;}
 }
+
+/* Whole-story read-aloud practice with honest, word-level ASR feedback */
+.story-practice-panel{display:grid;gap:13px;margin-top:21px;padding:clamp(15px,2.2vw,22px);border:1px solid #dfe9dc;border-radius:17px;background:linear-gradient(135deg,#f7faf5,#fff 72%);}
+.story-practice-heading{text-align:right;}
+.story-practice-heading .eyebrow{display:inline-flex;align-items:center;gap:6px;color:#718575;font-size:11px;}
+.story-practice-heading h4{margin:5px 0;color:#304a36;font-size:clamp(17px,2vw,21px);}
+.story-practice-heading p{max-width:690px;margin:0;color:#78847a;font-size:13px;line-height:1.8;}
+.story-practice-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;}
+.story-mic-button{min-width:min(260px,100%);min-height:49px;padding-inline:18px;}
+.story-recording-hint{color:#52715a;font-size:12px;line-height:1.7;text-align:center;}
+.story-speech-feedback{max-width:none;width:100%;margin:0;padding:13px 14px;border:1px solid #e7ece5;background:#fff;color:#617066;font-size:13px;}
+.story-speech-feedback>span{display:block;text-align:center;}
+.story-evaluation{display:grid;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid #e8ede7;}
+.story-evaluation-summary{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px 10px;}
+.story-evaluation-summary>strong{color:#385e41;font:800 22px 'DM Sans','IBM Plex Sans Arabic',sans-serif;}
+.story-evaluation-summary>span{color:#829087;font-size:11px;}
+.speech-verdict{padding:5px 10px;border-radius:99px;font-size:11px;font-weight:800;}
+.speech-verdict.excellent{background:#e7f4e6;color:#3e7448;}
+.speech-verdict.close{background:#fff3d8;color:#98712b;}
+.speech-verdict.retry{background:#fff0ed;color:#aa5146;}
+.story-word-comparison{display:flex;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;gap:6px;max-height:220px;overflow:auto;padding:9px;border:1px solid #edf0eb;border-radius:12px;background:#fafbf9;direction:ltr;}
+.story-word-chip{max-width:100%;display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;padding:5px 8px;border:1px solid transparent;border-radius:9px;color:#4f6454;font:600 13px/1.4 'DM Sans','IBM Plex Sans Arabic',sans-serif;overflow-wrap:anywhere;}
+.story-word-chip.correct{border-color:#d7e9d5;background:#edf7eb;color:#3f7549;}
+.story-word-chip.wrong{border-color:#eadfbd;background:#fff8e8;color:#8e7135;}
+.story-word-chip.missing{border-color:#f0d7cf;background:#fff2ee;color:#a94d43;}
+.story-word-chip.extra{border-color:#e5e7e2;background:#f0f2ef;color:#747d75;}
+.story-word-legend{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 11px;color:#7e8980;font-size:10px;}
+.story-word-legend>span{display:inline-flex;align-items:center;gap:5px;}
+.story-word-legend>span::before{width:8px;height:8px;display:inline-block;border-radius:50%;background:#d8e9d6;content:'';}
+.story-word-legend>.wrong::before{background:#e8d397;}
+.story-word-legend>.missing::before{background:#e9aaa0;}
+.story-word-legend>.extra::before{background:#d8ddd8;}
+.story-word-chip>small{color:#9b6157;font:500 9px/1.35 'IBM Plex Sans Arabic','DM Sans',sans-serif;direction:rtl;}
+.story-word-chip.extra>small{color:#7b847c;}
+.story-speech-feedback .speech-recognized-line{align-items:flex-start;flex-direction:column;gap:3px;margin-top:1px;padding-top:8px;text-align:right;}
+.story-speech-feedback .speech-recognized-line>bdi{width:100%;}
+.story-practice-note{margin:0;color:#929b93;font-size:10px;line-height:1.7;text-align:center;}
+@media(max-width:650px){
+  .story-practice-panel{gap:11px;margin-top:16px;padding:13px;border-radius:15px;}
+  .story-practice-heading p{font-size:12px;}
+  .story-practice-controls{align-items:stretch;flex-direction:column;}
+  .story-mic-button{width:100%;}
+  .story-recording-hint{font-size:11px;}
+  .story-speech-feedback{padding:10px;font-size:12px;}
+  .story-word-comparison{max-height:190px;gap:5px;padding:7px;}
+  .story-word-chip{padding:5px 7px;font-size:12px;}
+}

@@ -12,6 +12,7 @@ import { listeningArabicTranscripts } from '../src/data/listeningArabic.js';
 import { isSpanishText, transcriptSegments } from '../src/data/listeningTranscriptUtils.js';
 import { buildListeningItems, transcriptText } from '../src/data/listening.js';
 import * as grammarGuides from '../src/data/grammar.js';
+import { compareSpanishReading } from '../src/data/speechPractice.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let checks = 0;
@@ -105,7 +106,7 @@ for (const [keyPath, text] of spanishQuestionFields) {
 }
 check(appSource.includes('function grammarPracticeParts(') && appSource.includes('اكشف الحل') && appSource.includes('grammar-practice-answer'), 'Grammar lessons must include an interactive self-check with a revealable answer');
 check(appSource.includes('function GrammarText(') && appSource.includes('grammarInlinePattern') && appSource.includes('hola-grammar-mastery') && appSource.includes('grammar-filter-tabs'), 'Grammar Studio must isolate embedded Spanish and provide searchable, filterable, saved mastery progress');
-check(appSource.includes('sentence-of-day-pair') && appSource.includes('speaking-bilingual-prompt') && appSource.includes('flashcard-unit-pair'), 'Daily sentence, speaking prompt, and flashcard unit labels must use explicit Spanish-left / Arabic-right pairs');
+check(appSource.includes('sentence-of-day-pair') && appSource.includes('className="story-paired-row"') && appSource.includes('className="flashcard-unit-pair"') && appSource.includes('<p lang="es" dir="ltr">{sentence.es}</p>') && appSource.includes('<p className="story-line-arabic" lang="ar" dir="rtl">{sentence.ar}</p>'), 'Daily sentence, full speaking story, and flashcard unit labels must use explicit Spanish-left / Arabic-right pairs');
 const directionStyles = await readFile(path.join(root, 'src/styles.css'), 'utf8');
 check(directionStyles.includes('.listening-lesson-menu{right:auto;left:0;direction:ltr') && directionStyles.includes('.listening-lesson-menu button{direction:ltr'), 'Spanish lesson menu must open and read from the physical left');
 check(directionStyles.includes('[lang="es"],[lang^="es-"]{direction:ltr') && directionStyles.includes('[lang="ar"],[lang^="ar-"]{direction:rtl'), 'Language-tagged Spanish and Arabic text must receive explicit LTR and RTL direction');
@@ -131,6 +132,18 @@ check(!listeningSource.includes('BookLessonMaterials') && !listeningSource.inclu
 check(appSource.includes('onClick={() => restart()}'), 'Restart button must restart with the currently selected scope');
 check(!appSource.includes('window.location.reload()'), 'Game flow must return to the arcade without reloading the entire app');
 check(appSource.includes('window.SpeechRecognition || window.webkitSpeechRecognition'), 'Speaking UI must use the browser microphone recognition API');
+check(appSource.includes('compareSpanishReading(fullStoryText, spoken)') && appSource.includes('recognition.continuous = true') && appSource.includes('إنهاء القراءة'), 'Speaking practice must record and compare the entire unit story, not only one sample sentence');
+check(appSource.includes('اسمع نموذج القصة كاملة') && appSource.includes('story-word-comparison') && appSource.includes('تحليل دقيق لمخارج الحروف'), 'Story reading must offer a full spoken model, visible word-level corrections, and an honest ASR accuracy note');
+const exactReading = compareSpanishReading('El niño estudia español todos los días.', 'El niño estudia español todos los días.');
+check(exactReading.exact && exactReading.accuracy === 100 && exactReading.verdict === 'excellent', 'Speech evaluator must recognize a fully correct complete reading');
+const accentReading = compareSpanishReading('El café está aquí.', 'El cafe esta aqui.');
+check(accentReading.exact && accentReading.accuracy === 100, 'Speech evaluator must tolerate accent marks omitted by automatic transcription');
+const missedReading = compareSpanishReading('Omar vive en Giza y estudia español.', 'Omar vive y estudia español.');
+check(missedReading.words.some(word => word.type === 'missing' && word.expected === 'en') && missedReading.accuracy < 100, 'Speech evaluator must point out words missed in a long reading');
+const substitutedReading = compareSpanishReading('Me gusta leer en casa.', 'Me encanta leer en casa.');
+check(substitutedReading.words.some(word => word.type === 'wrong' && word.expected === 'gusta' && word.heard === 'encanta'), 'Speech evaluator must show the expected and recognized word for a substitution');
+const extraReading = compareSpanishReading('Me gusta el café.', 'Me gusta mucho el café.');
+check(extraReading.words.some(word => word.type === 'extra' && word.heard === 'mucho'), 'Speech evaluator must show extra recognized words');
 check(appSource.includes('const gameCatalog = [') && appSource.includes('function GameRun('), 'Arcade must offer separate playable game modes');
 check(appSource.includes("id: 'match'") && appSource.includes("id: 'quiz'") && appSource.includes("id: 'listen'") && appSource.includes("id: 'storyListen'") && appSource.includes("id: 'order'"), 'Arcade must expose distinct vocabulary, quiz, original-audio, story-audio, and sentence-building games');
 check(appSource.includes('const arcadeModes = [') && appSource.includes("id: 'practice'") && appSource.includes("id: 'challenge'") && appSource.includes("id: 'sprint'") && appSource.includes("hola-arcade-records"), 'Arcade must provide practice/challenge/sprint systems and persistent per-game records');

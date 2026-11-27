@@ -5,6 +5,7 @@ import { grammarGuides } from './data/grammar.js';
 import { grammarDetails } from './data/grammarDetails.js';
 import { lessonStories } from './data/stories.js';
 import { lessonSentenceBanks } from './data/sentences.js';
+import { compareSpanishReading } from './data/speechPractice.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
 import { listeningArabicTranscripts } from './data/listeningArabic.js';
 import { isSpanishText, transcriptSegments } from './data/listeningTranscriptUtils.js';
@@ -840,48 +841,160 @@ function SpeakingPage({ stage, focusLessonId }) {
   const startId = lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || '';
   const [lessonId, setLessonId] = useState(startId);
   const [transcript, setTranscript] = useState('');
-  const [status, setStatus] = useState('انطق جملة الدرس بالإسباني.');
+  const [evaluation, setEvaluation] = useState(null);
+  const [status, setStatus] = useState('اسمع نموذج القصة، وبعدها اقرأها كاملة بالإسباني.');
   const [isListening, setIsListening] = useState(false);
   const [supported, setSupported] = useState(true);
+  const recognitionRef = useRef(null);
+  const latestTranscriptRef = useRef('');
   const lesson = lessons.find(item => item.id === lessonId) || lessons[0];
   const story = lessonStories[lessonId] || { title: lesson?.heading || '', sentences: [{ es: lesson?.example || '', ar: lesson?.translation || '' }] };
   const storySentences = story.sentences?.length ? story.sentences : [{ es: lesson?.example || '', ar: lesson?.translation || '' }];
-  const fullStoryText = storySentences.map(sentence => sentence.es).join(' ');
-  const cleanSpeech = value => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f¿?¡!.,;:]/g, '').replace(/\s+/g, ' ').trim();
-  const heardWords = cleanSpeech(transcript).split(' ').filter(Boolean);
-  const expectedWords = cleanSpeech(lesson?.example || '').split(' ').filter(Boolean);
-  useEffect(() => { setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || ''); setTranscript(''); setStatus('انطق جملة الدرس بالإسباني.'); }, [stage, focusLessonId]);
+  const fullStoryText = storySentences.map(sentence => sentence.es).filter(Boolean).join(' ');
+
+  useEffect(() => {
+    setLessonId(lessons.some(item => item.id === focusLessonId) ? focusLessonId : lessons[0]?.id || '');
+    setTranscript('');
+    latestTranscriptRef.current = '';
+    setEvaluation(null);
+    setStatus('اسمع نموذج القصة، وبعدها اقرأها كاملة بالإسباني.');
+  }, [stage, focusLessonId]);
+  useEffect(() => () => {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+    recognition.onresult = null;
+    recognition.onend = null;
+    recognition.onerror = null;
+    try { recognition.abort(); } catch { /* recognition may already have stopped */ }
+  }, []);
+
+  function selectLesson(nextId) {
+    if (recognitionRef.current) {
+      const activeRecognition = recognitionRef.current;
+      recognitionRef.current = null;
+      activeRecognition.onresult = null;
+      activeRecognition.onend = null;
+      activeRecognition.onerror = null;
+      try { activeRecognition.abort(); } catch { /* recognition may already have stopped */ }
+      setIsListening(false);
+    }
+    setLessonId(nextId);
+    setTranscript('');
+    latestTranscriptRef.current = '';
+    setEvaluation(null);
+    setStatus('اسمع نموذج القصة، وبعدها اقرأها كاملة بالإسباني.');
+  }
   function startRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) { setSupported(false); setStatus('المتصفح الحالي لا يدعم التعرّف الصوتي. جرّب Chrome أو Edge.'); return; }
-    const recognition = new SpeechRecognition(); recognition.lang = 'es-ES'; recognition.interimResults = false; recognition.maxAlternatives = 1;
-    recognition.onstart = () => { setIsListening(true); setTranscript(''); setStatus('بسمعك دلوقتي… انطق الجملة بالإسباني.'); };
-    recognition.onerror = event => { setIsListening(false); setStatus(event.error === 'not-allowed' ? 'اسمح للمتصفح باستخدام الميكروفون وجرّب تاني.' : 'ما التقطتش الصوت بوضوح؛ قرّب من الميكروفون وجرّب تاني.'); };
-    recognition.onend = () => setIsListening(false);
-    recognition.onresult = event => { const spoken = event.results[0][0].transcript; setTranscript(spoken); setStatus(cleanSpeech(spoken) === cleanSpeech(lesson.example) ? 'الجملة كلها مطابقة — ممتاز!' : 'الكلمات الخضرا مطابقة؛ راجع الحمراء وحاول تاني.'); };
-    recognition.start();
+    if (!SpeechRecognition) {
+      setSupported(false);
+      setStatus('المتصفح الحالي لا يدعم التعرّف الصوتي. جرّب Chrome أو Edge.');
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    let recognitionError = '';
+    recognitionRef.current = recognition;
+    latestTranscriptRef.current = '';
+    setTranscript('');
+    setEvaluation(null);
+    recognition.lang = 'es-ES';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => {
+      setIsListening(true);
+      setStatus('بسمعك دلوقتي… اقرأ القصة كلها، وبعد ما تخلص اضغط «إنهاء القراءة».');
+    };
+    recognition.onerror = event => {
+      recognitionError = event.error === 'not-allowed' || event.error === 'service-not-allowed'
+        ? 'اسمح للمتصفح باستخدام الميكروفون وجرّب تاني.'
+        : event.error === 'no-speech'
+          ? 'ما سمعتش كلام؛ قرّب من الميكروفون وجرّب تاني.'
+          : 'ماقدرتش أتعرف على الصوت بوضوح. راجع اتصالك وإذن الميكروفون وحاول تاني.';
+      setIsListening(false);
+      setStatus(recognitionError);
+    };
+    recognition.onresult = event => {
+      const spoken = Array.from(event.results)
+        .map(result => result[0]?.transcript?.trim() || '')
+        .filter(Boolean)
+        .join(' ')
+        .replace(/\s+/gu, ' ')
+        .trim();
+      latestTranscriptRef.current = spoken;
+      setTranscript(spoken);
+      setStatus('وصلني كلامك… كمّل القصة، أو اضغط «إنهاء القراءة» لو خلصت.');
+    };
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      const spoken = latestTranscriptRef.current.trim();
+      if (!spoken) {
+        if (!recognitionError) setStatus('ما التقطتش كلام واضح. اسمع النموذج وجرّب تاني.');
+        return;
+      }
+      const result = compareSpanishReading(fullStoryText, spoken);
+      setEvaluation(result);
+      setStatus(result.exact
+        ? 'ممتاز! قريت القصة كاملة، والكلمات اللي اتسمعت مطابقة للنص.'
+        : result.accuracy >= 80
+          ? `شغل ممتاز، التطابق ${result.accuracy}٪. راجع الكلمات المعلّمة وحاول تاني.`
+          : `لسه محتاج تدريب. التطابق الحالي ${result.accuracy}٪؛ اسمع النموذج وجرّب تاني.`);
+    };
+    setIsListening(true);
+    setStatus('بجهّز الميكروفون… اسمح للمتصفح بالتسجيل، وبعدها اقرأ القصة براحتك.');
+    try {
+      recognition.start();
+    } catch {
+      recognitionRef.current = null;
+      setIsListening(false);
+      setStatus('مش قادر أبدأ التسجيل دلوقتي. اتأكد إن إذن الميكروفون متاح وحاول تاني.');
+    }
   }
+  function stopRecognition() {
+    try { recognitionRef.current?.stop(); }
+    catch { setIsListening(false); }
+  }
+  const verdictLabel = evaluation?.verdict === 'excellent' ? 'ممتاز' : evaluation?.verdict === 'close' ? 'قريب جدًا' : 'محتاج مراجعة';
+
   return <div className="speaking-page">
     <section className="course-page-intro speaking-intro">
       <span className="eyebrow"><BookOpen size={15}/> قراءة وتحدّث · {stage}</span>
       <h2>قصة الوحدة بالإسباني</h2>
-      <p>اقرأ القصة سطرًا بالإسباني ومعناه بالعربي، وبعدها اتدرّب على النطق.</p>
-      <label className="course-select"><span>اختار الوحدة</span><select aria-label="اختار الوحدة" value={lessonId} onChange={event => { setLessonId(event.target.value); setTranscript(''); setStatus('انطق جملة الدرس بالإسباني.'); }}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label>
+      <p>اسمع القصة كاملة، وبعدها اقرأها بصوتك. هقارن الكلمات اللي التقطها المتصفح بالنص وأوضح لك اللي محتاج مراجعة.</p>
+      <label className="course-select"><span>اختار الوحدة</span><select aria-label="اختار الوحدة" value={lessonId} onChange={event => selectLesson(event.target.value)} disabled={isListening}>{lessons.map(item => <option key={item.id} value={item.id}>{item.heading}</option>)}</select></label>
     </section>
     {lesson && <section className="speaking-story speaking-story-reader" aria-labelledby="speaking-story-title">
       <header className="speaking-story-header">
-        <div><span className="story-reading-kicker"><BookOpen size={15}/> قراءة الوحدة · {stage}</span><h3 id="speaking-story-title" lang="es" dir="ltr">{story.title || lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><small>{storySentences.length} جمل · مستوى {stage}</small></div>
-        <button type="button" className="story-listen-button" onClick={() => speakSpanish(fullStoryText)}><Volume2 size={17}/> اسمع القصة كاملة</button>
+        <div><span className="story-reading-kicker"><BookOpen size={15}/> قصة الوحدة · {stage}</span><h3 id="speaking-story-title" lang="es" dir="ltr">{story.title || lesson.heading.replace(/^A[12](?:\.\d)? · /, '')}</h3><small>{storySentences.length} جمل · اقرأ القصة كلها للتقييم</small></div>
+        <button type="button" className="story-listen-button" onClick={() => speakSpanish(fullStoryText)} disabled={isListening}><Volume2 size={17}/> اسمع نموذج القصة كاملة</button>
       </header>
       <div className="story-bilingual" aria-label={`قصة ${story.title || lesson.heading}`}>
         {storySentences.map((sentence, index) => <article className="story-paired-row" key={`${lessonId}-story-${index}`}>
-          <div className="story-line-spanish"><span className="story-line-number">{String(index + 1).padStart(2, '0')}</span><p lang="es" dir="ltr">{sentence.es}</p><button type="button" aria-label={`اسمع الجملة الإسبانية رقم ${index + 1}`} title="اسمع الجملة" onClick={() => speakSpanish(sentence.es)}><Volume2 size={15}/></button></div>
+          <div className="story-line-spanish"><span className="story-line-number">{String(index + 1).padStart(2, '0')}</span><p lang="es" dir="ltr">{sentence.es}</p><button type="button" aria-label={`اسمع الجملة الإسبانية رقم ${index + 1}`} title="اسمع الجملة" onClick={() => speakSpanish(sentence.es)} disabled={isListening}><Volume2 size={15}/></button></div>
           <p className="story-line-arabic" lang="ar" dir="rtl">{sentence.ar}</p>
         </article>)}
       </div>
       {!!lesson.words?.length && <section className="story-vocabulary" aria-label="مفردات الوحدة"><div className="story-vocabulary-heading"><b>مفردات الوحدة</b><small>{lesson.words.length} كلمات</small></div><div className="story-vocabulary-list">{lesson.words.map(word => <div className="story-vocabulary-chip" key={word.es}><bdi lang="es" dir="ltr">{word.es}</bdi><span lang="ar" dir="rtl">{word.ar}</span></div>)}</div></section>}
+      <section className="story-practice-panel" aria-labelledby="story-practice-title">
+        <div className="story-practice-heading"><span className="eyebrow"><Mic size={14}/> تدريب تفاعلي</span><h4 id="story-practice-title">اقرأ القصة كاملة بصوتك</h4><p>اسمع النموذج بصوت آلي من الزر بالأعلى، وبعدها اقرأ القصة من أولها لآخرها. هراجع اللي اتقال وأعلّم الكلمات اللي فاتتك أو اتسمعت مختلفة.</p></div>
+        <div className="story-practice-controls"><button type="button" className={`mic-start story-mic-button ${isListening ? 'recording' : ''}`} onClick={isListening ? stopRecognition : startRecognition} disabled={!supported && !isListening}><Mic size={19}/>{isListening ? 'إنهاء القراءة' : evaluation ? 'اقرأ القصة مرة تانية' : 'ابدأ قراءة القصة'}</button>{isListening && <span className="story-recording-hint" role="status">بسمعك… اقرأ براحتك، وبعدها أنهِ التسجيل.</span>}</div>
+        <div className={`speech-feedback story-speech-feedback ${evaluation ? `has-evaluation ${evaluation.verdict}` : ''}`} role="status" aria-live="polite">
+          <span className={transcript ? 'feedback-ready' : ''}>{status}</span>
+          {evaluation && <div className="story-evaluation">
+            <div className="story-evaluation-summary"><strong>{evaluation.accuracy}٪</strong><span>تطابق الكلمات</span><b className={`speech-verdict ${evaluation.verdict}`}>{verdictLabel}</b></div>
+            <div className="story-word-legend" aria-label="معاني ألوان التصحيح"><span className="correct">صح</span><span className="wrong">اتسمعت مختلفة</span><span className="missing">فاتتك</span><span className="extra">زيادة</span></div>
+            <div className="story-word-comparison" lang="es" dir="ltr" aria-label="مقارنة كلمات القصة">
+              {evaluation.words.map((word, index) => <span key={`${index}-${word.expected}-${word.heard}`} className={`story-word-chip ${word.type}`} title={word.type === 'wrong' ? `المطلوب: ${word.expected} · اللي اتسمع: ${word.heard}` : word.type === 'missing' ? `ما اتقالتش: ${word.expected}` : word.type === 'extra' ? `اتسمعت زيادة: ${word.heard}` : 'اتسمعت مطابقة'}>
+                {word.type === 'extra' ? <><small>زيادة</small>{word.heard}</> : word.type === 'missing' ? <>{word.expected}<small>فاتتك</small></> : word.type === 'wrong' ? <>{word.expected}<small>اتسمع: {word.heard}</small></> : word.expected}
+              </span>)}
+            </div>
+            <div className="speech-recognized-line"><span>اللي التقطه المتصفح:</span><bdi lang="es" dir="ltr">{transcript}</bdi></div>
+          </div>}
+        </div>
+        <p className="story-practice-note">التقييم تقريبي حسب الكلمات اللي تعرّف عليها المتصفح؛ مش تحليل دقيق لمخارج الحروف، وقد يحتاج إذن الميكروفون واتصالًا بالإنترنت.</p>
+      </section>
     </section>}
-    {lesson && <section className="speaking-card speaking-practice-card"><div className="speaking-practice-heading"><span className="eyebrow"><Mic size={14}/> تدريب النطق</span><h3>دورك تتكلم</h3></div><div className="speaking-bilingual-prompt" dir="ltr"><p className="speaking-prompt" lang="es" dir="ltr">{lesson.example}</p><p className="speaking-translation" lang="ar" dir="rtl">{lesson.translation}</p></div><button className={`mic-start ${isListening ? 'recording' : ''}`} onClick={startRecognition} disabled={isListening || !supported}><Mic size={21}/>{isListening ? 'بيسجّل…' : 'ابدأ التحدث'}</button><div className="speech-feedback" role="status"><span className={transcript ? 'feedback-ready' : ''}>{status}</span>{transcript && <div className="speech-recognized"><small>مقارنة كلمة بكلمة:</small><div className="speech-word-check" lang="es" dir="ltr">{expectedWords.map((word, index) => <span key={`${word}-${index}`} className={heardWords[index] === word ? 'word-right' : 'word-wrong'}>{heardWords[index] || '—'}</span>)}{heardWords.slice(expectedWords.length).map((word, index) => <span key={`extra-${word}-${index}`} className="word-wrong">{word}</span>)}</div><div className="speech-recognized-line"><span>اللي اتقال:</span><bdi lang="es" dir="ltr">{transcript}</bdi></div></div>}</div><button className="speech-repeat" onClick={() => speakSpanish(lesson.example)}><Volume2 size={16}/> اسمع نموذج الجملة</button></section>}
   </div>;
 }
 function nativeQuestionsForLesson(lessonId) {
