@@ -968,6 +968,35 @@ button:disabled{cursor:not-allowed}
 .native-listening-options button{min-height:50px;padding:12px 14px;text-align:start;font-size:15px;}
 .assessment-intro{position:relative;overflow:hidden;border:1px solid #e1e9df;background:radial-gradient(circle at 100% 0%,#e9f2e5 0,transparent 36%),linear-gradient(145deg,#fff,#f7faf5);}
 .assessment-intro .course-select{max-width:620px;margin-top:18px;}
+.exam-start-panel{width:min(760px,100%);margin:16px auto;padding:clamp(20px,4vw,34px);border:1px solid #e2e9de;border-radius:20px;background:linear-gradient(145deg,#fff,#f7faf5);box-shadow:0 16px 36px #3048330c;text-align:right;}
+.exam-start-panel h3{margin:8px 0;color:#344c39;font-size:clamp(20px,3vw,27px);}
+.exam-start-panel>p{margin:0 0 18px;color:#77837a;font-size:14px;line-height:1.8;}
+.exam-start-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.exam-start-facts>div{min-width:0;display:grid;gap:5px;padding:14px;border:1px solid #e8ede5;border-radius:13px;background:#fff;}
+.exam-start-facts>div>span,.exam-start-facts>div>small{color:#829087;font-size:11px;line-height:1.6;}
+.exam-start-facts>div>b{color:#365640;font-size:14px;line-height:1.5;}
+.exam-start-facts>div>small{overflow-wrap:anywhere;}
+.exam-start-rules{margin:15px 0;padding:14px 16px;border-radius:12px;background:#f4f7f1;color:#657469;font-size:12px;line-height:1.8;}
+.exam-start-rules>b{color:#405b46;}
+.exam-start-rules ul{display:grid;gap:3px;margin:6px 0 0;padding-inline-start:20px;}
+.exam-start-button{min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto;}
+.exam-result-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:15px auto;}
+.exam-result-grid>div{display:grid;gap:4px;padding:11px 8px;border:1px solid #e7ece4;border-radius:12px;background:#fafcf9;}
+.exam-result-grid b{color:#375d40;font:800 18px 'DM Sans','IBM Plex Sans Arabic',sans-serif;}
+.exam-result-grid span{color:#879289;font-size:11px;}
+.flow-options button.exam-selected{border-color:#8aa8c4;background:#eef4f8;color:#35536e;}
+.exam-review{margin:16px 0;padding:13px;border:1px solid #e6ebe4;border-radius:12px;text-align:right;}
+.exam-review>summary{color:#42674b;font-size:13px;font-weight:800;cursor:pointer;}
+.exam-review-list{display:grid;gap:9px;margin-top:12px;}
+.exam-review-list article{padding:12px;border:1px solid #e7ece5;border-radius:10px;background:#fbfcfa;}
+.exam-review-list article>div:first-child{display:flex;justify-content:space-between;gap:8px;color:#718075;font-size:11px;}
+.exam-review-list article>p{margin:7px 0;color:#526258;font-size:12px;line-height:1.7;text-align:right;}
+.exam-review-list article>small{color:#708075;font-size:11px;line-height:1.7;}
+.exam-review-list article.review-correct{border-inline-start:3px solid #7ba983;}
+.exam-review-list article.review-wrong{border-inline-start:3px solid #d6837b;}
+.exam-review-list article.unanswered{border-inline-start:3px solid #c7b37b;}
+.flow-audio-hint{display:block;margin:-5px 0 10px;color:#849087;font-size:12px;text-align:center;}
+@media(max-width:650px){.exam-start-facts{grid-template-columns:1fr}.exam-start-panel{padding:17px}.exam-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .assessment-empty{width:100%;max-width:none;align-items:stretch;padding:clamp(20px,3vw,36px);text-align:start;background:linear-gradient(145deg,#fff,#f7faf5);}
 .assessment-empty .activity-source-empty-icon,.assessment-empty .eyebrow,.assessment-empty h3,.assessment-empty p,.assessment-empty .activity-source-status{align-self:center;text-align:center;}
 .assessment-empty h3{font-size:clamp(21px,2.6vw,29px);}
@@ -1709,6 +1738,8 @@ button:disabled{cursor:not-allowed}
 .game-answer-grid{max-width:700px;gap:10px;}
 .game-answer-grid button{min-width:0;min-height:56px;font-size:14px;line-height:1.65;}
 .game-answer-grid button>span{font-size:11px;}
+.game-answer-grid button>.game-answer-copy{width:auto;height:auto;min-width:0;min-height:0;display:block;flex:1;padding:0;border:0;border-radius:0;background:transparent;color:inherit;font:inherit;line-height:1.7;text-align:inherit;}
+.game-answer-copy .grammar-explanation-spanish{max-width:100%;white-space:normal;vertical-align:middle;}
 .game-answer-grid button>.grammar-explanation-spanish,.game-live-feedback small>.grammar-explanation-spanish{unicode-bidi:isolate;text-align:left;}
 .game-answer-grid button>.grammar-explanation-arabic,.game-live-feedback small>.grammar-explanation-arabic{unicode-bidi:isolate;text-align:right;}
 .game-live-feedback{max-width:700px;display:grid;gap:4px;font-size:14px;}

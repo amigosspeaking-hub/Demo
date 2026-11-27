@@ -1024,6 +1024,23 @@ function nativeQuestionsForLesson(lessonId) {
     };
   });
 }
+function ExamStartPanel({ stage, model, questionCount, availableCount, onStart }) {
+  const questionSummary = questionCount === model?.n
+    ? `${questionCount} سؤال`
+    : `${questionCount} سؤال متاح من أصل ${model?.n || questionCount}`;
+  return <section className="exam-start-panel" aria-labelledby="exam-start-title">
+    <span className="eyebrow"><Award size={16}/> تهيئة الامتحان · {stage}</span>
+    <h3 id="exam-start-title">راجع الإعدادات قبل ما تبدأ</h3>
+    <p>اختار نموذج الكتاب المناسب. مش هيبدأ عرض الأسئلة ولا المؤقّت قبل ضغط زر البداية.</p>
+    <div className="exam-start-facts">
+      <div><span>النموذج</span><b>{model?.ar || 'امتحان المستوى'}</b><small lang="es" dir="ltr">{model?.es || ''}</small></div>
+      <div><span>عدد الأسئلة</span><b>{questionSummary}</b><small>{availableCount} سؤال موثّق في بنك المرحلة</small></div>
+      <div><span>الوقت</span><b>{model?.minutes || 60} دقيقة</b><small>يبدأ بعد الضغط على زر البداية</small></div>
+    </div>
+    <div className="exam-start-rules"><b>نظام الامتحان</b><ul><li>جاوب أو تخطَّ السؤال؛ كل سؤال عليه درجة واحدة.</li><li>بعد الانتقال للسؤال التالي مش هتقدر ترجع للسابق.</li><li>لو الوقت خلص، النتيجة هتتحسب من الإجابات اللي سجلتها.</li></ul></div>
+    <button type="button" className="primary-button exam-start-button" onClick={onStart} disabled={!questionCount}><Play size={17} fill="currentColor"/>{questionCount ? 'ابدأ الامتحان' : 'مفيش أسئلة موثّقة متاحة'}</button>
+  </section>;
+}
 function NativeA1LearningFlow({ stage, exam = false, onFinish, focusLessonId }) {
   const lessons = currentLessons(stage);
   const courseSource = bookActivities.stages?.[stage];
@@ -1033,6 +1050,7 @@ function NativeA1LearningFlow({ stage, exam = false, onFinish, focusLessonId }) 
   const [lessonId, setLessonId] = useState(focusLessonId || 'all');
   const [modelKey, setModelKey] = useState(initialModel?.k || 'A');
   const model = models.find(item => item.k === modelKey) || models[0];
+  const [started, setStarted] = useState(!exam);
   useEffect(() => { setLessonId(focusLessonId || 'all'); setModelKey((models.find(item => item.unit === nativeBookUnitForLesson(focusLessonId)) || models[0])?.k || 'A'); }, [stage, focusLessonId]);
   const modelUnitLesson = exam && model?.unit ? `A1-${Number(model.unit.slice(1))}` : null;
   const effectiveLessonId = exam ? (modelUnitLesson || 'all') : lessonId;
@@ -1040,27 +1058,61 @@ function NativeA1LearningFlow({ stage, exam = false, onFinish, focusLessonId }) 
     ? lessons.flatMap(lesson => nativeQuestionsForLesson(lesson.id))
     : nativeQuestionsForLesson(effectiveLessonId), [stage, effectiveLessonId]);
   const amount = exam ? Math.min(model?.n || 40, pool.length) : Math.min(8, pool.length);
-  const [questions, setQuestions] = useState(() => drawQuestions(pool, amount));
+  const [questions, setQuestions] = useState(() => exam ? [] : drawQuestions(pool, amount));
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState(null);
+  const [responses, setResponses] = useState([]);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [audioPlayed, setAudioPlayed] = useState(false);
   const [seconds, setSeconds] = useState(exam ? (model?.minutes || 60) * 60 : 0);
+  const finishReported = useRef(false);
   const item = questions[index];
-  const choices = useMemo(() => shuffled(item?.options || []), [item]);
-  useEffect(() => { if (!exam || finished) return undefined; const timer = setInterval(() => setSeconds(value => { if (value <= 1) { clearInterval(timer); setFinished(true); return 0; } return value - 1; }), 1000); return () => clearInterval(timer); }, [exam, finished]);
-  function restart(nextLessonId = lessonId, nextModelKey = modelKey) {
+  const choiceDeck = useMemo(() => buildChoiceDeck(questions), [questions]);
+  const choices = choiceDeck[index] || [];
+  useEffect(() => {
+    if (!exam || !started || finished) return undefined;
+    const timer = setInterval(() => setSeconds(value => Math.max(0, value - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [exam, started, finished]);
+  useEffect(() => {
+    if (!exam || !started || finished || seconds > 0) return;
+    const nextResponses = [...responses];
+    nextResponses[index] = answer;
+    setResponses(nextResponses);
+    if (answer !== null && answer === item?.correct) setScore(value => value + 1);
+    setFinished(true);
+  }, [exam, started, finished, seconds, answer, index, item]);
+  useEffect(() => {
+    if (!finished || finishReported.current) return;
+    finishReported.current = true;
+    if (questions.length) onFinish(Math.round(score / questions.length * (exam ? 40 : 15)));
+  }, [finished]);
+  function restart(nextLessonId = lessonId, nextModelKey = modelKey, begin = true) {
     const nextModel = models.find(item => item.k === nextModelKey) || models[0];
     const modelUnit = nextModel?.unit ? `A1-${Number(nextModel.unit.slice(1))}` : null;
     const targetLesson = exam ? (modelUnit || 'all') : nextLessonId;
     const nextPool = targetLesson === 'all' ? lessons.flatMap(lesson => nativeQuestionsForLesson(lesson.id)) : nativeQuestionsForLesson(targetLesson);
     const nextAmount = exam ? Math.min(nextModel?.n || 40, nextPool.length) : Math.min(8, nextPool.length);
-    setQuestions(drawQuestions(nextPool, nextAmount)); setIndex(0); setAnswer(null); setScore(0); setFinished(false); setSeconds(exam ? (nextModel?.minutes || 60) * 60 : 0);
+    finishReported.current = false;
+    setQuestions(drawQuestions(nextPool, nextAmount)); setIndex(0); setAnswer(null); setResponses([]); setScore(0); setFinished(false); setAudioPlayed(false); setSeconds(exam ? (nextModel?.minutes || 60) * 60 : 0); setStarted(exam ? begin : true);
   }
-  function next() { const total = score + (answer === item?.correct ? 1 : 0); setScore(total); if (index + 1 === questions.length) { onFinish(Math.round(total / questions.length * (exam ? 40 : 15))); setFinished(true); } else { setIndex(value => value + 1); setAnswer(null); } }
+  function next() {
+    if (!exam && answer === null) return;
+    const nextResponses = [...responses]; nextResponses[index] = answer; setResponses(nextResponses);
+    const total = score + (answer === item?.correct ? 1 : 0); setScore(total);
+    if (index + 1 === questions.length) { setFinished(true); return; }
+    setIndex(value => value + 1); setAnswer(null); setAudioPlayed(false);
+  }
   const percentage = questions.length ? Math.round(score / questions.length * 100) : 0;
-  return <div className="learning-flow"><section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'اختبار من ملف الكتاب' : 'تدريب من ملف الكتاب'}</span><h2>{exam ? `امتحان ${stage}` : `Quiz · ${stage}`}</h2><p>{exam ? `نموذج الكتاب: ${model?.ar || 'مراجعة المرحلة'} · ${model?.note || ''}` : 'الأسئلة مأخوذة من بنك التمارين وأسئلة الاستماع الأصلية للكتاب، بدون أمثلة مُضافة من مكتبة الدروس.'}</p>{!finished && <div className="native-learning-selectors">{!exam && <label className="course-select"><span>نطاق الأسئلة</span><select value={lessonId} onChange={event => { const nextId = event.target.value; setLessonId(nextId); restart(nextId); }}><option value="all">كل وحدات {stage}</option>{lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.heading}</option>)}</select></label>}{exam && models.length > 0 && <label className="course-select"><span>نموذج الامتحان من الكتاب</span><select value={modelKey} onChange={event => { const nextKey = event.target.value; setModelKey(nextKey); restart(lessonId, nextKey); }}>{models.map(item => <option key={item.k} value={item.k}>{item.ar} · {item.n} سؤال</option>)}</select></label>}</div>}</section>
-    {finished ? <section className="flow-result"><div className="result-medal">{percentage >= 70 ? '🏆' : '📘'}</div><span className="eyebrow">{exam ? 'نتيجة الامتحان' : 'نتيجة التدريب'}</span><h3>{score} / {questions.length} إجابات صحيحة</h3><p>{percentage >= 70 ? 'ممتاز! دي إجابتك على أسئلة الكتاب الأصلية.' : 'راجع صفحة المحاضرة والتسجيل المرتبط بالسؤال، وبعدها جرّب تاني.'}</p><div className="result-progress"><i style={{ width: `${percentage}%` }} /></div><button className="primary-button" onClick={() => restart()}><RotateCcw size={16}/> ابدأ محاولة جديدة</button></section> : item ? <section className="flow-question-card"><div className="flow-stats"><span>{exam ? <><Timer size={15}/> {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}</> : <><Target size={15}/> سؤال {index + 1} من {questions.length}</>}</span><span><CheckCircle2 size={15}/> النتيجة {score}</span></div><div className="flow-progress"><i style={{ width: `${(index + 1) / questions.length * 100}%` }}/></div><small className="flow-source">{item.source}</small><h3 dir={isSpanishText(item.prompt) ? 'ltr' : 'rtl'} lang={isSpanishText(item.prompt) ? 'es' : 'ar'}><BidiText>{item.prompt}</BidiText></h3>{item.audio && <audio className="native-question-audio" controls preload="none" src={item.audio}>المتصفح لا يدعم تشغيل الصوت.</audio>}<div className="flow-options">{choices.map((option, i) => <button key={`${item.prompt}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} onClick={() => answer === null && setAnswer(option)} className={`${answer === option ? (option === item.correct ? 'is-correct' : 'is-wrong') : ''} ${answer !== null && option === item.correct ? 'is-correct' : ''}`}><span>{['A','B','C','D'][i]}</span><BidiText>{option}</BidiText>{answer === option && (option === item.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && <div className={`flow-feedback ${answer === item.correct ? 'good' : 'bad'}`}>{answer === item.correct ? 'إجابة صحيحة — عاش!' : <>الإجابة الصحيحة: <BidiText>{item.correct}</BidiText></>}{item.explanation && <small><ListeningExplanation text={item.explanation}/></small>}</div>}<button className="primary-button flow-next" disabled={answer === null} onClick={next}>{index + 1 === questions.length ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button></section> : <section className="empty-state">مافيش أسئلة أصلية متاحة للنطاق ده. افتح المحاضرة من خطة التعلّم عشان توصل لصفحاتها وأنشطتها الأصلية.</section>}
+  const answeredCount = responses.filter(response => response !== null && response !== undefined).length;
+  const unansweredCount = Math.max(0, questions.length - answeredCount);
+  const elapsedSeconds = exam ? Math.max(0, (model?.minutes || 60) * 60 - seconds) : 0;
+  return <div className="learning-flow">
+    <section className="course-page-intro"><span className="eyebrow">{exam ? <Award size={15}/> : <CircleHelp size={15}/>} {exam ? 'اختبار من ملف الكتاب' : 'تدريب من ملف الكتاب'}</span><h2>{exam ? `امتحان ${stage}` : `Quiz · ${stage}`}</h2><p>{exam ? started ? `النموذج: ${model?.ar || 'مراجعة المرحلة'} · الامتحان شغّال دلوقتي.` : 'اختار نموذج الامتحان واستعد؛ المؤقّت مش هيبدأ غير لما تضغط «ابدأ الامتحان».' : 'الأسئلة مأخوذة من بنك التمارين وأسئلة الاستماع الأصلية للكتاب، بدون أمثلة مُضافة من مكتبة الدروس.'}</p>
+      {!finished && (!exam || !started) && <div className="native-learning-selectors">{!exam && <label className="course-select"><span>نطاق الأسئلة</span><select value={lessonId} onChange={event => { const nextId = event.target.value; setLessonId(nextId); restart(nextId); }}><option value="all">كل وحدات {stage}</option>{lessons.map(lesson => <option key={lesson.id} value={lesson.id}>{lesson.heading}</option>)}</select></label>}{exam && models.length > 0 && <label className="course-select"><span>نموذج الامتحان من الكتاب</span><select value={modelKey} onChange={event => setModelKey(event.target.value)}>{models.map(item => <option key={item.k} value={item.k}>{item.ar} · {item.n} سؤال</option>)}</select></label>}</div>}
+    </section>
+    {exam && !started && !finished ? <ExamStartPanel stage={stage} model={model} questionCount={amount} availableCount={pool.length} onStart={() => restart(lessonId, modelKey, true)}/> : finished ? <section className="flow-result"><div className="result-medal">{percentage >= 70 ? '🏆' : '📘'}</div><span className="eyebrow">{exam ? 'نتيجة الامتحان' : 'نتيجة التدريب'}</span><h3>{score} / {questions.length} إجابات صحيحة</h3>{exam && <div className="exam-result-grid"><div><b>{percentage}٪</b><span>نسبة الصح</span></div><div><b>{answeredCount}</b><span>اتجاوب</span></div><div><b>{unansweredCount}</b><span>من غير إجابة</span></div><div><b>{Math.floor(elapsedSeconds / 60)}:{String(elapsedSeconds % 60).padStart(2, '0')}</b><span>الوقت المستخدم</span></div></div>}<p>{percentage >= 70 ? 'ممتاز! دي إجابتك على أسئلة الكتاب الأصلية.' : 'راجع المحاضرة والتسجيل المرتبط بالسؤال، وبعدها جرّب تاني.'}</p><div className="result-progress"><i style={{ width: `${percentage}%` }} /></div>{exam && <details className="exam-review"><summary>مراجعة الإجابات بعد التسليم</summary><div className="exam-review-list">{questions.map((reviewItem, reviewIndex) => { const submitted = responses[reviewIndex]; const isCorrect = submitted === reviewItem.correct; return <article key={`${reviewItem.prompt}-${reviewIndex}`} className={submitted == null ? 'unanswered' : isCorrect ? 'review-correct' : 'review-wrong'}><div><b>سؤال {reviewIndex + 1}</b><span>{submitted == null ? 'من غير إجابة' : isCorrect ? 'إجابة صحيحة' : 'إجابة غير صحيحة'}</span></div><p><BidiText>{reviewItem.prompt}</BidiText></p><p><span>إجابتك: </span><BidiText>{submitted ?? 'لم تجب'}</BidiText></p><p><span>الإجابة الصحيحة: </span><BidiText>{reviewItem.correct}</BidiText></p>{reviewItem.explanation && <small><ListeningExplanation text={reviewItem.explanation}/></small>}</article>; })}</div></details>}<button className="primary-button" onClick={() => restart(lessonId, modelKey, false)}><RotateCcw size={16}/>{exam ? 'محاولة جديدة' : 'ابدأ محاولة جديدة'}</button></section> : item ? <section className="flow-question-card"><div className="flow-stats"><span>{exam && <><Timer size={15}/> {String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')} · </>}<Target size={15}/> سؤال {index + 1} من {questions.length}</span>{!exam && <span><CheckCircle2 size={15}/> النتيجة {score}</span>}</div><div className="flow-progress"><i style={{ width: `${(index + 1) / questions.length * 100}%` }}/></div><small className="flow-source">{item.source}</small><h3 dir={isSpanishText(item.prompt) ? 'ltr' : 'rtl'} lang={isSpanishText(item.prompt) ? 'es' : 'ar'}><BidiText>{item.prompt}</BidiText></h3>{item.audio && <audio className="native-question-audio" controls preload="none" src={item.audio} onEnded={() => setAudioPlayed(true)} onError={() => setAudioPlayed(true)}>المتصفح لا يدعم تشغيل الصوت.</audio>}{item.listening && item.audio && !audioPlayed && <small className="flow-audio-hint">اسمع التسجيل كاملًا قبل ما تجاوب.</small>}<div className="flow-options">{choices.map((option, i) => <button key={`${item.prompt}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} disabled={answer !== null || (item.listening && item.audio && !audioPlayed)} onClick={() => answer === null && setAnswer(option)} className={exam ? answer === option ? 'exam-selected' : '' : `${answer === option ? (option === item.correct ? 'is-correct' : 'is-wrong') : ''} ${answer !== null && option === item.correct ? 'is-correct' : ''}`}><span>{['A','B','C','D'][i]}</span><BidiText>{option}</BidiText>{answer === option && (option === item.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>{answer !== null && !exam && <div className={`flow-feedback ${answer === item.correct ? 'good' : 'bad'}`}>{answer === item.correct ? 'إجابة صحيحة — عاش!' : <>الإجابة الصحيحة: <BidiText>{item.correct}</BidiText></>}{item.explanation && <small><ListeningExplanation text={item.explanation}/></small>}</div>}<button className="primary-button flow-next" disabled={!exam && answer === null} onClick={next}>{answer === null && exam ? index + 1 === questions.length ? 'سلّم الامتحان' : 'تخطَّ السؤال' : index + 1 === questions.length ? exam ? 'إنهاء الامتحان' : 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button></section> : <section className="empty-state">مافيش أسئلة أصلية متاحة للنطاق ده. افتح المحاضرة من خطة التعلّم عشان توصل لصفحاتها وأنشطتها الأصلية.</section>}
   </div>;
 }
 function LearningFlow({ stage, exam = false, onFinish, focusLessonId, onNavigate }) {
@@ -1224,7 +1276,7 @@ function GameRun({ game, lesson, stage, mode, onBack, onFinish, record }) {
         {game.id === 'listen' && question.audio && <audio className="game-original-audio" controls preload="none" src={question.audio} onEnded={() => setAudioPlayed(true)} onError={() => { setAudioPlayed(true); setFeedback({ text: 'التسجيل مش قادر يشتغل دلوقتي؛ تقدر تجاوب من السؤال المعروض.', tone: 'bad' }); }}>المتصفح لا يدعم تشغيل الصوت.</audio>}
         {game.id === 'storyListen' && <button type="button" className="game-listen-button" onClick={() => { const started = speakSpanish(question.spanish); setAudioPlayed(started); setFeedback(started ? { text: 'اسمع الجملة كويس، وبعدها اختار معناها.', tone: 'neutral' } : { text: 'الصوت الآلي مش متاح في المتصفح؛ تقدر تقرأ الجملة وتجاوب.', tone: 'bad' }); }}><Volume2 size={18}/> اسمع الجملة بالإسباني</button>}
         {game.id === 'quiz' && question.spanish && <p className="game-prompt-spanish" lang="es" dir="ltr"><BidiText>{question.spanish}</BidiText></p>}
-        <div className="game-answer-grid">{choices.map((option, choiceIndex) => <button key={`${index}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} disabled={selected !== null || (['listen', 'storyListen'].includes(game.id) && !audioPlayed)} className={`${selected !== null && option === question.correct ? 'is-correct' : ''} ${selected === option && option !== question.correct ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A', 'B', 'C', 'D'][choiceIndex]}</span><GamePromptText text={option}/>{selected === option && (option === question.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>
+        <div className="game-answer-grid">{choices.map((option, choiceIndex) => <button key={`${index}-${option}`} lang={isSpanishText(option) ? 'es' : 'ar'} dir={isSpanishText(option) ? 'ltr' : 'rtl'} disabled={selected !== null || (['listen', 'storyListen'].includes(game.id) && !audioPlayed)} className={`${selected !== null && option === question.correct ? 'is-correct' : ''} ${selected === option && option !== question.correct ? 'is-wrong' : ''}`} onClick={() => mark(option)}><span>{['A', 'B', 'C', 'D'][choiceIndex]}</span><span className="game-answer-copy"><GamePromptText text={option}/></span>{selected === option && (option === question.correct ? <Check size={17}/> : <X size={17}/>)}</button>)}</div>
       </> : null}
       {feedback && <div className={`game-live-feedback ${feedback.tone || ''}`} role="status"><span>{feedback.text}</span>{feedback.detail && <small><GamePromptText text={feedback.detail}/></small>}</div>}
       {showChoices && <button className="game-next-button" disabled={selected === null} onClick={next}>{lives === 0 && mode.lives !== null ? 'اعرض النتيجة' : index + 1 === roundCount ? 'اعرض النتيجة' : 'السؤال التالي'} <ArrowLeft size={16}/></button>}
