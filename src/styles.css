@@ -2026,3 +2026,14 @@ button:disabled{cursor:not-allowed}
   .vocab-example-es{font-size:11px;}
 }
 @media(prefers-reduced-motion:reduce){.vocab-card,.vocab-save,.vocab-audio,.vocab-filters button{transition:none;}.vocab-card:hover,.vocab-save:hover,.vocab-audio:hover{transform:none;}}
+
+/* Let the lesson transcript use the material card's full width instead of an obsolete two-column wrapper. */
+details.native-audio-transcript{display:block;width:100%;min-width:0;max-width:100%;padding:14px;box-sizing:border-box;}
+details.native-audio-transcript>.transcript-column-heads,
+details.native-audio-transcript>.transcript-pair{display:grid;width:100%;min-width:0;max-width:100%;grid-column:1/-1;}
+@media(max-width:650px){
+  .lesson-modal-reader .modal-content>.book-material-card{width:calc(100% + 16px);margin-inline:-8px;padding:10px;}
+  .lesson-modal-reader .book-material-card>details.native-audio-transcript{width:calc(100% + 20px);max-width:none;margin:14px -10px 0;padding:10px 8px;border-radius:11px;}
+  .lesson-modal-reader .book-material-card>details.native-audio-transcript>.transcript-column-heads,
+  .lesson-modal-reader .book-material-card>details.native-audio-transcript>.transcript-pair{width:100%;min-width:0;}
+}
