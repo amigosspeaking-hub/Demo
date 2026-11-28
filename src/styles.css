@@ -1930,3 +1930,17 @@ button:disabled{cursor:not-allowed}
   .save-word{width:36px;height:36px;}
 }
 @media(prefers-reduced-motion:reduce){.dictionary-card,.word-audio,.save-word{transition:none;}.dictionary-card:hover,.word-audio:hover,.save-word:hover{transform:none;}}
+
+
+/* Keep each dictionary context tied to its vocabulary headword; pronunciation is the truthful fallback. */
+.dictionary-example-pair{display:grid;justify-items:start;gap:2px;max-width:100%;margin-top:6px;}
+.dictionary-card .dictionary-example{display:block;max-width:100%;margin:0;color:#506b55;font:500 12px/1.55 'DM Sans','IBM Plex Sans Arabic',sans-serif;text-align:left;overflow-wrap:anywhere;unicode-bidi:isolate;}
+.dictionary-example-pair .dictionary-example-translation{display:block;max-width:100%;color:#78877b;font:400 10px/1.55 'IBM Plex Sans Arabic','DM Sans',sans-serif;text-align:right;overflow-wrap:anywhere;unicode-bidi:isolate;}
+.dictionary-pronunciation{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 7px;max-width:100%;margin-top:6px;color:#728175;font:400 10px/1.6 'IBM Plex Sans Arabic','DM Sans',sans-serif;overflow-wrap:anywhere;}
+.dictionary-pronunciation>span{color:#97a197;font-size:9px;}
+.dictionary-pronunciation>bdi{color:#55705a;font-size:11px;}
+@media(max-width:650px){
+  .dictionary-example-pair{margin-top:5px;}
+  .dictionary-card .dictionary-example{font-size:11px;}
+  .dictionary-example-pair .dictionary-example-translation{font-size:10px;}
+}

@@ -8,6 +8,7 @@ const node = process.execPath;
 const jobs = [
   { name: 'Course coverage scout', command: node, args: ['scripts/team/course-coverage.mjs'] },
   { name: 'Bilingual lesson integrity', command: node, args: ['scripts/team/lesson-integrity.mjs'] },
+  { name: 'Vocabulary example relevance auditor', command: node, args: ['scripts/team/vocabulary-example-audit.mjs'] },
   { name: 'Sections and responsive system', command: node, args: ['scripts/team/section-system.mjs'] },
   { name: 'Arcade systems auditor', command: node, args: ['scripts/team/arcade-system.mjs'] },
   { name: 'Book asset auditor', command: 'npm', args: ['run', 'materials:check'] },

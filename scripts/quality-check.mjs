@@ -12,7 +12,10 @@ import { listeningArabicTranscripts } from '../src/data/listeningArabic.js';
 import { isSpanishText, transcriptSegments } from '../src/data/listeningTranscriptUtils.js';
 import { buildListeningItems, transcriptText } from '../src/data/listening.js';
 import * as grammarGuides from '../src/data/grammar.js';
+import { lessonStories } from '../src/data/stories.js';
+import { lessonSentenceBanks as vocabSentenceBanks } from '../src/data/sentences.js';
 import { compareSpanishReading } from '../src/data/speechPractice.js';
+import { buildVocabularyExamples, findRelatedVocabularyExample, spanishPhraseOccurs } from '../src/data/vocabularyUtils.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let checks = 0;
@@ -65,17 +68,33 @@ const appSource = await readFile(path.join(root, 'src/App.jsx'), 'utf8');
 check(!/اسألي|تسألي|اتكلمي|وصّفي|اطلبي|تطلبي|مستعدة|فاهمة/u.test(JSON.stringify(lessonLibrary)), 'Lesson objectives and prompts must address the learner in masculine wording');
 const wordsPageSource = appSource.slice(appSource.indexOf('function WordsPage('), appSource.indexOf('function ProgressPage('));
 const stylesSource = await readFile(path.join(root, 'src/styles.css'), 'utf8');
-check(wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.es}</bdi>') && wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.example}</bdi>'), 'Vocabulary and lesson examples must be isolated as Spanish LTR text, including opening inverted punctuation');
+check(wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.es}</bdi>') && wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.example}</bdi>'), 'Vocabulary and verified example text must be isolated as Spanish LTR, including inverted question punctuation');
 check(wordsPageSource.includes('lang="ar" dir="rtl"') && wordsPageSource.includes('word.lesson.replace') && wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.lesson.replace'), 'Arabic meanings and mixed-language lesson labels must each declare their own reading direction');
 check(wordsPageSource.includes('aria-pressed={isSaved}') && wordsPageSource.includes('aria-live="polite"') && wordsPageSource.includes('aria-label="ابحث في الكلمات والمعاني والأمثلة"'), 'Vocabulary save state, search results, and search control must be screen-reader accessible');
-check(wordsPageSource.includes('const searchableText = normalize') && wordsPageSource.includes('word.say} ${word.lesson} ${word.example}') && wordsPageSource.includes("setQuery(''); setFilter('الكل')"), 'Dictionary search must cover source words, meanings, pronunciation hints, lesson names, and examples, with a reset path');
+check(wordsPageSource.includes('const searchableText = normalize') && wordsPageSource.includes('word.say} ${word.lesson} ${word.example} ${word.exampleArabic}') && wordsPageSource.includes("setQuery(''); setFilter('الكل')"), 'Dictionary search must cover each word and only its verified example, with a reset path');
+check(wordsPageSource.includes('findRelatedVocabularyExample(word, examples)') && wordsPageSource.includes('word.example ? <div className="dictionary-example-pair"') && wordsPageSource.includes('{word.say}</bdi>'), 'Cards must show only a word-matched sourced example, with the provided pronunciation hint when no example exists');
 check(stylesSource.includes('.dictionary-card .dictionary-word-row h3{') && stylesSource.includes('text-align:left') && stylesSource.includes('overflow-wrap:anywhere') && stylesSource.includes('@media(max-width:380px)'), 'Vocabulary cards must keep Spanish left-aligned, wrap long mixed-direction phrases, and adapt to narrow phones');
+let vocabularyCount = 0;
+let linkedExampleCount = 0;
 for (const [lessonId, lesson] of Object.entries(lessonLibrary)) {
+  const examples = buildVocabularyExamples(lesson, grammarGuides.grammarGuides[lessonId], lessonStories[lessonId], vocabSentenceBanks[lessonId]);
   for (const word of lesson.words) {
-    check(Boolean(word.es?.trim() && word.ar?.trim()), `${lessonId}: dictionary entries must retain the supplied Spanish and Arabic source text`);
+    vocabularyCount += 1;
+    check(Boolean(word.es?.trim() && word.ar?.trim() && word.say?.trim()), `${lessonId}: vocabulary entries must retain sourced Spanish, Arabic, and pronunciation data`);
     if (word.es.includes('¿')) check(word.es.trim().endsWith('?'), `${lessonId}: Spanish questions must keep the closing question mark after the inverted opener`);
+    const related = findRelatedVocabularyExample(word, examples);
+    check(related === null || spanishPhraseOccurs(related.es, word.es), `${lessonId}: a displayed example must contain its vocabulary headword or phrase`);
+    if (related) linkedExampleCount += 1;
   }
 }
+check(vocabularyCount === 60, `Expected 60 locally sourced vocabulary records; found ${vocabularyCount}`);
+check(linkedExampleCount === 43, `Expected 43 existing word-matched examples and no invented examples; found ${linkedExampleCount}`);
+const porque = lessonLibrary['A1-2'].words.find(word => word.es === 'porque');
+const porqueExamples = buildVocabularyExamples(lessonLibrary['A1-2'], grammarGuides.grammarGuides['A1-2'], lessonStories['A1-2'], vocabSentenceBanks['A1-2']);
+check(findRelatedVocabularyExample(porque, porqueExamples) === null && !spanishPhraseOccurs(lessonLibrary['A1-2'].example, porque.es), 'The unrelated “para viajar” lesson example must never appear under “porque”');
+check(findRelatedVocabularyExample(lessonLibrary['A1-2'].words[0], porqueExamples)?.es === lessonLibrary['A1-2'].example, 'The lesson example must remain attached to “Quiero aprender”, which it actually uses');
+check(!spanishPhraseOccurs('Hay una farmacia en mi barrio.', '¿Hay una farmacia?'), 'A statement must not be treated as a sourced example of a vocabulary question');
+check(!spanishPhraseOccurs('?¿Hay una farmacia', '¿Hay una farmacia?'), 'A malformed/reversed question-mark sequence must not qualify as a Spanish question example');
 const listeningSource = appSource.slice(appSource.indexOf('function ListeningPage('), appSource.indexOf('function SpeakingPage('));
 check(listeningSource.includes('<BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>'), 'Listening must open the selected lesson recording library');
 check(!/SpeechSynthesisUtterance|buildListeningItems\(lessonLibrary\)/.test(listeningSource), 'Listening must not substitute synthesized lesson-library examples for book recordings');
@@ -268,14 +287,13 @@ check(importerSource.includes('def add_lesson_unit_filter') && importerSource.in
 for (const stage of Object.keys(expectedReaders)) { const html = await readFile(path.join(root, `public/materials/readers/${stage}/index.html`), 'utf8'); check(html.includes('__lessonUnitKeys') && html.includes('PAGES.splice'), `${stage}: reader must filter page navigation to one lesson when a unit is requested`); }
 
 const grammarDetails = await import('../src/data/grammarDetails.js');
-const lessonStories = await import('../src/data/stories.js');
 const sentenceBanks = await import('../src/data/sentences.js');
 for (const lessonId of Object.keys(lessonLibrary)) {
   check(Boolean(grammarGuides.grammarGuides[lessonId]?.explanation), `${lessonId}: detailed grammar guide must exist`);
   const grammarPractice = grammarGuides.grammarGuides[lessonId]?.practice || '';
   if (grammarPractice.includes('___')) check(/\[\[[^\]]*___[^\]]*\]\]/u.test(grammarPractice), `${lessonId}: the complete Spanish sentence around a fill-in blank must be direction-isolated`);
   check(grammarDetails.grammarDetails[lessonId]?.length >= 3, `${lessonId}: the grammar guide must include at least three lesson-specific subtopics`);
-  const story = lessonStories.lessonStories[lessonId];
+  const story = lessonStories[lessonId];
   check(story?.title && story.sentences?.length >= 5, `${lessonId}: a complete, lesson-specific speaking story must have at least five sentences`);
   check(story.sentences.every(sentence => sentence.es?.trim() && /[\u0600-\u06ff]/u.test(sentence.ar || '')), `${lessonId}: every Spanish story sentence must have its corresponding Arabic line`);
   check(sentenceBanks.lessonSentenceBanks[lessonId]?.length >= 3, `${lessonId}: independent sentence game bank must contain multiple prompts`);

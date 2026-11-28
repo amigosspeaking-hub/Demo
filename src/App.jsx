@@ -5,6 +5,7 @@ import { grammarGuides } from './data/grammar.js';
 import { grammarDetails } from './data/grammarDetails.js';
 import { lessonStories } from './data/stories.js';
 import { lessonSentenceBanks } from './data/sentences.js';
+import { buildVocabularyExamples, findRelatedVocabularyExample } from './data/vocabularyUtils.js';
 import { compareSpanishReading } from './data/speechPractice.js';
 import { courseBookMaterials } from './data/courseMaterials.js';
 import { listeningArabicTranscripts } from './data/listeningArabic.js';
@@ -286,12 +287,18 @@ function PathPage({ onOpenLesson, onOpenActivity, selectedStage = 'A1.1', comple
 function WordsPage({ stage, savedWords, onSaveWord }) {
   const [filter, setFilter] = useState('الكل');
   const [query, setQuery] = useState('');
-  const words = currentLessons(stage).flatMap(lesson => lesson.words.map(word => ({ ...word, lesson: lesson.heading, example: lesson.example })));
+  const words = currentLessons(stage).flatMap(lesson => {
+    const examples = buildVocabularyExamples(lesson, grammarGuides[lesson.id], lessonStories[lesson.id], lessonSentenceBanks[lesson.id]);
+    return lesson.words.map(word => {
+      const relatedExample = findRelatedVocabularyExample(word, examples);
+      return { ...word, lesson: lesson.heading, example: relatedExample?.es || '', exampleArabic: relatedExample?.ar || '' };
+    });
+  });
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
   const normalizedQuery = normalize(query.trim());
   const shown = words.filter(word => {
     const matchesFilter = filter !== 'المحفوظة' || savedWords.includes(word.es);
-    const searchableText = normalize(`${word.es} ${word.ar} ${word.say} ${word.lesson} ${word.example}`);
+    const searchableText = normalize(`${word.es} ${word.ar} ${word.say} ${word.lesson} ${word.example} ${word.exampleArabic}`);
     return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
   });
   const savedInLevel = new Set(words.filter(word => savedWords.includes(word.es)).map(word => word.es)).size;
@@ -334,7 +341,10 @@ function WordsPage({ stage, savedWords, onSaveWord }) {
                 <button type="button" className="word-audio" aria-label={`استمع إلى ${word.es}`} title="استمع إلى الكلمة" onClick={() => speakSpanish(word.es)}><Volume2 size={17} aria-hidden="true"/></button>
               </div>
               <p className="dictionary-meaning" lang="ar" dir="rtl">{word.ar}</p>
-              <small className="dictionary-example" lang="es" dir="ltr"><bdi lang="es" dir="ltr">{word.example}</bdi></small>
+              {word.example ? <div className="dictionary-example-pair">
+                <small className="dictionary-example" lang="es" dir="ltr"><bdi lang="es" dir="ltr">{word.example}</bdi></small>
+                {word.exampleArabic && <span className="dictionary-example-translation" lang="ar" dir="rtl"><bdi lang="ar" dir="rtl">{word.exampleArabic}</bdi></span>}
+              </div> : <span className="dictionary-pronunciation" lang="ar" dir="rtl"><span>النطق التقريبي</span><bdi lang="ar" dir="rtl">{word.say}</bdi></span>}
             </div>
           </div>
           <button type="button" className={`save-word${isSaved ? ' is-saved' : ''}`} onClick={() => onSaveWord(word.es)} aria-label={isSaved ? `إزالة ${word.es} من المحفوظة` : `حفظ ${word.es}`} aria-pressed={isSaved} title={isSaved ? 'إزالة من المحفوظة' : 'حفظ الكلمة'}><Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} aria-hidden="true"/></button>
