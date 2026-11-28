@@ -321,7 +321,7 @@ function WordsPage({ stage, savedWords, onSaveWord }) {
       </div>
     </div>
     <p className="word-results" aria-live="polite" aria-atomic="true">{shown.length ? `عرض ${shown.length} من ${words.length} كلمة` : 'لا توجد نتائج مطابقة'}</p>
-    <div className="dictionary-list" aria-label="قائمة الكلمات">
+    <section className="dictionary-list" aria-label="قائمة الكلمات">
       {shown.length ? shown.map(word => {
         const isSaved = savedWords.includes(word.es);
         return <article key={`${word.lesson}-${word.es}`} className="dictionary-card">
@@ -345,7 +345,7 @@ function WordsPage({ stage, savedWords, onSaveWord }) {
         <span>{filter === 'المحفوظة' && !normalizedQuery ? 'احفظ كلمة من بطاقتها، وهتلاقيها هنا للمراجعة.' : 'جرّب كلمة أخرى أو امسح عوامل التصفية.'}</span>
         <button type="button" onClick={resetFilters}>{filter === 'المحفوظة' && !normalizedQuery ? 'عرض كل الكلمات' : 'مسح البحث والتصفية'}</button>
       </div>}
-    </div>
+    </section>
     <aside className="review-reminder" aria-label="معلومة عن الكلمات المحفوظة">
       <AudioLines size={19} aria-hidden="true"/><div><b>مراجعتك في مكان واحد</b><span>الكلمات التي تحفظها هنا تظهر أيضًا في بطاقات مراجعة المستوى.</span></div>
       <button type="button" onClick={() => { setQuery(''); setFilter('المحفوظة'); }}>المحفوظة <ArrowLeft size={14} aria-hidden="true"/></button>
