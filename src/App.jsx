@@ -286,9 +286,71 @@ function PathPage({ onOpenLesson, onOpenActivity, selectedStage = 'A1.1', comple
 function WordsPage({ stage, savedWords, onSaveWord }) {
   const [filter, setFilter] = useState('الكل');
   const [query, setQuery] = useState('');
-  const words = currentLessons(stage).flatMap(lesson => lesson.words.map(word => ({ ...word, lesson: lesson.heading, example: lesson.example, tag: 'كلمة' })));
-  const shown = words.filter(word => (filter !== 'المحفوظة' || savedWords.includes(word.es)) && `${word.es} ${word.ar} ${word.lesson}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
-  return <div className="words-page"><div className="words-intro"><div><span className="eyebrow"><Bookmark size={15}/> مفردات {stage}</span><h2>بنك كلمات المحاضرات</h2><p>الكلمات هنا مرتبطة بالمستوى الحالي وبطاقات المراجعة.</p></div><div className="word-count"><b>{words.length}</b><span>كلمة في المستوى</span></div></div><div className="word-tools"><label className="word-search"><Search size={17}/><input value={query} onChange={event => setQuery(event.target.value)} placeholder="دور على كلمة أو معنى…" /></label><div className="word-filters">{['الكل','المحفوظة'].map(item => <button key={item} className={filter === item ? 'selected' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div></div><div className="dictionary-list">{shown.length ? shown.map(word => <article key={`${word.lesson}-${word.es}`} className="dictionary-card"><div className="dictionary-left"><span className="dict-icon">📘</span><div><span className="word-label">{stage} · {word.lesson.replace(/^A[12](?:\.\d)? · /, '')}</span><h3 lang="es" dir="ltr">{word.es} <button aria-label={`اسمع ${word.es}`} onClick={() => speakSpanish(word.es)}><Volume2 size={16}/></button></h3><p>{word.ar}</p><small lang="es" dir="ltr">{word.example}</small></div></div><button className="save-word" onClick={() => onSaveWord(word.es)} aria-label={savedWords.includes(word.es) ? 'إزالة من كلماتي' : 'إضافة إلى كلماتي'}><Bookmark size={18} fill={savedWords.includes(word.es) ? 'currentColor' : 'none'}/></button></article>) : <div className="empty-state">{filter === 'المحفوظة' ? 'مافيش كلمات محفوظة من المستوى ده لسه.' : 'مفيش كلمة مطابقة للبحث.'}</div>}</div><div className="review-reminder"><AudioLines size={19}/><div><b>مراجعة نفس بنك الكلمات</b><span>الكلمة اللي تحفظها بتظهر في فلتر المحفوظة وبطاقات المستوى.</span></div><button onClick={() => setFilter('المحفوظة')}>المحفوظة <ArrowLeft size={14}/></button></div></div>;
+  const words = currentLessons(stage).flatMap(lesson => lesson.words.map(word => ({ ...word, lesson: lesson.heading, example: lesson.example })));
+  const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+  const normalizedQuery = normalize(query.trim());
+  const shown = words.filter(word => {
+    const matchesFilter = filter !== 'المحفوظة' || savedWords.includes(word.es);
+    const searchableText = normalize(`${word.es} ${word.ar} ${word.say} ${word.lesson} ${word.example}`);
+    return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
+  });
+  const savedInLevel = words.filter(word => savedWords.includes(word.es)).length;
+  const resetFilters = () => { setQuery(''); setFilter('الكل'); };
+
+  return <div className="words-page">
+    <section className="words-intro" aria-labelledby="words-title">
+      <div className="words-intro-copy">
+        <span className="eyebrow"><Bookmark size={15} aria-hidden="true"/> مفردات {stage}</span>
+        <h2 id="words-title">بنك كلمات المحاضرات</h2>
+        <p>راجع كلمات دروسك، واسمع نطقها، واحفظ ما تريد الرجوع إليه.</p>
+      </div>
+      <div className="word-count" aria-label={`${words.length} كلمة في المستوى الحالي`}>
+        <b>{words.length}</b><span>كلمة في المستوى</span>
+      </div>
+    </section>
+    <div className="word-tools">
+      <div className="word-search">
+        <Search size={17} aria-hidden="true"/>
+        <input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="دور على كلمة أو معنى…" aria-label="ابحث في الكلمات والمعاني والأمثلة" dir="auto" />
+        {query && <button type="button" className="word-search-clear" onClick={() => setQuery('')} aria-label="مسح البحث"><X size={15}/></button>}
+      </div>
+      <div className="word-filter-group">
+        <div className="word-filters" role="group" aria-label="تصفية الكلمات">
+          {['الكل','المحفوظة'].map(item => <button type="button" key={item} className={filter === item ? 'selected' : ''} aria-pressed={filter === item} onClick={() => setFilter(item)}>{item}{item === 'المحفوظة' && <span className="filter-count">{savedInLevel}</span>}</button>)}
+        </div>
+      </div>
+    </div>
+    <p className="word-results" aria-live="polite" aria-atomic="true">{shown.length ? `عرض ${shown.length} من ${words.length} كلمة` : 'لا توجد نتائج مطابقة'}</p>
+    <div className="dictionary-list" aria-label="قائمة الكلمات">
+      {shown.length ? shown.map(word => {
+        const isSaved = savedWords.includes(word.es);
+        return <article key={`${word.lesson}-${word.es}`} className="dictionary-card">
+          <div className="dictionary-left">
+            <span className="dict-icon" aria-hidden="true">📘</span>
+            <div className="dictionary-copy">
+              <span className="word-label" dir="rtl">{stage} · <bdi lang="es" dir="ltr">{word.lesson.replace(/^A[12](?:\.\d)? · /, '')}</bdi></span>
+              <div className="dictionary-word-row">
+                <h3><bdi lang="es" dir="ltr">{word.es}</bdi></h3>
+                <button type="button" className="word-audio" aria-label={`استمع إلى ${word.es}`} title="استمع إلى الكلمة" onClick={() => speakSpanish(word.es)}><Volume2 size={17} aria-hidden="true"/></button>
+              </div>
+              <p className="dictionary-meaning" lang="ar" dir="rtl">{word.ar}</p>
+              <small className="dictionary-example" lang="es" dir="ltr"><bdi lang="es" dir="ltr">{word.example}</bdi></small>
+            </div>
+          </div>
+          <button type="button" className={`save-word${isSaved ? ' is-saved' : ''}`} onClick={() => onSaveWord(word.es)} aria-label={isSaved ? `إزالة ${word.es} من المحفوظة` : `حفظ ${word.es}`} aria-pressed={isSaved} title={isSaved ? 'إزالة من المحفوظة' : 'حفظ الكلمة'}><Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} aria-hidden="true"/></button>
+        </article>;
+      }) : <div className="empty-state words-empty" role="status">
+        <span className="empty-state-icon" aria-hidden="true">{filter === 'المحفوظة' && !normalizedQuery ? '🔖' : '🔎'}</span>
+        <b>{filter === 'المحفوظة' && !normalizedQuery ? 'لسه ما حفظتش كلمات من المستوى ده' : 'ما لقيناش كلمة مطابقة'}</b>
+        <span>{filter === 'المحفوظة' && !normalizedQuery ? 'احفظ كلمة من بطاقتها، وهتلاقيها هنا للمراجعة.' : 'جرّب كلمة أخرى أو امسح عوامل التصفية.'}</span>
+        <button type="button" onClick={resetFilters}>{filter === 'المحفوظة' && !normalizedQuery ? 'عرض كل الكلمات' : 'مسح البحث والتصفية'}</button>
+      </div>}
+    </div>
+    <aside className="review-reminder" aria-label="معلومة عن الكلمات المحفوظة">
+      <AudioLines size={19} aria-hidden="true"/><div><b>مراجعتك في مكان واحد</b><span>الكلمات التي تحفظها هنا تظهر أيضًا في بطاقات مراجعة المستوى.</span></div>
+      <button type="button" onClick={() => { setQuery(''); setFilter('المحفوظة'); }}>المحفوظة <ArrowLeft size={14} aria-hidden="true"/></button>
+    </aside>
+  </div>;
 }
 function ProgressPage({ xp, doneLessons, savedWords, selectedStage }) {
   const achievements = [

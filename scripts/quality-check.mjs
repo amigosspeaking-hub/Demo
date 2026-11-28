@@ -63,6 +63,19 @@ const localDataSource = await readFile(path.join(root, 'src/data/lessons.js'), '
 check(!/drive\.google\.com|transcripts_v17/i.test(localDataSource), 'Local translation source must not link to the Drive Spanish transcript');
 const appSource = await readFile(path.join(root, 'src/App.jsx'), 'utf8');
 check(!/اسألي|تسألي|اتكلمي|وصّفي|اطلبي|تطلبي|مستعدة|فاهمة/u.test(JSON.stringify(lessonLibrary)), 'Lesson objectives and prompts must address the learner in masculine wording');
+const wordsPageSource = appSource.slice(appSource.indexOf('function WordsPage('), appSource.indexOf('function ProgressPage('));
+const stylesSource = await readFile(path.join(root, 'src/styles.css'), 'utf8');
+check(wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.es}</bdi>') && wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.example}</bdi>'), 'Vocabulary and lesson examples must be isolated as Spanish LTR text, including opening inverted punctuation');
+check(wordsPageSource.includes('lang="ar" dir="rtl"') && wordsPageSource.includes('word.lesson.replace') && wordsPageSource.includes('<bdi lang="es" dir="ltr">{word.lesson.replace'), 'Arabic meanings and mixed-language lesson labels must each declare their own reading direction');
+check(wordsPageSource.includes('aria-pressed={isSaved}') && wordsPageSource.includes('aria-live="polite"') && wordsPageSource.includes('aria-label="ابحث في الكلمات والمعاني والأمثلة"'), 'Vocabulary save state, search results, and search control must be screen-reader accessible');
+check(wordsPageSource.includes('const searchableText = normalize') && wordsPageSource.includes('word.say} ${word.lesson} ${word.example}') && wordsPageSource.includes("setQuery(''); setFilter('الكل')"), 'Dictionary search must cover source words, meanings, pronunciation hints, lesson names, and examples, with a reset path');
+check(stylesSource.includes('.dictionary-card .dictionary-word-row h3{') && stylesSource.includes('text-align:left') && stylesSource.includes('overflow-wrap:anywhere') && stylesSource.includes('@media(max-width:380px)'), 'Vocabulary cards must keep Spanish left-aligned, wrap long mixed-direction phrases, and adapt to narrow phones');
+for (const [lessonId, lesson] of Object.entries(lessonLibrary)) {
+  for (const word of lesson.words) {
+    check(Boolean(word.es?.trim() && word.ar?.trim()), `${lessonId}: dictionary entries must retain the supplied Spanish and Arabic source text`);
+    if (word.es.includes('¿')) check(word.es.trim().endsWith('?'), `${lessonId}: Spanish questions must keep the closing question mark after the inverted opener`);
+  }
+}
 const listeningSource = appSource.slice(appSource.indexOf('function ListeningPage('), appSource.indexOf('function SpeakingPage('));
 check(listeningSource.includes('<BookListeningLibrary stage={stage} focusLessonId={focusLessonId}/>'), 'Listening must open the selected lesson recording library');
 check(!/SpeechSynthesisUtterance|buildListeningItems\(lessonLibrary\)/.test(listeningSource), 'Listening must not substitute synthesized lesson-library examples for book recordings');
