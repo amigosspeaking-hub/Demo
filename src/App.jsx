@@ -294,7 +294,7 @@ function WordsPage({ stage, savedWords, onSaveWord }) {
     const searchableText = normalize(`${word.es} ${word.ar} ${word.say} ${word.lesson} ${word.example}`);
     return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
   });
-  const savedInLevel = words.filter(word => savedWords.includes(word.es)).length;
+  const savedInLevel = new Set(words.filter(word => savedWords.includes(word.es)).map(word => word.es)).size;
   const resetFilters = () => { setQuery(''); setFilter('الكل'); };
 
   return <div className="words-page">
